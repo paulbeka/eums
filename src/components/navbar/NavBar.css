@@ -1,0 +1,15 @@
+.navbar {
+  width: 100%;
+}
+
+.navlink-container {
+  display: flex;
+}
+
+.text-nav {
+  /* color: white; */
+}
+
+.bold-text-nav {
+  font-weight: bold;
+}
