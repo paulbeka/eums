@@ -6,6 +6,7 @@ import PageNotFound from './pages/PageNotFound';
 import Contact from './pages/Contact';
 import Updates from './pages/Updates';
 import About from './pages/About';
+import VotingData from './pages/VotingData';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
           <Route path="updates" element={<Updates />} />
+          <Route path="votingdata" element={<VotingData />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
       </Routes>

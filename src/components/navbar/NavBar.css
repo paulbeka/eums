@@ -1,13 +1,25 @@
 .navbar {
   width: 100%;
+  display: flex;
+  background: blue;
+  height: 70px;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid grey;
 }
 
 .navlink-container {
   display: flex;
+  justify-content: space-around;
+  width: 75%;
 }
 
 .text-nav {
-  /* color: white; */
+  color: white;
+}
+
+.text-nav:hover {
+  color: #ffcc00;
 }
 
 .bold-text-nav {

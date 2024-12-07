@@ -1,0 +1,36 @@
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.footer-content {
+  width: 50%;
+  text-align: center;
+}
+
+.footer-title {
+  color: #112673;
+  font-size: 64px;
+  margin: 0.5em;
+}
+
+.menu-item {
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 30px;
+  color: #003366;
+  font-size: 16px;
+}
+
+.menu-item:hover {
+  color: #ffcc00;
+}
+
+.footer-link-container {
+  display: flex;
+  justify-content: space-around;
+  padding-inline: 2em;
+  margin-bottom: 4em;
+}
