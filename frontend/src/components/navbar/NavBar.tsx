@@ -8,9 +8,9 @@ const NavBar: React.FC<{
  }> = ({ currentPage, setCurrentPage }) => {
   
   const navItems = [
-    { path: '', text: 'WHO WE ARE'},
-    { path: '/updates', text: 'UPDATES'},
-    { path: '/votingdata', text: 'VOTING'},
+    { path: '', text: 'HOME'},
+    { path: '/articles', text: 'ARTICLES'},
+    { path: '/videos', text: 'VIDEOS'},
     { path: '/contact', text: 'CONTACT US'}
   ]
 
