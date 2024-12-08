@@ -2,6 +2,8 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  background: #e0e0e0;
+  padding: 3em;
 }
 
 .footer-content {
