@@ -1,10 +1,23 @@
 from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from .auth import authenticate_user, create_access_token
 from .schemas import Token
-from .config import ACCESS_TOKEN_EXPIRE_MINUTES
+from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM
+
+from datetime import timedelta
+from jose import JWTError, jwt
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
@@ -21,3 +34,15 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         data={"sub": user["username"]}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@app.get("/verify-token")
+async def verify_token(token: str = Depends(oauth2_scheme)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        return {"status": "valid"}
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")

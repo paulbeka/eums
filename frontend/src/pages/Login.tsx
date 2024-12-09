@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./CSS/Login.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-
+  
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -23,7 +25,7 @@ const Login = () => {
       });
 
       localStorage.setItem("access_token", response.data.access_token);
-      // todo: redirect to home page
+      navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
     }

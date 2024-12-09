@@ -9,12 +9,14 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 fake_users_db = {
     "user@example.com": {
         "username": "user@example.com",
-        "hashed_password": pwd_context.hash("password123")
+        "hashed_password": pwd_context.hash("password")
     }
 }
 
+
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
+
 
 def authenticate_user(username: str, password: str):
     user = fake_users_db.get(username)
