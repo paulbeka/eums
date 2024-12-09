@@ -25,12 +25,64 @@
   padding: 1em;
 }
 
+.display-content-img {
+  width: 100%;
+  height: auto;
+}
+
 .international-reach-container {
   background-color: #112673;
+  color: white;
+  border-radius: 25px;
 }
 
 .international-reach-content {
   width: 70%;
-  padding: 2em;
-  color: white;
+  padding: 4em;
+  display: flex;
+  width: 70%;
+  margin: 0 auto;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.eu-map {
+  width: 30%;
+}
+
+.eu-map-img {
+  width: 100%;
+}
+
+.international-reach-text-content {
+  width: 60%;
+  padding: 1em;
+  height: 50%;
+}
+
+.check-out-channels {
+  margin: 0 auto;
+  width: 225px;
+  margin-bottom: 3em;
+  border: 2px solid black;
+  border-radius: 40px;
+  padding: 0.5em;
+  padding-inline: 1em;
+  text-align: center;
+  box-shadow: 3px 3px black;
+  background-color: white;
+  color: black;
+}
+
+.connection-links {
+  width: 60%;
+  margin: 0 auto;
+  padding-bottom: 2em;
+
+}
+
+.link-logo {
+  max-width: 50px;
+  height: auto;
+  margin: 1em;
 }

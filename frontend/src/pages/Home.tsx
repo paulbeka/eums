@@ -1,8 +1,18 @@
 import React, { useEffect } from 'react';
 import "./CSS/Home.css";
+import { Link } from 'react-router-dom';
 
 
 const Home = () => {
+
+  const listOfLinks = [
+    {url: "www.google.com", logo: "https://streetphotography.com/wp-content/uploads/2017/08/test.png"},
+    {url: "www.google.com", logo: "https://streetphotography.com/wp-content/uploads/2017/08/test.png"},
+    {url: "www.google.com", logo: "https://streetphotography.com/wp-content/uploads/2017/08/test.png"},
+    {url: "www.google.com", logo: "https://streetphotography.com/wp-content/uploads/2017/08/test.png"},
+    {url: "www.google.com", logo: "https://streetphotography.com/wp-content/uploads/2017/08/test.png"},
+    {url: "www.google.com", logo: "https://streetphotography.com/wp-content/uploads/2017/08/test.png"}
+  ]
 
   useEffect(() => {
     document.title = 'Home';
@@ -17,21 +27,21 @@ const Home = () => {
 
         <div className="display-container">
           <div className="display-content-holder">
-            <img />
+            <img className="display-content-img" src="https://streetphotography.com/wp-content/uploads/2017/08/test.png" />
             <div className="display-content-text">
               <h4>Educational Videos</h4>
               <p>Lorem ipsum dolor si amet</p>
             </div>
           </div>
           <div className="display-content-holder">
-            <img />
+            <img className="display-content-img" src="https://streetphotography.com/wp-content/uploads/2017/08/test.png" />
             <div className="display-content-text">
               <h4>Educational Videos</h4>
               <p>Lorem ipsum dolor si amet</p>
             </div>
           </div>
           <div className="display-content-holder">
-            <img />
+            <img className="display-content-img" src="https://streetphotography.com/wp-content/uploads/2017/08/test.png" />
             <div className="display-content-text">
               <h4>Educational Videos</h4>
               <p>Lorem ipsum dolor si amet</p>
@@ -39,6 +49,7 @@ const Home = () => {
           </div>
         </div>
 
+        <br />
         <p>EU Made Simple is independently run by Lambertus Robben, a passionate Dutch national Living in Germany, dedicated to making the EU comprehensible for all Europeans.</p>
         <br />
         <p>Join us to learn, engage, and vote - because a well informed Europe is a stronger Europe.</p>
@@ -47,14 +58,31 @@ const Home = () => {
       <div className="international-reach-container">
         <div className="international-reach-content">
           <div className="eu-map">
-
+            <img className="eu-map-img" src="https://streetphotography.com/wp-content/uploads/2017/08/test.png" />
           </div>
-          <div className="text-content">
-            <h4>International Reach</h4>
+          <div className="international-reach-text-content">
+            <h3>International Reach</h3>
+            <br />
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
           </div>
         </div>
+
+        <div className="check-out-channels">
+          <h4>Check all our channels!</h4>
+        </div>
+        
         <div className="connection-links">
           <h3>Stay connected and join the community!</h3>
+          <br />
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+          <br />
+          <div className="links-set">
+            {listOfLinks.map(link => 
+              <Link to={link.url}>
+                <img src={link.logo} className="link-logo"/>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </div>

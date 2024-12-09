@@ -8,6 +8,7 @@ import Articles from './pages/Articles';
 import About from './pages/About';
 import VotingData from './pages/VotingData';
 import Login from './pages/Login';
+import AdminArticleManager from './pages/AdminArticleManager';
 
 
 function App() {
@@ -22,6 +23,9 @@ function App() {
           <Route path="votingdata" element={<VotingData />} />
           <Route path="login" element={<Login />} />
           <Route path="*" element={<PageNotFound />} />
+
+          {/* Anything here needs auth access */}
+          <Route path="article-manager" element={<AdminArticleManager />} />
         </Route>
       </Routes>
     </BrowserRouter>
