@@ -6,10 +6,11 @@ import PageNotFound from './pages/PageNotFound';
 import Contact from './pages/Contact';
 import Articles from './pages/Articles';
 import About from './pages/About';
-import VotingData from './pages/VotingData';
+import Videos from './pages/Videos';
 import Login from './pages/Login';
 import AdminArticleManager from './pages/AdminArticleManager';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import ArticleDisplay from './pages/ArticleDisplay';
 
 
 function App() {
@@ -21,7 +22,8 @@ function App() {
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
           <Route path="articles" element={<Articles />} />
-          <Route path="votingdata" element={<VotingData />} />
+          <Route path="article/:articleId" element={<ArticleDisplay />} />
+          <Route path="videos" element={<Videos />} />
           <Route path="login" element={<Login />} />
           <Route path="*" element={<PageNotFound />} />
 

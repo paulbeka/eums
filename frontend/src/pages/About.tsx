@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 const About = () => {
   
   useEffect(() => {
-    document.title = 'Not Found';
+    document.title = 'About';
   }, []);
 
   return <div className="about">

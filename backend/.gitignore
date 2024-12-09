@@ -1,3 +1,5 @@
 /venv/
 
 /eums_app/.env
+
+test.db
