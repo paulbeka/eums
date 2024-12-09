@@ -9,5 +9,3 @@ EU live APIs
 - https://data.europa.eu/en
 
 Country specific live APIs (needs discussions):
-- 
-- 

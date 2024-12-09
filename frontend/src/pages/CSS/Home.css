@@ -1,0 +1,36 @@
+.home {
+  justify-content: center;
+}
+
+.top-home-content {
+  padding: 3em; 
+  width: 70%; 
+  margin: 0 auto;
+}
+
+.display-container {
+  display: flex;
+  margin-block: 1em;
+}
+
+.display-content-holder {
+  border: 3px solid black;
+  border-radius: 20px;
+  box-shadow: 5px 7px;
+  width: 30%;
+  margin: 1em;
+}
+
+.display-content-text {
+  padding: 1em;
+}
+
+.international-reach-container {
+  background-color: #112673;
+}
+
+.international-reach-content {
+  width: 70%;
+  padding: 2em;
+  color: white;
+}

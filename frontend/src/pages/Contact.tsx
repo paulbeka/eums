@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./CSS/Contact.css";
 
 const Contact = () => {
+
+  useEffect(() => {
+    document.title = 'Contact';
+  }, []);
 
   const submitContact = () => {
     
