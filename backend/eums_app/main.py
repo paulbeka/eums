@@ -1,13 +1,19 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
 from .auth import authenticate_user, create_access_token
 from .schemas import Token
 from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM
+from .models import Base, User, Article
+from .db import engine, get_db
+from .crud import get_articles, create_article
 
 from datetime import timedelta
 from jose import JWTError, jwt
 
+
+Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 app.add_middleware(
@@ -22,8 +28,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 @app.post("/token", response_model=Token)
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(form_data.username, form_data.password)
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = authenticate_user(form_data.username, form_data.password, db)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -31,7 +37,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = create_access_token(
-        data={"sub": user["username"]}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        data={"sub": user.username}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -46,3 +52,13 @@ async def verify_token(token: str = Depends(oauth2_scheme)):
         return {"status": "valid"}
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
+
+
+@app.post("/articles/")
+def create_article_endpoint(title: str, content: str, db: Session = Depends(get_db)):
+    return create_article(db, title, content)
+
+
+@app.get("/articles/")
+def get_articles_endpoint(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+    return get_articles(db, skip, limit)
