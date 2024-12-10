@@ -4,11 +4,13 @@ import { EditorState, convertToRaw } from 'draft-js'
 import "./CSS/ArticlePoster.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { postArticle } from "../components/api/Api";
+import { useNavigate } from "react-router-dom";
 
 
 // this page is only adapted to desktop
 const ArticlePoster = () => {
 
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [success, setSuccess] = useState(true);
@@ -17,8 +19,11 @@ const ArticlePoster = () => {
     postArticle({
       title: title,
       content: convertToRaw(editorState.getCurrentContent())
-    }).then(outcome => {
-      setSuccess(outcome);
+    }).then(articleId => {
+      if (articleId) {
+        navigate(`/article/${articleId}`);
+      }
+      setSuccess(false);
     })
   }
 

@@ -33,8 +33,10 @@ const Articles = () => {
         {articles === undefined ? <Loading /> :
         !articles.length ? <div>No articles.</div> : 
           articles.map(article => (
-            <Link to={`/articles/${article.id}`} className="article">
-              <h4>{article.title}</h4>
+            <Link to={`/article/${article.id}`}>
+              <div className="article">
+                <h4>{article.title}</h4>
+              </div>
             </Link>
           ))
         }

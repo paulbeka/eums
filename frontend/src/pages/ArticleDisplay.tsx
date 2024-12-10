@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import { Article } from "../components/types/Article.type";
 import api from "../components/api/Api";
 import Loading from "../components/frontend_util/Loading";
+import { convertFromRaw } from 'draft-js'
+import { stateToHTML } from "draft-js-export-html";
 
 
 const ArticleDisplay = () => {
@@ -22,7 +24,12 @@ const ArticleDisplay = () => {
 
   return (
     <div>
-      {articleContent ? <>{articleContent}</> : <Loading />}
+      {articleContent ? 
+      <div 
+        className="post-content" 
+        dangerouslySetInnerHTML={{__html: stateToHTML(convertFromRaw(JSON.parse(articleContent['content'])))}} 
+      />
+      : <Loading />}
     </div>
   )
 }
