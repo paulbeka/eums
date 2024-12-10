@@ -11,6 +11,7 @@ import Login from './pages/Login';
 import AdminArticleManager from './pages/AdminArticleManager';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import ArticleDisplay from './pages/ArticleDisplay';
+import ArticlePoster from './pages/ArticlePoster';
 
 
 function App() {
@@ -28,10 +29,8 @@ function App() {
           <Route path="*" element={<PageNotFound />} />
 
           {/* Anything here needs auth access */}
-          <Route
-            path="article-manager"
-            element={<ProtectedRoute element={<AdminArticleManager />} />}
-          />
+          <Route path="article-manager" element={<ProtectedRoute element={<AdminArticleManager />} />} />
+          <Route path="article-poster" element={<ProtectedRoute element={<ArticlePoster />} />} />
         </Route>
       </Routes>
     </BrowserRouter>

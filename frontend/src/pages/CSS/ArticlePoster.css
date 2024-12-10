@@ -1,0 +1,41 @@
+.article-poster {
+}
+
+.article-content {
+  width: 65%;
+  margin: 0 auto;
+}
+
+.title-and-description {
+  margin: 3em;
+  text-align: center;
+}
+
+.title-input {
+  height: 30px;
+  width: 100%;
+  padding: 5px;
+}
+
+.editor-content {
+  margin-block: 2em;
+  padding: 1em;
+  border: 1px solid black;
+  border-radius: 20px;
+}
+
+.save-post-container {
+  margin-block: 1em;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submitButton {
+  padding-inline: 1em;
+  padding-block: 0.5em;
+  background: #112673;
+  color: white;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}

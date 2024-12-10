@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { RawDraftContentState } from 'draft-js';
 
 // TODO: UPDATE THIS INTO .ENV FILE
 const BASE_URL = 'http://localhost:8000'; 
@@ -28,6 +29,20 @@ export const getArticles = async () => {
   })
   .catch(error => {
     throw error;
+  });
+}
+
+export const postArticle = async (payload: { title: string, content: RawDraftContentState }) => {
+  return api.post("/articles/", payload)
+  .then(response => {
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
+  })
+  .catch(err => {
+    return false
   });
 }
 

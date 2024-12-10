@@ -20,6 +20,10 @@ def get_articles(db: Session, skip: int = 0, limit: int = 10):
     return db.query(Article).offset(skip).limit(limit).all()
     
 
+def get_article(articleId: str, db: Session):
+    return db.query(Article).filter(Article.id == article_id).first()
+
+
 def create_article(db: Session, title: str, content: str):
     db_article = Article(title=title, content=content)
     db.add(db_article)

@@ -16,6 +16,6 @@ class User(Base):
 class Article(Base):
     __tablename__ = "articles"
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    content = Column(Text)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    title = Column(String, index=True, nullable=False)
+    content = Column(Text, nullable=False)
