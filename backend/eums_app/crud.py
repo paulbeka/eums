@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+import json
 
 from .models import User, Article
 
@@ -18,14 +19,14 @@ def create_user(db: Session, username: str, hashed_password: str):
 
 def get_articles(db: Session, skip: int = 0, limit: int = 10):
     return db.query(Article).offset(skip).limit(limit).all()
-    
+
 
 def get_article(articleId: str, db: Session):
-    return db.query(Article).filter(Article.id == article_id).first()
+    return db.query(Article).filter(Article.id == articleId).first()
 
 
 def create_article(db: Session, title: str, content: str):
-    db_article = Article(title=title, content=content)
+    db_article = Article(title=title, content=json.dumps(content))
     db.add(db_article)
     db.commit()
     db.refresh(db_article)

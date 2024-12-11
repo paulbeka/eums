@@ -62,9 +62,8 @@ async def verify_token_endpoint(token: str = Depends(oauth2_scheme)):
 
 @app.post("/articles/")
 def create_article_endpoint(article: ArticleResponse, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    print(article)
     isAuthenticated = verify_token(token)
-    if isAuthenticated.status == "valid":
+    if "status" in isAuthenticated.keys() and isAuthenticated["status"] == "valid":
         return create_article(db, article.title, article.content)
     else:
         return isAuthenticated
@@ -75,6 +74,6 @@ def get_articles_endpoint(skip: int = 0, limit: int = 10, db: Session = Depends(
     return get_articles(db, skip, limit)
 
 
-@app.get("/articles/{articleId}")
-def get_article(articleId: str, db: Session = Depends(get_db)):
-    return get_article(articleId)
+@app.get("/article/{articleId}")
+def get_article_endpoint(articleId: str, db: Session = Depends(get_db)):
+    return get_article(articleId, db)
