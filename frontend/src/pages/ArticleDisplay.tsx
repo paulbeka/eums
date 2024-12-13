@@ -5,6 +5,7 @@ import api from "../components/api/Api";
 import Loading from "../components/frontend_util/Loading";
 import { convertFromRaw } from 'draft-js'
 import { stateToHTML } from "draft-js-export-html";
+import "./CSS/ArticleDisplay.css";
 
 
 const ArticleDisplay = () => {
