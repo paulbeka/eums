@@ -14,6 +14,33 @@ const Home = () => {
     {url: "www.google.com", logo: "https://streetphotography.com/wp-content/uploads/2017/08/test.png"}
   ]
 
+  const fetchVideos = async () => {
+    const apiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
+    const channelId = 'UC8KFs307LrTkQCu-P1Fl6dw';
+    const maxResults = 5;
+
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=${maxResults}`
+    );
+    const data = await response.json();
+    // setVideos(data.items);
+  };
+
+  const fetchArticles = async () => {
+    try {
+      // const fetchedArticles = await getArticles();
+      // setArticles(fetchedArticles);
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+    }
+  };
+
+  fetchArticles();
+
+  useEffect(() => {
+    fetchVideos();
+  }, []);
+
   useEffect(() => {
     document.title = 'Home';
   }, []);
@@ -27,22 +54,22 @@ const Home = () => {
 
         <div className="display-container">
           <div className="display-content-holder">
-            <img className="display-content-img" src="https://streetphotography.com/wp-content/uploads/2017/08/test.png" />
+            <img className="display-content-img" src="/images/thumbnail1.png" />
             <div className="display-content-text">
               <h4>Educational Videos</h4>
               <p>Lorem ipsum dolor si amet</p>
             </div>
           </div>
           <div className="display-content-holder">
-            <img className="display-content-img" src="https://streetphotography.com/wp-content/uploads/2017/08/test.png" />
-            <div className="display-content-text">
+            <img className="display-content-img" src="/images/thumbnail2.png" />
+          <div className="display-content-text">
               <h4>Educational Videos</h4>
               <p>Lorem ipsum dolor si amet</p>
             </div>
           </div>
           <div className="display-content-holder">
-            <img className="display-content-img" src="https://streetphotography.com/wp-content/uploads/2017/08/test.png" />
-            <div className="display-content-text">
+            <img className="display-content-img" src="/images/thumbnail3.png" />
+          <div className="display-content-text">
               <h4>Educational Videos</h4>
               <p>Lorem ipsum dolor si amet</p>
             </div>

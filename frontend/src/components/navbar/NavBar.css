@@ -1,4 +1,5 @@
 .navbar {
+  position: fixed;
   width: 100%;
   display: flex;
   background: #112673;
@@ -10,12 +11,25 @@
 
 .navlink-container {
   display: flex;
-  justify-content: space-around;
-  width: 75%;
+  justify-content: space-between;
+  width: 90%;
+}
+
+.left-content {
+  display: flex;
+  justify-content: first baseline;
+}
+
+.right-content {
+  display: flex;
+  align-items: center;
 }
 
 .text-nav {
   color: white;
+  margin-left: 4em;
+  display: flex;
+  align-items: center;
 }
 
 .text-nav:hover {
@@ -24,4 +38,15 @@
 
 .bold-text-nav {
   font-weight: bold;
+}
+
+.nav-img-container {
+  border-right: 2px solid rgba(255, 255, 255, 0.5);
+  padding-right: 1em;
+}
+
+.navbar-logo {
+  height: 35px;
+  padding-bottom: 5px;
+  width: auto;
 }

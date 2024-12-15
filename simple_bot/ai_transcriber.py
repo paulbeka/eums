@@ -1,10 +1,9 @@
 from transformers import pipeline
-import re
-import openai
+from dotenv import load_dotenv
+import re, openai, os, json
 
-
-# replace 'your-api-key' with actual key
-openai.api_key = 'your-api-key'
+load_dotenv()
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
 def clean_transcript(text):
@@ -14,13 +13,16 @@ def clean_transcript(text):
 
 
 def generate_article_with_gpt3(text):
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=f"Convert the following transcript into a well-written news article. It should stay as true as possible to the content of the transcript as possible, include any extra info you deem necessary. Only return the artile, nothing else. Article:\n{text}\n\n",
-        max_tokens=500,
-        temperature=0.7
+    response = openai.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant generating news articles from transcripts."},
+            {"role": "user", "content": f"Convert the following transcript into a well-written news article. Stay true to the content and only return the article.\n\nTranscript:\n{text}"}
+        ],
+        temperature=0.7,
+        max_tokens=500
     )
-    return response['choices'][0]['text'].strip()
+    return response['choices'][0]['message']['content'].strip()
 
 
 def create_news_article(transcript):

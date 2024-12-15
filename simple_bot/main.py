@@ -7,10 +7,10 @@ from ai_transcriber import transcription_to_article
 
 
 load_dotenv()
-API_KEY = os.getenv("API_KEY")
-GPT_KEY = os.getenv("GPT_KEY")
 
+API_KEY = os.getenv("API_KEY")
 ENGLISH_CHANNEL_ID = "UC8KFs307LrTkQCu-P1Fl6dw"
+TRANSCRIPTS_FOLDER = "transcripts"
 
 
 def get_videos_from_channel(channel_id):
@@ -59,7 +59,7 @@ def fetch_transcription(video_title, video_id):
 		}
 
 		safe_title = "_".join(video_title.split())
-		filename = f"transcripts/{safe_title}.json"
+		filename = f"{TRANSCRIPTS_FOLDER}/{safe_title}.json"
 
 		with open(filename, "w", encoding="utf-8") as file:
 			json.dump(transcription_data, file, ensure_ascii=False, indent=4)
@@ -84,12 +84,11 @@ def get_transcriptions():
 
 def ai_generator():
 
-	filenames = os.listdir("transcripts")
-	filenames = [f for f in filenames if os.path.isfile(os.path.join(directory_path, f))]
+	filenames = os.listdir(TRANSCRIPTS_FOLDER)
 
-	for filename in filenames:
+	for filename in filenames[0:3]:
 		try:
-			title, article = transcription_to_article(filename)
+			title, article = transcription_to_article(os.path.join(TRANSCRIPTS_FOLDER, filename))
 
 			payload = {
 				"title": title,
@@ -101,7 +100,8 @@ def ai_generator():
 				json.dump(payload, file, ensure_ascii=False, indent=4)
 
 			print(f"Generated {title}.")
-		except:
+		except Exception as e:
+			print(e)
 			print(f"ERROR: File {filename} failed.")
 
 
