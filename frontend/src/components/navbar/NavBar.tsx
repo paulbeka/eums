@@ -27,12 +27,12 @@ const NavBar: React.FC<{
     <div className="navbar">
       <div className="navlink-container">
         <div className="left-content">
-          <Link onClick={() => setCurrentPage("/")} to="/" className="text-nav nav-img-container">
+          <Link onClick={() => setCurrentPage("")} to="/" className="text-nav nav-img-container">
             <img className="navbar-logo" src="/images/navbar_logo.png" />
           </Link>
           {navItems.map(item => 
             <Link to={item.path} onClick={() => setCurrentPage(item.text)} className="text-nav">
-              <span className={`${currentPage === item.text.toLowerCase() ? "bold-text-nav" : ""}`}>{item.text}</span>
+              <span className={`${currentPage === item.text ? "bold-text-nav" : ""}`}>{item.text}</span>
             </Link>
           )}
         </div>

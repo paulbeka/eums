@@ -4,9 +4,7 @@ import BasePage from './pages/BasePage';
 import Home from './pages/Home';
 import PageNotFound from './pages/PageNotFound';
 import Contact from './pages/Contact';
-import Articles from './pages/Articles';
 import About from './pages/About';
-import Videos from './pages/Videos';
 import Login from './pages/Login';
 import AdminArticleManager from './pages/AdminArticleManager';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -22,9 +20,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
-          <Route path="articles" element={<Articles />} />
           <Route path="article/:articleId" element={<ArticleDisplay />} />
-          <Route path="videos" element={<Videos />} />
           <Route path="login" element={<Login />} />
           <Route path="*" element={<PageNotFound />} />
 
