@@ -7,7 +7,7 @@ from .schemas import Token, ArticleResponse
 from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM
 from .models import Base, User, Article
 from .db import engine, get_db
-from .crud import get_article, get_articles, create_article
+from .crud import get_article, get_articles, create_article, delete_article
 
 from datetime import timedelta
 from jose import JWTError, jwt
@@ -77,3 +77,13 @@ def get_articles_endpoint(skip: int = 0, limit: int = 10, db: Session = Depends(
 @app.get("/article/{articleId}")
 def get_article_endpoint(articleId: str, db: Session = Depends(get_db)):
     return get_article(articleId, db)
+
+
+@app.delete("/article/{articleId}")
+def delete_article_endpoint(articleId: str, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    isAuthenticated = verify_token(token)
+    if "status" in isAuthenticated.keys() and isAuthenticated["status"] == "valid":
+        delete_article(db, articleId)
+        return {"detail": "Article deleted successfully"}
+    else:
+        raise HTTPException(status_code=401, detail="Unauthorized")

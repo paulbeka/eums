@@ -4,16 +4,17 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     document.title = 'Login';
   }, []);
 
-  const submitLogin = async () => {
+  const submitLogin = async (e: any) => {
+    e.preventDefault();  // Prevents page refresh
     try {
       const response = await axios.post("http://localhost:8000/token", {
         username,
@@ -24,16 +25,21 @@ const Login = () => {
         },
       });
 
-      localStorage.setItem("access_token", response.data.access_token);
-      navigate("/");
+      if (response.status === 200) {
+        localStorage.setItem("access_token", response.data.access_token);
+        navigate("/");
+      } else {
+        setError("Login failed. Contact an admin or try inputting your password again.");
+      }
     } catch (error) {
+      setError("Login failed. Contact an admin or try inputting your password again.");
       console.error("Login failed:", error);
     }
   };
 
   return (
     <div className="login-page">
-      <div className="login-container">
+      <form onSubmit={submitLogin} className="login-container">
         <div className="login-component-div">
           <label>Username:</label>
           <input className="input-box" value={username} onChange={(e) => setUsername(e.target.value)} type="text" />
@@ -42,10 +48,11 @@ const Login = () => {
           <label>Password:</label>
           <input className="input-box" value={password} onChange={(e) => setPassword(e.target.value)} type="password" />
         </div>
-        <button type="submit" onClick={submitLogin} className="submit-btn">Submit</button>
-      </div>
+        {error && <p style={{ color: "red", marginBottom: "1em" }}>{error}</p>}
+        <button type="submit" className="submit-btn">Submit</button>
+      </form>
     </div>
-  )
+  );
 }
 
 export default Login;

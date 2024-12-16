@@ -26,17 +26,6 @@ const Home = () => {
     // setVideos(data.items);
   };
 
-  const fetchArticles = async () => {
-    try {
-      // const fetchedArticles = await getArticles();
-      // setArticles(fetchedArticles);
-    } catch (error) {
-      console.error('Error fetching articles:', error);
-    }
-  };
-
-  fetchArticles();
-
   useEffect(() => {
     fetchVideos();
   }, []);

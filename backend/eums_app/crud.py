@@ -31,3 +31,18 @@ def create_article(db: Session, title: str, content: str):
     db.commit()
     db.refresh(db_article)
     return db_article
+
+
+def edit_article(db: Session, id: int, title: str, content: str):
+    pass
+
+
+def delete_article(db: Session, articleId: str):
+    article = db.query(Article).filter(Article.id == articleId).first()
+    if article:
+        db.delete(article)
+        db.commit()
+        return {"detail": "Article deleted successfully"}
+    else:
+        raise Exception("Article not found")
+

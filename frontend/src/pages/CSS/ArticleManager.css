@@ -1,0 +1,17 @@
+.article-manager-content {
+  width: 60%;
+  margin: 1em auto;
+}
+
+.article-div {
+  margin: 1em;
+  padding: 1em;
+  border: 1px solid black;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.article-button-container {
+  display: flex;
+}
