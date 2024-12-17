@@ -1,7 +1,8 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Query, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from typing import Optional
 from .auth import authenticate_user, create_access_token
 from .schemas import Token, ArticleResponse
 from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM
@@ -64,14 +65,34 @@ async def verify_token_endpoint(token: str = Depends(oauth2_scheme)):
 def create_article_endpoint(article: ArticleResponse, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     isAuthenticated = verify_token(token)
     if "status" in isAuthenticated.keys() and isAuthenticated["status"] == "valid":
-        return create_article(db, article.title, article.content)
+        return create_article(db, article.title, article.content, False)
     else:
         return isAuthenticated
 
 
 @app.get("/articles/")
-def get_articles_endpoint(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    return get_articles(db, skip, limit)
+def get_articles_endpoint(
+            skip: int = 0, 
+            limit: int = 10, 
+            public_only: bool = Query(True), 
+            db: Session = Depends(get_db), 
+            Authorization: Optional[str] = Header(None)
+        ):
+    
+    if not public_only:
+        try:
+            token = Authorization.split(" ")[1]
+            if not token:
+                raise HTTPException(status_code=401, detail="Token required for non-public access")
+                
+            isAuthenticated = verify_token(token)
+            if not isAuthenticated.get("status") == "valid":
+                raise HTTPException(status_code=401, detail="Invalid token")
+
+        except:
+            raise HTTPException(status_code=401, detail="Invalid token")
+
+    return get_articles(db, skip, limit, public_only)
 
 
 @app.get("/article/{articleId}")

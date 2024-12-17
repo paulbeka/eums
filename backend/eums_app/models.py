@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Integer, String, Text, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -19,3 +19,5 @@ class Article(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     title = Column(String, index=True, nullable=False)
     content = Column(Text, nullable=False)
+    public = Column(Boolean, nullable=False)
+    

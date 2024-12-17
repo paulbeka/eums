@@ -10,7 +10,7 @@ const AdminArticleManager = () => {
 
   const fetchArticles = async () => {
     try {
-      const fetchedArticles = await getArticles();
+      const fetchedArticles = await getArticles(false);
       setArticles(fetchedArticles);
     } catch (error) {
       console.error("Error fetching articles:", error);
@@ -46,6 +46,11 @@ const AdminArticleManager = () => {
             <div className="article-div" key={article.id}>
               <Link to={`/article/${article.id}`}>{article.title}</Link>
               <div className="article-button-container">
+                <select>
+                  <option value="Private" />
+                  <option value="Public"/>
+                </select>
+                
                 <Link to={`edit/${article.id}`}>
                   <FaRegPenToSquare />
                 </Link>

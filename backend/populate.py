@@ -15,6 +15,7 @@ Base.metadata.create_all(bind=engine)
 admin_users = [
     {"username": "paul", "password": "admin"},
     {"username": "pablo", "password": "admin"},
+    {"username": "lambertus", "password": "admin"}
 ]
 
 def populate_db():

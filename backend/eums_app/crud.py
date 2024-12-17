@@ -17,24 +17,36 @@ def create_user(db: Session, username: str, hashed_password: str):
     return db_user
 
 
-def get_articles(db: Session, skip: int = 0, limit: int = 10):
-    return db.query(Article).offset(skip).limit(limit).all()
+def get_articles(db: Session, skip: int = 0, limit: int = 10, public_only: bool = True):
+    query = db.query(Article)
+    if public_only:
+        query = query.filter(Article.public == True)
+    return query.offset(skip).limit(limit).all()
 
 
-def get_article(articleId: str, db: Session):
-    return db.query(Article).filter(Article.id == articleId).first()
+def get_article(articleId: str, db: Session, public_only: bool = True):
+    query = db.query(Article).filter(Article.id == articleId)
+    return query.first()
 
 
-def create_article(db: Session, title: str, content: str):
-    db_article = Article(title=title, content=json.dumps(content))
+def create_article(db: Session, title: str, content: str, public: bool):
+    db_article = Article(title=title, content=json.dumps(content), public=public)
     db.add(db_article)
     db.commit()
     db.refresh(db_article)
+    return db_article.id
+
+
+def edit_article(db: Session, id: int, title: str, content: str, public: bool):
+    db_article = db.query(Article).filter(Article.id == id).first()
+    if not db_article:
+        raise Exception("Article not found")
+    db_article.title = title
+    db_article.content = json.dumps(content)
+    db_article.public = public
+    db.commit()
+    db.refresh(db_article)
     return db_article
-
-
-def edit_article(db: Session, id: int, title: str, content: str):
-    pass
 
 
 def delete_article(db: Session, articleId: str):
@@ -45,4 +57,3 @@ def delete_article(db: Session, articleId: str):
         return {"detail": "Article deleted successfully"}
     else:
         raise Exception("Article not found")
-

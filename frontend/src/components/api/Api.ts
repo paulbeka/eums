@@ -24,22 +24,21 @@ api.interceptors.request.use(
 );
 
 
-export const getArticles = async () => {
-  return api.get("/articles/")
-  .then(response => {
-    return response.data;
-  })
-  .catch(error => {
-    throw error;
-  });
+export const getArticles = async (getPublicOnly: boolean) => {
+  return api.get(`/articles/?public_only=${getPublicOnly}`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
+    });
 }
-
 
 export const postArticle = async (payload: { title: string, content: RawDraftContentState }) => {
   return api.post("/articles/", payload)
   .then(response => {
     if (response.status === 200) {
-      return true;
+      return response.data;
     } else {
       return false;
     }
