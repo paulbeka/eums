@@ -57,3 +57,13 @@ def delete_article(db: Session, articleId: str):
         return {"detail": "Article deleted successfully"}
     else:
         raise Exception("Article not found")
+
+
+def change_article_visibility(db: Session, articleId: int, public: bool):
+    article = db.query(Article).filter(Article.id == articleId).first()
+    if not article:
+        raise Exception("Article not found")
+    article.public = public
+    db.commit()
+    db.refresh(article)
+    return article

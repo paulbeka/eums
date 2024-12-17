@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { getArticles, deleteArticle } from "../components/api/Api";
+import { getArticles, deleteArticle, changeVisibility } from "../components/api/Api";
 import { Link } from "react-router-dom";
 import { Article } from "../components/types/Article.type";
 import { FaRegPenToSquare, FaRegTrashCan } from "react-icons/fa6";
 import "./CSS/ArticleManager.css";
+import ArticleVisibility from "../components/frontend_util/ArticleVisibility";
 
 const AdminArticleManager = () => {
   const [articles, setArticles] = useState<Article[]>([]);
+  const [changedArticles, setChangedArticles] = useState<Record<number, boolean>>({});
+
 
   const fetchArticles = async () => {
     try {
@@ -16,6 +19,7 @@ const AdminArticleManager = () => {
       console.error("Error fetching articles:", error);
     }
   };
+
 
   const handleDelete = async (articleId: number) => {
     if (window.confirm("Are you sure you want to delete this article?")) {
@@ -33,9 +37,32 @@ const AdminArticleManager = () => {
     }
   };
 
+
+  const handleVisibilityChange = (articleId: number, visibility: string) => {
+    setChangedArticles((prev) => ({ ...prev, [articleId]: visibility === "public" }));
+  };
+
+
+  const handleSaveChanges = async () => {
+    try {
+      changeVisibility(changedArticles)
+      .then(res => {
+        alert("Changes saved successfully!");
+        setChangedArticles({});
+        fetchArticles();
+      })
+      .catch(err => alert(err));
+    } catch (error) {
+      console.error("Error saving changes:", error);
+      alert("An error occurred while saving changes.");
+    }
+  };
+
+
   useEffect(() => {
     fetchArticles();
   }, []);
+
 
   return (
     <div className="article-manager">
@@ -46,11 +73,10 @@ const AdminArticleManager = () => {
             <div className="article-div" key={article.id}>
               <Link to={`/article/${article.id}`}>{article.title}</Link>
               <div className="article-button-container">
-                <select>
-                  <option value="Private" />
-                  <option value="Public"/>
-                </select>
-                
+                <ArticleVisibility
+                  article={article}
+                  onVisibilityChange={handleVisibilityChange}
+                />
                 <Link to={`edit/${article.id}`}>
                   <FaRegPenToSquare />
                 </Link>
@@ -64,6 +90,13 @@ const AdminArticleManager = () => {
             </div>
           ))}
         </div>
+        <button
+          className="save-button"
+          onClick={handleSaveChanges}
+          disabled={Object.keys(changedArticles).length === 0}
+        >
+          Save Changes
+        </button>
       </div>
     </div>
   );

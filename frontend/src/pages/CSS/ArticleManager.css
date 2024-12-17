@@ -15,3 +15,7 @@
 .article-button-container {
   display: flex;
 }
+
+.visibility-selector {
+  margin-right: 1em;
+}

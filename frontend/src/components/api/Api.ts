@@ -25,7 +25,7 @@ api.interceptors.request.use(
 
 
 export const getArticles = async (getPublicOnly: boolean) => {
-  return api.get(`/articles/?public_only=${getPublicOnly}`)
+  return api.get(getPublicOnly ? '/articles/' : '/articles/?public_only=false')
     .then(response => {
       return response.data;
     })
@@ -61,6 +61,19 @@ export const deleteArticle = async (articleId: number) => {
     .catch(err => {
       return false;
     });
+}
+
+
+export const changeVisibility = async (changedArticles: Record<number, boolean>) => {
+  api.post("/articles/change-visibility", changedArticles)
+  .then(response => {
+    if (response.status !== 200) {
+      throw "Request failed! Contact an admin.";
+    }
+  })
+  .catch(err => {
+    throw err;
+  })
 }
 
 

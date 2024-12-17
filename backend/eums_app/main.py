@@ -2,13 +2,13 @@ from fastapi import FastAPI, Depends, HTTPException, status, Query, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from typing import Optional
+from typing import Optional, Dict
 from .auth import authenticate_user, create_access_token
 from .schemas import Token, ArticleResponse
 from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM
 from .models import Base, User, Article
 from .db import engine, get_db
-from .crud import get_article, get_articles, create_article, delete_article
+from .crud import get_article, get_articles, create_article, delete_article, change_article_visibility
 
 from datetime import timedelta
 from jose import JWTError, jwt
@@ -84,7 +84,7 @@ def get_articles_endpoint(
             token = Authorization.split(" ")[1]
             if not token:
                 raise HTTPException(status_code=401, detail="Token required for non-public access")
-                
+
             isAuthenticated = verify_token(token)
             if not isAuthenticated.get("status") == "valid":
                 raise HTTPException(status_code=401, detail="Invalid token")
@@ -108,3 +108,19 @@ def delete_article_endpoint(articleId: str, db: Session = Depends(get_db), token
         return {"detail": "Article deleted successfully"}
     else:
         raise HTTPException(status_code=401, detail="Unauthorized")
+
+
+@app.post("/articles/change-visibility")
+def change_article_visibility_endpoint(
+        payload: Dict[int, bool], 
+        db: Session = Depends(get_db), 
+        token: str = Depends(oauth2_scheme)):
+
+    isAuthenticated = verify_token(token)
+    if "status" in isAuthenticated.keys() and isAuthenticated["status"] == "valid":
+        for article in payload.keys():
+            change_article_visibility(db, article, payload[article])
+        return {"detail": "Article visibilities updated successfully"}
+    else:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
