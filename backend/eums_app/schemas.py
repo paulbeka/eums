@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Dict, Any
 
 
@@ -13,3 +13,10 @@ class ArticleResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class ContactForm(BaseModel):
+    name: str
+    email: EmailStr
+    subject: str
+    message: str

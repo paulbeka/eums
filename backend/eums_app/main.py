@@ -3,15 +3,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import Optional, Dict
+from email.message import EmailMessage
 from .auth import authenticate_user, create_access_token
-from .schemas import Token, ArticleResponse
-from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM
+from .schemas import Token, ArticleResponse, ContactForm
+from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM, SMTP_SETTINGS
 from .models import Base, User, Article
 from .db import engine, get_db
 from .crud import get_article, get_articles, create_article, delete_article, change_article_visibility
 
 from datetime import timedelta
 from jose import JWTError, jwt
+import aiosmtplib
+
 
 
 Base.metadata.create_all(bind=engine)
@@ -39,7 +42,7 @@ def verify_token(token):
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
-#### ENDPOINTS ####
+#### LOGIN/AUTH ####
 
 @app.post("/token", response_model=Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
@@ -60,6 +63,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
 async def verify_token_endpoint(token: str = Depends(oauth2_scheme)):
     return verify_token(token)
 
+
+#### ARTICLES ####
 
 @app.post("/articles/")
 def create_article_endpoint(article: ArticleResponse, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
@@ -124,3 +129,33 @@ def change_article_visibility_endpoint(
     else:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
+
+#### EMAIL ####
+
+@app.post("/contact")
+async def send_email(contact: ContactForm):
+    try:
+        email_message = EmailMessage()
+        email_message["From"] = SMTP_SETTINGS["username"]
+        email_message["To"] = "recipient@example.com"
+        email_message["Subject"] = contact.subject
+        email_message.set_content(
+            f"Name: {contact.name}\n"
+            f"Email: {contact.email}\n\n"
+            f"Message:\n{contact.message}"
+        )
+
+        await aiosmtplib.send(
+            email_message,
+            hostname=SMTP_SETTINGS["host"],
+            port=SMTP_SETTINGS["port"],
+            username=SMTP_SETTINGS["username"],
+            password=SMTP_SETTINGS["password"],
+            use_tls=False,
+            start_tls=True,
+        )
+
+        return {"message": "Email sent successfully"}
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail=str(e))

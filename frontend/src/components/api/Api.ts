@@ -77,4 +77,16 @@ export const changeVisibility = async (changedArticles: Record<number, boolean>)
 }
 
 
+export const sendEmail = async (payload: any) => {
+  api.post("/contact", payload)
+  .then(res => {
+    if (res.status !== 200) {
+      throw new Error(`Error: ${res.status}`)
+    }
+    return true;
+  })
+  .catch(err => {return false})
+}
+
+
 export default api;

@@ -21,9 +21,10 @@ function ArticleVisibility({ article, onVisibilityChange } :
       className="visibility-selector"
       value={visibility}
       onChange={handleVisibilityChange}
+      style={{background: visibility === "public" ? "red": "green"}}
     >
-      <option value="public">Public</option>
-      <option value="private">Private</option>
+      <option style={{background: "red"}} value="public">Public</option>
+      <option style={{background: "green"}} value="private">Private</option>
     </select>
   );
 }
