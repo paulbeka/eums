@@ -1,18 +1,22 @@
 .navbar {
-  position: fixed;
   width: 100%;
   display: flex;
-  background: #112673;
-  height: 70px;
-  justify-content: center;
+  height: 260px;
   align-items: center;
-  border-bottom: 1px solid grey;
+  flex-direction: column;
+
+  background-size: auto auto;   /* Increases height and trims top whitespace */
+  background-position: center -20px; /* Moves image up by 20px */
+  background-repeat: no-repeat;
+  overflow: hidden; 
 }
 
 .navlink-container {
+  margin: 1em 0;
   display: flex;
   justify-content: space-between;
   width: 90%;
+  height: 70px;
 }
 
 .left-content {

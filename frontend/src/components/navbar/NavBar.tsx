@@ -40,7 +40,7 @@ const NavBar: React.FC<{
   };
 
   return (
-    <div className="navbar">
+    <div className="navbar" style={{ backgroundImage: 'url(/images/navbar-background.svg)' }}>
       <div className="navlink-container">
         <div className="left-content">
           <Link onClick={() => setCurrentPage("")} to="/" className="text-nav nav-img-container">
@@ -58,6 +58,9 @@ const NavBar: React.FC<{
           </Link>
           {renderLanguageSelector()}
         </div>
+      </div>
+      <div className="navlogo-container">
+
       </div>
     </div>
   );

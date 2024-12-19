@@ -20,7 +20,13 @@ const Home = () => {
   }, []);
 
   const getArticleParagraphs = (article: Article) => {
-    return <></>
+    const parsedBlogPost = JSON.parse(article.content);
+    return (
+      <div className="main-article-paragraph-containers">
+        <p className="main-article-paragraph">{parsedBlogPost.blocks[0].text}</p>
+        <p className="main-article-paragraph">{parsedBlogPost.blocks[1].text}</p>
+      </div>
+    )
   }
 
   return (
@@ -37,16 +43,26 @@ const Home = () => {
         <div className="article-container eums-box-shadow">
           {articles.length ? <>
           <div className="main-article">
-            <div className="main-article-thumbnail"></div>
-            <div className="main-article-content">
-              <h2>{articles[0].title}</h2>
-              <p>{getArticleParagraphs(articles[0])}</p>
+            <div className="main-article-image-container">
+              <img className="main-article-thumbnail" src={`${BASE_URL}/thumbnails/${articles[0].thumbnail}`} />
+              <div className="main-article-title">
+                <p>{articles[0].title}</p>
+              </div>
+            </div>
+            <div>
+              {getArticleParagraphs(articles[0])}
+              <div style={{ display: "flex", justifyContent: "flex-end"}}>
+                <span
+                  style={{ color: "gray", paddingBottom: "1em", paddingRight: "2em"}}
+                ><i><u>Continue reading...</u></i></span>
+              </div>
+              <center><hr style={{width: "50%"}}/></center>
             </div>
           </div>
           <div className="other-articles">
             {articles.slice(1,3).map(article =>
             <div className="bottom-article">
-              <img src={`${BASE_URL}/thumbnails/${article.thumbnail}`} />
+              <img className="bottom-article-thumbnail" src={`${BASE_URL}/thumbnails/${article.thumbnail}`} />
               <h3>{article.title}</h3>
             </div>
             )}

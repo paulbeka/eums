@@ -10,7 +10,7 @@ const BasePage = () => {
   return (
     <div className="main-container">
       <NavBar currentPage={currentPage} setCurrentPage={setCurrentPage} />
-      <div style={{"paddingTop": "70px"}}>
+      <div>
         <Outlet />
       </div>
       <Footer />
