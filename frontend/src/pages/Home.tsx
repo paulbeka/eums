@@ -1,104 +1,73 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./CSS/Home.css";
+import { Video, Article } from '../components/types/Content.type';
 import { Link } from 'react-router-dom';
+import { getArticles, getVideos } from '../components/api/Api';
+import { BASE_URL } from "../Config";
 
 
 const Home = () => {
 
-  const listOfLinks = [
-    {url: "www.google.com", logo: "https://streetphotography.com/wp-content/uploads/2017/08/test.png"},
-    {url: "www.google.com", logo: "https://streetphotography.com/wp-content/uploads/2017/08/test.png"},
-    {url: "www.google.com", logo: "https://streetphotography.com/wp-content/uploads/2017/08/test.png"},
-    {url: "www.google.com", logo: "https://streetphotography.com/wp-content/uploads/2017/08/test.png"},
-    {url: "www.google.com", logo: "https://streetphotography.com/wp-content/uploads/2017/08/test.png"},
-    {url: "www.google.com", logo: "https://streetphotography.com/wp-content/uploads/2017/08/test.png"}
-  ]
-
-  const fetchVideos = async () => {
-    const apiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
-    const channelId = 'UC8KFs307LrTkQCu-P1Fl6dw';
-    const maxResults = 5;
-
-    const response = await fetch(
-      `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=${maxResults}`
-    );
-    const data = await response.json();
-    // setVideos(data.items);
-  };
-
-  useEffect(() => {
-    fetchVideos();
-  }, []);
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [interviews, setInterviews] = useState([]);
 
   useEffect(() => {
     document.title = 'Home';
+    // TODO: handle errors
+    getArticles(true).then(res => setArticles(res))  
+    getVideos().then(res => setVideos(res))
   }, []);
+
+  const getArticleParagraphs = (article: Article) => {
+    return <></>
+  }
 
   return (
     <div className="home">
       <div className="top-home-content">
-        <h3>Who Are We?</h3>
-        <br />
-        <p>At EU Made Simple, we aim to educate and impower 449 million Europeans to vote and engage in the EU.</p>
-
-        <div className="display-container">
-          <div className="display-content-holder">
-            <img className="display-content-img" src="/images/thumbnail1.png" />
-            <div className="display-content-text">
-              <h4>Educational Videos</h4>
-              <p>Lorem ipsum dolor si amet</p>
+        <div className="video-container eums-box-shadow">
+          {videos.map(video => 
+            <div className="video-item">
+              <img src={video.thumbnail} className="video-thumbnail"/>
+              <p>{video.title}</p>
             </div>
-          </div>
-          <div className="display-content-holder">
-            <img className="display-content-img" src="/images/thumbnail2.png" />
-          <div className="display-content-text">
-              <h4>Educational Videos</h4>
-              <p>Lorem ipsum dolor si amet</p>
-            </div>
-          </div>
-          <div className="display-content-holder">
-            <img className="display-content-img" src="/images/thumbnail3.png" />
-          <div className="display-content-text">
-              <h4>Educational Videos</h4>
-              <p>Lorem ipsum dolor si amet</p>
-            </div>
-          </div>
+          )}
         </div>
+        <div className="article-container eums-box-shadow">
+          {articles.length ? <>
+          <div className="main-article">
+            <div className="main-article-thumbnail"></div>
+            <div className="main-article-content">
+              <h2>{articles[0].title}</h2>
+              <p>{getArticleParagraphs(articles[0])}</p>
+            </div>
+          </div>
+          <div className="other-articles">
+            {articles.slice(1,3).map(article =>
+            <div className="bottom-article">
+              <img src={`${BASE_URL}/thumbnails/${article.thumbnail}`} />
+              <h3>{article.title}</h3>
+            </div>
+            )}
+          </div> </> : <></>}
+        </div>
+      </div>
+      <div className="middle-home-content">
+        <div className="map-container">
 
-        <br />
-        <p>EU Made Simple is independently run by Lambertus Robben, a passionate Dutch national Living in Germany, dedicated to making the EU comprehensible for all Europeans.</p>
-        <br />
-        <p>Join us to learn, engage, and vote - because a well informed Europe is a stronger Europe.</p>
+        </div>
+        <div className="interview-container">
+
+        </div>
       </div>
 
-      <div className="international-reach-container">
-        <div className="international-reach-content">
-          <div className="eu-map">
-            <img className="eu-map-img" src="https://streetphotography.com/wp-content/uploads/2017/08/test.png" />
-          </div>
-          <div className="international-reach-text-content">
-            <h3>International Reach</h3>
-            <br />
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-          </div>
-        </div>
+      <div className="bottom-home-content">
+        <div className="media-links-container">
 
-        <div className="check-out-channels">
-          <h4>Check all our channels!</h4>
         </div>
-        
-        <div className="connection-links">
-          <h3>Stay connected and join the community!</h3>
-          <br />
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-          <br />
-          <div className="links-set">
-            {listOfLinks.map(link => 
-              <Link to={link.url}>
-                <img src={link.logo} className="link-logo"/>
-              </Link>
-            )}
-          </div>
+        <div className="support-container">
+
         </div>
       </div>
     </div>

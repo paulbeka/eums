@@ -44,6 +44,16 @@ def get_videos_from_channel(channel_id):
         if not next_page_token:
             break
 
+    #      const apiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
+    # const channelId = 'UC8KFs307LrTkQCu-P1Fl6dw';
+    # const maxResults = 5;
+
+    # const response = await fetch(
+    #   `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=${maxResults}`
+    # );
+    # const data = await response.json();
+    # // setVideos(data.items);
+
     return videos
 
 

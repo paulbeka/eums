@@ -3,4 +3,12 @@ export type Article = {
   title: string;
   content: string;
   public: boolean;
+  thumbnail: string;
 };
+
+
+export type Video = {
+  title: string;
+  thumbnail: string;
+}
+

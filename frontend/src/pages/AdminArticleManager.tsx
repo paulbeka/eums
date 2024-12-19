@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getArticles, deleteArticle, changeVisibility } from "../components/api/Api";
 import { Link } from "react-router-dom";
-import { Article } from "../components/types/Article.type";
+import { Article } from "../components/types/Content.type";
 import { FaRegPenToSquare, FaRegTrashCan } from "react-icons/fa6";
 import "./CSS/ArticleManager.css";
 import ArticleVisibility from "../components/frontend_util/ArticleVisibility";

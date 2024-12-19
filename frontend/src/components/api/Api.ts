@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { RawDraftContentState } from 'draft-js';
+import { BASE_URL } from "../../Config";
 
-// TODO: UPDATE THIS INTO .ENV FILE
-const BASE_URL = 'http://localhost:8000'; 
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -34,7 +33,7 @@ export const getArticles = async (getPublicOnly: boolean) => {
     });
 }
 
-export const postArticle = async (payload: { title: string, content: RawDraftContentState }) => {
+export const postArticle = async (payload: { title: string, content: RawDraftContentState, thumbnail: any }) => {
   return api.post("/articles/", payload)
   .then(response => {
     if (response.status === 200) {
@@ -70,6 +69,20 @@ export const changeVisibility = async (changedArticles: Record<number, boolean>)
     if (response.status !== 200) {
       throw "Request failed! Contact an admin.";
     }
+  })
+  .catch(err => {
+    throw err;
+  })
+}
+
+
+export const getVideos = async () => {
+  return api.get("/videos/")
+  .then(response => {
+    if (response.status !== 200) {
+      throw "Request failed! Contact an admin.";
+    }
+    return response.data;
   })
   .catch(err => {
     throw err;

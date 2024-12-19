@@ -2,8 +2,11 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 import json
 
-from .models import User, Article
+from .models import User, Article, Video
+from .util import save_thumbnail
 
+
+### AUTH / LOGIN ###
 
 def get_user_by_username(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
@@ -15,6 +18,9 @@ def create_user(db: Session, username: str, hashed_password: str):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+
+### ARTICLES ###
 
 
 def get_articles(db: Session, skip: int = 0, limit: int = 10, public_only: bool = True):
@@ -29,8 +35,18 @@ def get_article(articleId: str, db: Session, public_only: bool = True):
     return query.first()
 
 
-def create_article(db: Session, title: str, content: str, public: bool):
-    db_article = Article(title=title, content=json.dumps(content), public=public)
+def create_article(db: Session, title: str, content: dict, public: bool, thumbnail_base64: str):
+    thumbnail_filename = None
+    if thumbnail_base64:
+        thumbnail_filename = f"{title.replace(' ', '_')}_thumbnail.png"
+        save_thumbnail(thumbnail_base64, thumbnail_filename)
+
+    db_article = Article(
+        title=title, 
+        content=json.dumps(content), 
+        public=public,
+        thumbnail=thumbnail_filename
+    )
     db.add(db_article)
     db.commit()
     db.refresh(db_article)
@@ -67,3 +83,18 @@ def change_article_visibility(db: Session, articleId: int, public: bool):
     db.commit()
     db.refresh(article)
     return article
+
+
+### VIDEOS ###
+
+def create_video(db: Session, title: str, thumbnail: str, url: str):
+    video = Video(title=title, thumbnail=thumbnail, url=url)
+    db.add(video)
+    db.commit()
+    db.refresh(video)
+    return video.id
+
+
+def get_videos(db: Session, skip: int = 0, limit: int = 10):
+    query = db.query(Video)
+    return query.offset(skip).limit(limit).all()

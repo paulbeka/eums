@@ -10,6 +10,7 @@ class Token(BaseModel):
 class ArticleResponse(BaseModel):
     title: str
     content: Dict[str, Any]
+    thumbnail: str = None
 
     class Config:
         orm_mode = True

@@ -1,6 +1,6 @@
 import { AnyARecord } from 'dns';
 import { useState } from 'react';
-import { Article } from '../types/Article.type';
+import { Article } from '../types/Content.type';
 
 function ArticleVisibility({ article, onVisibilityChange } : 
   {

@@ -5,7 +5,7 @@ from eums_app.db import Base, SessionLocal
 from werkzeug.security import generate_password_hash 
 
 
-DATABASE_URL = "sqlite:///./test.db" # get from env
+DATABASE_URL = "sqlite:///./eums.db" # get from env
 
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

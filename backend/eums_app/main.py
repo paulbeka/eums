@@ -1,15 +1,17 @@
 from fastapi import FastAPI, Depends, HTTPException, status, Query, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.staticfiles import StaticFiles
+
 from sqlalchemy.orm import Session
-from typing import Optional, Dict
+from typing import Optional, Dict, Callable, Any
 from email.message import EmailMessage
 from .auth import authenticate_user, create_access_token
 from .schemas import Token, ArticleResponse, ContactForm
 from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM, SMTP_SETTINGS
 from .models import Base, User, Article
 from .db import engine, get_db
-from .crud import get_article, get_articles, create_article, delete_article, change_article_visibility
+from .crud import *
 
 from datetime import timedelta
 from jose import JWTError, jwt
@@ -18,7 +20,9 @@ import aiosmtplib
 
 
 Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
+app.mount("/thumbnails", StaticFiles(directory="thumbnails"), name="thumbnails")
 
 app.add_middleware(
     CORSMiddleware,
@@ -40,6 +44,14 @@ def verify_token(token):
         return {"status": "valid"}
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
+
+
+def run_if_authenticated(token: str, method: Callable[..., Any], *args, **kwargs) -> dict:
+    isAuthenticated = verify_token(token)
+    if isAuthenticated.get("status") == "valid":
+        return method(*args, **kwargs)
+    else:
+        raise HTTPException(status_code=401, detail="Unauthorized")
 
 
 #### LOGIN/AUTH ####
@@ -68,11 +80,7 @@ async def verify_token_endpoint(token: str = Depends(oauth2_scheme)):
 
 @app.post("/articles/")
 def create_article_endpoint(article: ArticleResponse, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    isAuthenticated = verify_token(token)
-    if "status" in isAuthenticated.keys() and isAuthenticated["status"] == "valid":
-        return create_article(db, article.title, article.content, False)
-    else:
-        return isAuthenticated
+    return run_if_authenticated(token, create_article, db, article.title, article.content, False, article.thumbnail)
 
 
 @app.get("/articles/")
@@ -107,12 +115,7 @@ def get_article_endpoint(articleId: str, db: Session = Depends(get_db)):
 
 @app.delete("/article/{articleId}")
 def delete_article_endpoint(articleId: str, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    isAuthenticated = verify_token(token)
-    if "status" in isAuthenticated.keys() and isAuthenticated["status"] == "valid":
-        delete_article(db, articleId)
-        return {"detail": "Article deleted successfully"}
-    else:
-        raise HTTPException(status_code=401, detail="Unauthorized")
+    return run_if_authenticated(token, delete_article, db, articleId)
 
 
 @app.post("/articles/change-visibility")
@@ -120,14 +123,20 @@ def change_article_visibility_endpoint(
         payload: Dict[int, bool], 
         db: Session = Depends(get_db), 
         token: str = Depends(oauth2_scheme)):
+    for article in payload.keys():
+        return run_if_authenticated(token, change_article_visibility, db, article, payload[article])
 
-    isAuthenticated = verify_token(token)
-    if "status" in isAuthenticated.keys() and isAuthenticated["status"] == "valid":
-        for article in payload.keys():
-            change_article_visibility(db, article, payload[article])
-        return {"detail": "Article visibilities updated successfully"}
-    else:
-        raise HTTPException(status_code=401, detail="Unauthorized")
+
+#### YOUTUBE / INTERVIEW VIDEOS ####
+
+@app.post("/videos/")
+def post_video_endpoint(payload: Dict[str, str], db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    return run_if_authenticated(token, create_video)
+
+
+@app.get("/videos/")
+def get_videos_endpoint(db: Session = Depends(get_db)):
+    return get_videos(db)
 
 
 #### EMAIL ####
