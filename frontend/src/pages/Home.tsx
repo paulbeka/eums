@@ -43,30 +43,41 @@ const Home = () => {
         <div className="article-container eums-box-shadow">
           {articles.length ? <>
           <div className="main-article">
-            <div className="main-article-image-container">
+            <Link to={`/article/${articles[0].id}`} className="main-article-image-container">
               <img className="main-article-thumbnail" src={`${BASE_URL}/thumbnails/${articles[0].thumbnail}`} />
               <div className="main-article-title">
                 <p>{articles[0].title}</p>
               </div>
-            </div>
+            </Link>
             <div>
               {getArticleParagraphs(articles[0])}
               <div style={{ display: "flex", justifyContent: "flex-end"}}>
-                <span
-                  style={{ color: "gray", paddingBottom: "1em", paddingRight: "2em"}}
-                ><i><u>Continue reading...</u></i></span>
+                <Link to={`/article/${articles[0].id}`}
+                  style={{ color: "gray", paddingBottom: "1em", paddingRight: "2em", cursor: "pointer"}}
+                ><i><u>Continue reading...</u></i></Link>
               </div>
               <center><hr style={{width: "50%"}}/></center>
             </div>
           </div>
           <div className="other-articles">
             {articles.slice(1,3).map(article =>
-            <div className="bottom-article">
-              <img className="bottom-article-thumbnail" src={`${BASE_URL}/thumbnails/${article.thumbnail}`} />
-              <h3>{article.title}</h3>
-            </div>
+            <Link to={`/article/${article.id}`} className="bottom-article">
+              <div className="bottom-article-content-container">
+                <img className="bottom-article-thumbnail" src={`${BASE_URL}/thumbnails/${article.thumbnail}`} />
+                <div className="other-article-title">
+                  <h3>{article.title}</h3>
+                </div>
+              </div>
+            </Link>
             )}
-          </div> </> : <></>}
+          </div>
+          <div className="article-container-footer">
+            <Link to={""} className="hot-topics-button">
+              <img src="/images/fire-emoji.png" style={{maxWidth: "20px", marginLeft: "0.5em"}} />
+              <p style={{padding: "0.5em", marginRight: "0.5em"}}>More Hot Topics!</p>
+            </Link>
+          </div>
+        </> : <></>}
         </div>
       </div>
       <div className="middle-home-content">
