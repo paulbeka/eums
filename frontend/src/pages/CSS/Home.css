@@ -3,11 +3,38 @@
 }
 
 .top-home-content {
-  padding: 3em; 
+  padding-inline: 3em; 
   width: 90%; 
   margin: 0 auto;
   display: flex;
   min-height: 300px;
+}
+
+.top-bar-options {
+  display: flex;
+  width: 90%;
+  margin: 0 auto;
+  padding: 3em;
+  padding-bottom: 0;
+}
+
+.video-options {
+  width: 30%;
+  display: flex;
+  justify-content: space-between;
+  padding: 1em;
+}
+
+.article-options {
+  width: 70%;
+  display: flex;
+  justify-content: space-between;
+  padding: 1em;
+}
+
+.toolbar-title {
+  font-weight: bold;
+  font-size: 16pt;
 }
 
 .eums-box-shadow {
@@ -38,7 +65,6 @@
 
 .main-article-image-container {
   position: relative;
-
 }
 
 .main-article-thumbnail {
@@ -118,4 +144,57 @@
 
 .hot-topics-button:hover {
   box-shadow: 2px 3px;
+}
+
+
+/* MIDDLE CONTENT */
+.middle-home-content {
+  padding-inline: 3em; 
+  width: 90%; 
+  margin: 0 auto;
+  display: flex;
+  min-height: 300px;
+}
+
+.map-container {
+  background-color: #003366;
+  width: 75%;
+  border-radius: 20px;
+  padding: 1em;
+}
+
+.map-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.map-title {
+  color: white;
+  font-weight: bold;
+  font-size: 20pt;
+}
+
+.interview-container {
+  width: 25%;
+  background: white;
+}
+
+
+.bottom-home-content {
+  padding-inline: 3em; 
+  width: 90%; 
+  margin: 0 auto;
+  display: flex;
+  min-height: 300px;
+}
+
+.media-links-container {
+  width: 25%;
+
+}
+
+.support-container {
+  width: 75%;
+  background: white;
 }

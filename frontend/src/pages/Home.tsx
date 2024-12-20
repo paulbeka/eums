@@ -31,6 +31,20 @@ const Home = () => {
 
   return (
     <div className="home">
+      <div className="top-bar-options">
+        <div className="video-options">
+          <p className="toolbar-title">Our latest videos</p>
+          <Link to={""} className="hot-topics-button">
+            <p style={{ padding: "0 1em" }}>See all</p>
+          </Link>
+        </div>
+        <div className="article-options">
+          <p className="toolbar-title">Hot topics</p>
+          <Link to={""} className="hot-topics-button">
+            <p style={{ padding: "0 1em" }}>See all</p>
+          </Link>
+        </div>
+      </div>
       <div className="top-home-content">
         <div className="video-container eums-box-shadow">
           {videos.map(video => 
@@ -81,19 +95,24 @@ const Home = () => {
         </div>
       </div>
       <div className="middle-home-content">
-        <div className="map-container">
-
+        <div className="map-container eums-box-shadow">
+          <div className="map-top-bar">
+            <p className="map-title">Country by Country</p>
+            <Link to={""} className="hot-topics-button">
+              <p style={{padding: "0.5em 1em"}}>See All</p>
+            </Link>
+          </div>
         </div>
-        <div className="interview-container">
+        <div className="interview-container eums-box-shadow">
 
         </div>
       </div>
 
       <div className="bottom-home-content">
-        <div className="media-links-container">
-
+        <div className="media-links-container eums-box-shadow">
+          
         </div>
-        <div className="support-container">
+        <div className="support-container eums-box-shadow">
 
         </div>
       </div>
