@@ -33,13 +33,19 @@ const Home = () => {
     <div className="home">
       <div className="top-bar-options">
         <div className="video-options">
-          <p className="toolbar-title">Our latest videos</p>
+          <div style={{display: "flex"}}>
+            <img src="/images/down-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
+            <p className="toolbar-title">Our latest videos</p>
+          </div>
           <Link to={""} className="hot-topics-button">
             <p style={{ padding: "0 1em" }}>See all</p>
           </Link>
         </div>
         <div className="article-options">
-          <p className="toolbar-title">Hot topics</p>
+          <div style={{display: "flex"}}>
+            <img src="/images/down-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
+            <p className="toolbar-title">Hot topics</p>
+          </div>
           <Link to={""} className="hot-topics-button">
             <p style={{ padding: "0 1em" }}>See all</p>
           </Link>
@@ -97,23 +103,53 @@ const Home = () => {
       <div className="middle-home-content">
         <div className="map-container eums-box-shadow">
           <div className="map-top-bar">
-            <p className="map-title">Country by Country</p>
+            <div style={{display: "flex"}}>
+              <img src="/images/down-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
+              <p className="map-title">Country by Country</p>
+            </div>
+            <Link to={""} className="hot-topics-button">
+              <p style={{padding: "0.5em 1em"}}>See All</p>
+            </Link>
+          </div>
+          <div className="map-section-container">
+            <img src="/images/eu-map.svg" style={{ width: "50%", margin: "1em", maxWidth: "700px"}}/>
+            <div style={{ margin: "1em" }}>
+              <p style={{ fontWeight: "bold", fontSize: "16pt", marginTop: "1em"}}>Country by country</p>
+              <p style={{ marginTop: "1em", textAlign: "justify"}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent in arcu porttitor, accumsan urna vel, efficitur ipsum. Etiam dapibus ut mi a sollicitudin. Aenean non tempor felis, et hendrerit mauris. Integer ex felis, iaculis non eros faucibus, tempus sodales metus. Suspendisse dignissim a mauris eget blandit. Nunc fringilla ut velit nec rhoncus. In in dui ullamcorper, rhoncus velit non, laoreet augue. Nulla purus velit, vehicula in finibus ac, viverra ac dui. Cras imperdiet est lacus, at tempus mi ultrices sed.</p>
+            </div>
+          </div>
+        </div>
+        <div className="interview-container eums-box-shadow">
+          <div className="map-top-bar">
+            <div style={{display: "flex"}}>
+              <img src="/images/down-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
+              <p className="map-title" style={{color: "black"}}>Interviews</p>
+            </div>
             <Link to={""} className="hot-topics-button">
               <p style={{padding: "0.5em 1em"}}>See All</p>
             </Link>
           </div>
         </div>
-        <div className="interview-container eums-box-shadow">
-
-        </div>
       </div>
 
       <div className="bottom-home-content">
         <div className="media-links-container eums-box-shadow">
-          
+          <div style={{display: "flex"}}>
+            <img src="/images/down-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
+            <p className="map-title" style={{color: "black"}}>Join the Community</p>
+          </div>
+          <div className="media-links-content">
+            <p>Get involved, connect with others and <b>make a difference.</b></p>
+            <div>
+              {/* map all the images and links here */}
+            </div>
+          </div>
         </div>
         <div className="support-container eums-box-shadow">
-
+          <div style={{display: "flex"}}>
+            <img src="/images/down-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
+            <p className="map-title" style={{color: "black"}}>Support Us</p>
+          </div>
         </div>
       </div>
     </div>

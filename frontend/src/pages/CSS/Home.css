@@ -158,7 +158,7 @@
 
 .map-container {
   background-color: #003366;
-  width: 75%;
+  width: 70%;
   border-radius: 20px;
   padding: 1em;
 }
@@ -175,9 +175,15 @@
   font-size: 20pt;
 }
 
+.map-section-container {
+  display: flex;
+  color: white;
+}
+
 .interview-container {
-  width: 25%;
+  width: 30%;
   background: white;
+  padding: 1em;
 }
 
 
@@ -187,14 +193,17 @@
   margin: 0 auto;
   display: flex;
   min-height: 300px;
+  margin-bottom: 3em;
 }
 
 .media-links-container {
-  width: 25%;
-
+  width: 30%;
+  padding: 1em;
+  background: white;
 }
 
 .support-container {
-  width: 75%;
+  width: 70%;
   background: white;
+  padding: 1em;
 }
