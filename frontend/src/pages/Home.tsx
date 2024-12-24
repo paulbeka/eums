@@ -12,6 +12,17 @@ const Home = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [interviews, setInterviews] = useState([]);
 
+  const mediaIcons = [
+    { icon: "/images/social_media_icons/youtube", link: "" },
+    { icon: "/images/social_media_icons/instagram", link: "" },
+    { icon: "/images/social_media_icons/discord", link: "" },
+    { icon: "/images/social_media_icons/patreon", link: "" },
+    { icon: "/images/social_media_icons/x", link: "" },
+    { icon: "/images/social_media_icons/tiktok", link: "" },
+    { icon: "/images/social_media_icons/linkedin", link: "" },
+    { icon: "/images/social_media_icons/spotify", link: "" }  
+  ]
+
   useEffect(() => {
     document.title = 'Home';
     // TODO: handle errors
@@ -140,8 +151,23 @@ const Home = () => {
           </div>
           <div className="media-links-content">
             <p>Get involved, connect with others and <b>make a difference.</b></p>
-            <div>
-              {/* map all the images and links here */}
+            <br />
+            <div className="media-icons">
+              {mediaIcons.map(icon => (
+                <Link to={icon.link} className="media-icon">
+                  <img
+                    src={`${icon.icon}.svg`}
+                    onMouseOver={(event) => {
+                      const img = event.currentTarget as HTMLImageElement;
+                      img.src = `${icon.icon}-shadow.svg`;
+                    }}
+                    onMouseOut={(event) => {
+                      const img = event.currentTarget as HTMLImageElement;
+                      img.src = `${icon.icon}.svg`;
+                    }}
+                  />              
+                </Link>)
+              )}
             </div>
           </div>
         </div>

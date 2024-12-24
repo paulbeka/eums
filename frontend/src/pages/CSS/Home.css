@@ -202,6 +202,20 @@
   background: white;
 }
 
+.media-links-content {
+  padding: 1em;
+}
+
+.media-icons {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.media-icon {
+  width: 25%;
+  padding: 0.5em;
+}
+
 .support-container {
   width: 70%;
   background: white;
