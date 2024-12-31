@@ -5,7 +5,44 @@ services:
     build:
       context: .
       dockerfile: ./backend/Dockerfile
+    ports:version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
     ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=defaultsecret
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - frontend
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"  # Limit to 0.3 CPUs
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    ports:
+      - "80:3000"
+    stdin_open: true
+    environment:
+      - REACT_APP_BACKEND_URL=http://localhost:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules  # Ensures node_modules remains inside the container
+    command: sh -c "npm install && npm start --host 0.0.0.0"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"  # Limit to 0.3 CPUs
+
       - "8000:8000"
     environment:
       - SECRET_KEY=defaultsecret
