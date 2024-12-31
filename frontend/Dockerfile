@@ -4,11 +4,14 @@ FROM node:18
 # Set working directory
 WORKDIR /app
 
+# Copy package.json and package-lock.json first to install dependencies
+COPY ./frontend/package*.json /app/
+
+# Install dependencies
+RUN npm install
+
 # Copy frontend files
 COPY ./frontend /app
-
-# Install dependencies and build the React app
-RUN npm install
 
 # Expose frontend port
 EXPOSE 3000

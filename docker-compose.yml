@@ -25,3 +25,5 @@ services:
       - REACT_APP_BACKEND_URL=http://localhost:8000
     volumes:
       - ./frontend:/app
+      - /app/node_modules  # Ensures node_modules remains inside the container
+    command: sh -c "npm install && npm start --host 0.0.0.0"
