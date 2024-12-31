@@ -12,6 +12,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'  # Use the same Node.js version as in your Dockerfile
+
+      - name: Install dependencies and build the app
+        run: |
+          cd frontend
+          npm install
+          npm run build  # Builds the app into the "build" folder
+
+      - name: Archive the build directory
+        uses: actions/upload-artifact@v2
+        with:
+          name: react-build
+          path: frontend/build  # Upload the build directory
+
       - name: Set up SSH agent
         uses: webfactory/ssh-agent@v0.5.3
         with:
@@ -22,14 +39,24 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H 134.122.92.255 >> ~/.ssh/known_hosts
 
-      - name: Deploy to DigitalOcean
+      - name: Download the build files and deploy to DigitalOcean
         run: |
+          mkdir -p /tmp/react-build
+          curl -L -o /tmp/react-build.zip https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/react-build.zip
+          unzip /tmp/react-build.zip -d /tmp/react-build
+
           ssh root@134.122.92.255 << 'EOF'
-          apt update
-          apt install -y docker-compose
-          [ ! -d "eums" ] && git clone https://github.com/paulbeka/eums.git
-          cd eums
-          git pull
-          docker-compose down
-          docker-compose up --build -d
+            apt update
+            apt install -y docker-compose unzip
+
+            [ ! -d "eums" ] && git clone https://github.com/paulbeka/eums.git
+            cd eums
+            git stash
+            git pull --force
+
+            rm -rf /var/www/html/*  # Remove old build files if necessary
+            cp -r /tmp/react-build/build/* /var/www/html/
+
+            docker-compose down
+            docker-compose up --build -d
           EOF

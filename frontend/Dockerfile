@@ -1,11 +1,7 @@
-FROM node:20
+FROM nginx:alpine
 
-WORKDIR /app
+COPY ./frontend/build /usr/share/nginx/html
 
-COPY ./frontend ./
+EXPOSE 80
 
-RUN npm install && npm run build
-
-EXPOSE 3000 80
-
-CMD ["npx", "serve", "-s", "build", "-l", "80"]
+CMD ["nginx", "-g", "daemon off;"]
