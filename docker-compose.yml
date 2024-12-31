@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  build-frontend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -15,19 +15,26 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'  # Use the same Node.js version as in your Dockerfile
+          node-version: '20'
 
       - name: Install dependencies and build the app
         run: |
           cd frontend
           npm install
-          npm run build  # Builds the app into the "build" folder
+          npm run build
 
       - name: Archive the build directory
-        uses: actions/upload-artifact@v4  # Updated to the latest version
+        uses: actions/upload-artifact@v4
         with:
           name: react-build
-          path: frontend/build  # Upload the build directory
+          path: frontend/build
+
+  deploy-to-do:
+    runs-on: ubuntu-latest
+    needs: build-frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up SSH agent
         uses: webfactory/ssh-agent@v0.5.3
@@ -39,30 +46,27 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H 134.122.92.255 >> ~/.ssh/known_hosts
 
-      - name: Download the build files and deploy to DigitalOcean
+      - name: Download the build files
+        uses: actions/download-artifact@v4  # Download the build artifact
+        with:
+          name: react-build
+
+      - name: Deploy to DigitalOcean
         run: |
-          # Download the build artifact from GitHub
-          mkdir -p /tmp/react-build
-          curl -L -o /tmp/react-build.zip https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/react-build.zip
           unzip /tmp/react-build.zip -d /tmp/react-build
 
-          # SSH into the DigitalOcean server
           ssh root@134.122.92.255 << 'EOF'
-            # Update server and install dependencies
             apt update
             apt install -y docker-compose unzip
 
-            # Clone repo if not already cloned, or update it
             [ ! -d "eums" ] && git clone https://github.com/paulbeka/eums.git
             cd eums
             git stash
             git pull --force
 
-            # Clean up previous build and deploy new build
-            rm -rf /var/www/html/*  # Remove old build files if necessary
+            rm -rf /var/www/html/* 
             cp -r /tmp/react-build/build/* /var/www/html/
 
-            # Ensure Docker is up-to-date and restart containers
             docker-compose down
             docker-compose up --build -d
           EOF
