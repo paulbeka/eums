@@ -1,36 +1,62 @@
-version: "3.9"
+name: Deploy to DigitalOcean
 
-services:
-  backend:
-    build:
-      context: .
-      dockerfile: ./backend/Dockerfile
-    ports:
-      - "8000:8000"
-    environment:
-      - SECRET_KEY=defaultsecret
-    volumes:
-      - ./backend:/app
-    depends_on:
-      - frontend
-    deploy:
-      resources:
-        limits:
-          cpus: "0.3"  # Limit to 0.3 CPUs
+on:
+  push:
+    branches:
+      - main
 
-  frontend:
-    build:
-      context: .
-      dockerfile: ./frontend/Dockerfile
-    ports:
-      - "80:3000"
-    stdin_open: true
-    environment:
-      - REACT_APP_BACKEND_URL=http://localhost:8000
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules  # Ensures node_modules remains inside the container
-    deploy:
-      resources:
-        limits:
-          cpus: "0.3"  # Limit to 0.3 CPUs
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install dependencies and build the app
+        run: |
+          cd frontend
+          npm install
+          npm run build  # Builds the app into the "build" folder
+
+      - name: Archive the build directory
+        uses: actions/upload-artifact@v3
+        with:
+          name: react-build
+          path: frontend/build 
+
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.DO_DEPLOY_KEY }}
+
+      - name: Add DigitalOcean server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 134.122.92.255 >> ~/.ssh/known_hosts
+
+      - name: Download the build files and deploy to DigitalOcean
+        run: |
+          mkdir -p /tmp/react-build
+          curl -L -o /tmp/react-build.zip https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/react-build.zip
+          unzip /tmp/react-build.zip -d /tmp/react-build
+
+          ssh root@134.122.92.255 << 'EOF'
+            apt update
+            apt install -y docker-compose unzip
+
+            [ ! -d "eums" ] && git clone https://github.com/paulbeka/eums.git
+            cd eums
+            git stash
+            git pull --force
+
+            rm -rf /var/www/html/*  # Remove old build files if necessary
+            cp -r /tmp/react-build/build/* /var/www/html/
+
+            docker-compose down
+            docker-compose up --build -d
+          EOF
