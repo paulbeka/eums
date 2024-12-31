@@ -115,6 +115,13 @@ def ai_generator():
 			print(f"ERROR: File {filename} failed.")
 
 
+def get_videos_and_thumbnails():
+	# here get the vids + thumbnails, and post them to the backend
+	# should separate between youtube videos and interviews
+	pass
+
+
+
 def main():
     parser = argparse.ArgumentParser(description="Process YouTube videos and generate articles.")
     
@@ -122,6 +129,7 @@ def main():
 
     subparsers.add_parser("transcribe", help="Fetch and save transcriptions from the YouTube channel.")
     subparsers.add_parser("generate", help="Generate articles from transcriptions.")
+    subparsers.add_parser("populate", help="Get videos + interviews and their thumbnails, and populate the website")
 
     args = parser.parse_args()
 
@@ -129,6 +137,8 @@ def main():
         get_transcriptions()
     elif args.command == "generate":
         ai_generator()
+    elif args.command == "populate":
+    	get_videos_and_thumbnails()
     else:
         print("Please choose either 'transcribe' or 'generate'.")
         

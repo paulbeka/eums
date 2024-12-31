@@ -221,3 +221,17 @@
   background: white;
   padding: 1em;
 }
+
+.support-content {
+  margin-top: 1em;
+}
+
+.bottom-content {
+  margin: 1em;
+  display: flex;
+}
+
+.split-content {
+  margin: 1em;
+  width: 50%;
+}

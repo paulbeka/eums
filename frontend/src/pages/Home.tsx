@@ -176,6 +176,19 @@ const Home = () => {
             <img src="/images/down-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
             <p className="map-title" style={{color: "black"}}>Support Us</p>
           </div>
+          <div className="support-content">
+            <p>You can <b>support EU Made Simple </b> by many different means, here's how:</p>
+            <div className="bottom-content">
+              <div className="split-content">
+                <p><b>Become a Patreon</b> and be part of the EUMS members! By becoming a Patreon you can even have influence over <b>decision making</b> of the community strategy or choose which topics we will treat in our videos*.</p>
+                <button>Join!</button>
+              </div>
+              <div>
+                <p></p>
+                <button>Start Creating!</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
