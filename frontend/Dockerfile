@@ -1,5 +1,5 @@
 # Use Node.js image
-FROM node:18
+FROM node:20
 
 # Set working directory
 WORKDIR /app
@@ -8,10 +8,12 @@ WORKDIR /app
 COPY ./frontend/package*.json /app/
 
 # Install dependencies
-RUN npm install
+RUN npm install && npm run build
 
 # Copy frontend files
 COPY ./frontend /app
 
 # Expose frontend port
 EXPOSE 3000
+
+CMD ["npx", "serve", "-s", "build", "-l", "80"]
