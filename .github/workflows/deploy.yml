@@ -25,6 +25,7 @@ jobs:
       - name: Deploy to DigitalOcean
         run: |
           ssh root@134.122.92.255 << 'EOF'
+          apt install docker-compose -y
           cd eums
           git pull
           docker-compose down
