@@ -103,7 +103,7 @@ const Home = () => {
             )}
           </div>
           <div className="article-container-footer">
-            <Link to={""} className="hot-topics-button">
+            <Link to={"all-articles"} className="hot-topics-button">
               <img src="/images/fire-emoji.png" style={{maxWidth: "20px", marginLeft: "0.5em"}} />
               <p style={{padding: "0.5em", marginRight: "0.5em"}}>More Hot Topics!</p>
             </Link>

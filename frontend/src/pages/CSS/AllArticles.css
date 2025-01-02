@@ -10,6 +10,7 @@
 .item-bar {
   display: flex;
   justify-content: space-between;
+  margin-inline: 2em;
 }
 
 .back-button {
@@ -20,30 +21,65 @@
 
 .filter-container {
   overflow: hidden;
+  display: flex;
+  justify-content: space-evenly;
+  width: 50%;
+  overflow: hidden;
+}
+
+.all-articles-filter-text {
+  margin: 0.5em;
+  cursor: pointer;
+}
+
+.all-articles-selected-filter-text {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.searchbar-container {
+  position: relative;
+  width: 300px;
 }
 
 .searchbar {
   height: 35px;
-  width: 300px;
+  width: 100%;
   border-radius: 20px;
-  padding: 10px;
+  padding: 10px 10px 10px 40px; /* Add padding to make space for the icon */
+  border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
-.articles-container {
+.searchbar::placeholder {
+  color: #aaa;
+}
+
+.searchbar-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  background-image: url("../../../public/images/search-icon.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.all-articles-container {
   width: 100%;
 }
 
-.article-container {
+.all-article-container {
   width: 100%;
   background-image: url("../../../public/images/article-holder.svg");
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center center;
-  margin: 1em;
-  margin-bottom: 3em;
+  margin-block: 3em;
   padding: 4em;
   display: flex;
-
 }
 
 .article-thumbnail {
