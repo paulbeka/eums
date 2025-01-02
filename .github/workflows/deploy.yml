@@ -51,6 +51,9 @@ jobs:
         with:
           name: react-build
 
+      - name: Verify artifact download
+        run: ls -R /tmp/
+
       - name: Deploy to DigitalOcean
         run: |
           unzip /tmp/react-build.zip -d /tmp/react-build
