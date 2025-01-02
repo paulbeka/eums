@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 21.37 19.72">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        clip-path: url(#clippath-1);
+      }
+
+      .cls-3 {
+        fill: #fff;
+        stroke: url(#linear-gradient);
+        stroke-miterlimit: 10;
+        stroke-width: 2px;
+      }
+
+      .cls-4 {
+        clip-path: url(#clippath);
+      }
+    </style>
+    <clipPath id="clippath">
+      <path class="cls-1" d="M9.81,18.27L3.67,7.63c-1.12-1.94.28-4.36,2.51-4.36h12.28c2.24,0,3.63,2.42,2.51,4.36l-6.14,10.63c-1.12,1.94-3.91,1.94-5.03,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-1">
+      <rect class="cls-1" x="-1.71" y="-1.72" width="28.08" height="26.44"/>
+    </clipPath>
+    <linearGradient id="linear-gradient" x1="0" y1="9.22" x2="20.1" y2="9.22" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff6161"/>
+      <stop offset=".28" stop-color="#f67946"/>
+      <stop offset=".75" stop-color="#e99d1e"/>
+      <stop offset="1" stop-color="#e5ab0f"/>
+    </linearGradient>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g class="cls-4">
+      <g class="cls-2">
+        <image width="59" height="56" transform="translate(-1.8 -1.84) scale(.48)" xlink:href="data:image/png;base64,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"/>
+      </g>
+    </g>
+    <path class="cls-3" d="M7.53,15.99L1.39,5.36C.28,3.42,1.67,1,3.91,1h12.28c2.24,0,3.63,2.42,2.51,4.36l-6.14,10.63c-1.12,1.94-3.91,1.94-5.03,0Z"/>
+  </g>
+</svg>

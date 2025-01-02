@@ -173,19 +173,23 @@ const Home = () => {
         </div>
         <div className="support-container eums-box-shadow">
           <div style={{display: "flex"}}>
-            <img src="/images/down-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
+            <img src="/images/color-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
             <p className="map-title" style={{color: "black"}}>Support Us</p>
           </div>
           <div className="support-content">
             <p>You can <b>support EU Made Simple </b> by many different means, here's how:</p>
             <div className="bottom-content">
-              <div className="split-content">
-                <p><b>Become a Patreon</b> and be part of the EUMS members! By becoming a Patreon you can even have influence over <b>decision making</b> of the community strategy or choose which topics we will treat in our videos*.</p>
-                <button>Join!</button>
+              <div className="split-content" style={{ paddingRight: "2em" }}>
+                <p style={{ textAlign: "justify", marginRight: "1em" }}><b>Become a Patreon</b> and be part of the EUMS members! By becoming a Patreon you can even have influence over <b>decision making</b> of the community strategy or choose which topics we will treat in our videos*.</p>
+                <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", marginTop: "1em" }}>
+                  <button className="color-button">Join!</button>
+                </div>
               </div>
-              <div>
-                <p></p>
-                <button>Start Creating!</button>
+              <div className="split-content">
+                <p style={{ textAlign: "justify" }}><b>Create content</b> for us by writing your own <b>articles</b> that could be published on our site, or do a coverage on our <b>YouTube content</b> in your local language to engage with a wider audience and help us create more social media content!</p>
+                <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", marginTop: "1em" }}>
+                  <button className="color-button">Start Creating!</button>
+                </div>
               </div>
             </div>
           </div>
