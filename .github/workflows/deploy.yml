@@ -77,6 +77,7 @@ jobs:
             mkdir -p ./frontend/build
             cp -r ~/frontend-build/unzipped/frontend/build/* ./frontend/build/
 
+            mkdir ./frontend/nginx
             # Create custom Nginx configuration
             echo 'server {
                 listen 80;
