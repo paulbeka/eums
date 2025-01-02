@@ -76,6 +76,7 @@ jobs:
             ls -R /root
 
             # Unzip the frontend build files inside the frontend container
+            rm -rf /root/frontend-build/unzipped
             mkdir -p /root/frontend-build/unzipped
             unzip /root/frontend-build.zip -d /root/frontend-build/unzipped
 
