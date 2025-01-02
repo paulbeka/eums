@@ -26,7 +26,7 @@ app.mount("/thumbnails", StaticFiles(directory="thumbnails"), name="thumbnails")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://134.122.92.255/"],
+    allow_origins=["http://localhost:3000", "http://134.122.92.255:80"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
