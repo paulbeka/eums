@@ -1,0 +1,52 @@
+.all-articles-container {
+  padding: 1em;
+}
+
+.all-articles-content {
+  width: 80%;
+  margin: 1em auto;
+}
+
+.item-bar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.filter-container {
+  overflow: hidden;
+}
+
+.searchbar {
+  height: 35px;
+  width: 300px;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.articles-container {
+  width: 100%;
+}
+
+.article-container {
+  width: 100%;
+  background-image: url("../../../public/images/article-holder.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center center;
+  margin: 1em;
+  margin-bottom: 3em;
+  padding: 4em;
+  display: flex;
+
+}
+
+.article-thumbnail {
+  width: 40%;
+  max-width: 500px;
+}

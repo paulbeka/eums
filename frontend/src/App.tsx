@@ -10,6 +10,7 @@ import AdminArticleManager from './pages/AdminArticleManager';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import ArticleDisplay from './pages/ArticleDisplay';
 import ArticlePoster from './pages/ArticlePoster';
+import AllArticles from './pages/AllArticles';
 
 
 function App() {
@@ -20,8 +21,12 @@ function App() {
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
+          
           <Route path="article/:articleId" element={<ArticleDisplay />} />
+          <Route path="all-articles" element={<AllArticles />} /> 
+
           <Route path="login" element={<Login />} />
+          
           <Route path="*" element={<PageNotFound />} />
 
           {/* Anything here needs auth access */}

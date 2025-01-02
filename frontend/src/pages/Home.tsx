@@ -48,7 +48,7 @@ const Home = () => {
             <img src="/images/down-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
             <p className="toolbar-title">Our latest videos</p>
           </div>
-          <Link to={""} className="hot-topics-button">
+          <Link to={"all-videos"} className="hot-topics-button">
             <p style={{ padding: "0 1em" }}>See all</p>
           </Link>
         </div>
@@ -57,7 +57,7 @@ const Home = () => {
             <img src="/images/down-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
             <p className="toolbar-title">Hot topics</p>
           </div>
-          <Link to={""} className="hot-topics-button">
+          <Link to={"all-articles"} className="hot-topics-button">
             <p style={{ padding: "0 1em" }}>See all</p>
           </Link>
         </div>
