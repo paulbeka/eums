@@ -60,10 +60,8 @@ jobs:
 
       - name: Deploy to DigitalOcean
         run: |
-          mkdir -p ./frontend-build/unzipped
-          unzip ./frontend-build/build.zip -d ./frontend-build/unzipped
-
-          ls ./frontend-build/unzipped
+          # Copy the zip file to the frontend Docker container
+          scp -i ~/.ssh/DO_DEPLOY_KEY ./frontend-build/build.zip root@134.122.92.255:/root/frontend-build.zip
 
           ssh root@134.122.92.255 << 'EOF'
             apt update
@@ -74,10 +72,17 @@ jobs:
             git stash
             git pull --force
 
-            # Prepare the frontend build files
+            # Debugging: List the contents of the unzipped folder to verify
+            ls -R /root
+
+            # Unzip the frontend build files inside the frontend container
+            mkdir -p /root/frontend-build/unzipped
+            unzip /root/frontend-build.zip -d /root/frontend-build/unzipped
+
+            # Prepare the frontend build files inside the frontend container
             rm -rf ./frontend/build
             mkdir -p ./frontend/build
-            cp -r ~/frontend-build/unzipped/frontend/build/* ./frontend/build/
+            cp -r /root/frontend-build/unzipped/frontend/build/* ./frontend/build/
 
             mkdir -p ./frontend/nginx
             # Create custom Nginx configuration
@@ -93,8 +98,7 @@ jobs:
                 }
             }' > ./frontend/nginx/default.conf
 
-            # Build the frontend Docker image
-            cd ./frontend
+            # Bring up the Docker containers with the updated build files
             docker-compose down
-            docker-compose up --build --no-cache -d
+            docker-compose up --build -d
           EOF
