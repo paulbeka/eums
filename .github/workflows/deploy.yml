@@ -24,10 +24,11 @@ jobs:
           npm run build
 
       - name: Archive the build directory
+        run: zip -r build.zip frontend/build
         uses: actions/upload-artifact@v4
         with:
           name: react-build
-          path: frontend/build
+          path: frontend/build.zip
 
   deploy-to-do:
     runs-on: ubuntu-latest
@@ -54,7 +55,7 @@ jobs:
 
       - name: Deploy to DigitalOcean
         run: |
-          unzip ~/frontend-build/react-build.zip -d ~/frontend-build/react-build
+          unzip ~/frontend-build/build.zip -d ~/frontend-build/react-build
 
           ssh root@134.122.92.255 << 'EOF'
             apt update
@@ -65,8 +66,10 @@ jobs:
             git stash
             git pull --force
 
+            mkdir -p /var/www/html/
+            chmod -R 755 /var/www/html/
             rm -rf /var/www/html/* 
-            cp -r /tmp/react-build/build/* /var/www/html/
+            cp -r ~/frontend-build/react-build/* /var/www/html/
 
             docker-compose down
             docker-compose up --build -d
