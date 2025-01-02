@@ -63,6 +63,8 @@ jobs:
           mkdir -p ./frontend-build/unzipped
           unzip ./frontend-build/build.zip -d ./frontend-build/unzipped
 
+          ls ./frontend-build/unzipped
+
           ssh root@134.122.92.255 << 'EOF'
             apt update
             apt install -y docker-compose unzip
@@ -94,5 +96,5 @@ jobs:
             # Build the frontend Docker image
             cd ./frontend
             docker-compose down
-            docker-compose up --build -d
+            docker-compose up --build --no-cache -d
           EOF
