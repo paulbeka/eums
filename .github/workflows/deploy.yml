@@ -77,6 +77,19 @@ jobs:
             mkdir -p ./frontend/build
             cp -r ~/frontend-build/unzipped/frontend/build/* ./frontend/build/
 
+            # Create custom Nginx configuration
+            echo 'server {
+                listen 80;
+                server_name _;
+
+                root /usr/share/nginx/html;
+                index index.html;
+
+                location / {
+                    try_files \$uri /index.html;
+                }
+            }' > ./frontend/nginx/default.conf
+
             # Bring up the Docker containers with the updated build files
             docker-compose down
             docker-compose up --build -d
