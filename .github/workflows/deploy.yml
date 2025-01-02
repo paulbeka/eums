@@ -24,7 +24,6 @@ jobs:
           npm run build
 
       - name: Archive the build directory
-        run: zip -r build.zip frontend/build
         uses: actions/upload-artifact@v4
         with:
           name: react-build
