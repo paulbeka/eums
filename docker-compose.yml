@@ -23,9 +23,11 @@ services:
       context: .
       dockerfile: ./frontend/Dockerfile
     ports:
-      - "80"
+      - "80:80"  # Bind host port 80 to container port 80
     environment:
       - REACT_APP_BACKEND_URL=http://localhost:8000
+    volumes:
+      - ./frontend/build:/usr/share/nginx/html  # Mount build directory from host to container
     deploy:
       resources:
         limits:

@@ -77,8 +77,9 @@ jobs:
             mkdir -p ./frontend/build
             cp -r ~/frontend-build/unzipped/frontend/build/* ./frontend/build/
 
-            # Bring up the Docker containers
+            # Bring up the Docker containers with the updated build files
             docker-compose down
             docker-compose up --build -d
           EOF
+
 
