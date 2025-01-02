@@ -28,10 +28,12 @@ jobs:
 
       - name: Archive the build directory
         run: zip -r build.zip frontend/build
-      - uses: actions/upload-artifact@v4
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
         with:
           name: react-build
-          path: frontend/build.zip
+          path: build.zip
 
   deploy-to-do:
     runs-on: ubuntu-latest
@@ -47,18 +49,19 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H 134.122.92.255 >> ~/.ssh/known_hosts
 
-      - name: Download the build files
+      - name: Download the build artifact
         uses: actions/download-artifact@v4
         with:
           name: react-build
-          path: ~/frontend-build/
+          path: ./frontend-build/
 
       - name: Verify artifact download
-        run: ls -R ~/frontend-build/
+        run: ls -R ./frontend-build
 
       - name: Deploy to DigitalOcean
         run: |
-          unzip ~/frontend-build/react-build.zip -d ~/frontend-build/react-build
+          mkdir -p ./frontend-build/unzipped
+          unzip ./frontend-build/build.zip -d ./frontend-build/unzipped
 
           ssh root@134.122.92.255 << 'EOF'
             apt update
@@ -71,8 +74,8 @@ jobs:
 
             mkdir -p /var/www/html/
             chmod -R 755 /var/www/html/
-            rm -rf /var/www/html/* 
-            cp -r ~/frontend-build/react-build/* /var/www/html/
+            rm -rf /var/www/html/*
+            cp -r ~/frontend-build/unzipped/frontend/build/* /var/www/html/
 
             docker-compose down
             docker-compose up --build -d
