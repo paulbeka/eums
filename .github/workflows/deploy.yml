@@ -72,11 +72,13 @@ jobs:
             git stash
             git pull --force
 
-            mkdir -p /var/www/html/
-            chmod -R 755 /var/www/html/
-            rm -rf /var/www/html/*
-            cp -r ~/frontend-build/unzipped/frontend/build/* /var/www/html/
+            # Prepare the frontend build files
+            rm -rf ./frontend/build
+            mkdir -p ./frontend/build
+            cp -r ~/frontend-build/unzipped/frontend/build/* ./frontend/build/
 
+            # Bring up the Docker containers
             docker-compose down
             docker-compose up --build -d
           EOF
+
