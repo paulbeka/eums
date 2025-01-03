@@ -1,0 +1,43 @@
+.all-videos-container {
+  padding: 1em;
+}
+
+.all-videos-content {
+  width: 80%;
+  margin: 1em auto;
+}
+
+.all-videos-control-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.search-container-features {
+  display: flex;
+}
+
+.video-search-quicklinks {
+  display: flex;
+  align-items: center;
+  margin-right: 1em;
+}
+
+.video-quicklink {
+  padding: 0.3em;
+  padding-inline: 1em;
+  margin-inline: 0.5em;
+  border: 2px solid black;
+  border-radius: 20px;
+}
+
+.video-quicklink:hover {
+  box-shadow: 2px 2px;
+  cursor: pointer;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}

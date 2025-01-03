@@ -11,6 +11,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import ArticleDisplay from './pages/ArticleDisplay';
 import ArticlePoster from './pages/ArticlePoster';
 import AllArticles from './pages/AllArticles';
+import AllVideos from './pages/AllVideos';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           
           <Route path="article/:articleId" element={<ArticleDisplay />} />
           <Route path="all-articles" element={<AllArticles />} /> 
+          <Route path="all-videos" element={<AllVideos />} />          
 
           <Route path="login" element={<Login />} />
           
