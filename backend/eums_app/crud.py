@@ -87,8 +87,8 @@ def change_article_visibility(db: Session, articleId: int, public: bool):
 
 ### VIDEOS ###
 
-def create_video(db: Session, title: str, thumbnail: str, url: str):
-    video = Video(title=title, thumbnail=thumbnail, url=url)
+def create_video(db: Session, title: str, thumbnail: str, url: str, livestream: str):
+    video = Video(title=title, thumbnail=thumbnail, url=url, livestream=livestream)
     db.add(video)
     db.commit()
     db.refresh(video)

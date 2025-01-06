@@ -1,7 +1,7 @@
 from googleapiclient.discovery import build
 from youtube_transcript_api import YouTubeTranscriptApi
 from dotenv import load_dotenv
-import os, json, argparse
+import os, json, argparse, requests
 
 from ai_transcriber import transcription_to_article
 
@@ -9,6 +9,10 @@ from ai_transcriber import transcription_to_article
 load_dotenv()
 
 API_KEY = os.getenv("API_KEY")
+USERNAME = os.getenv("USERNAME")
+PASSWORD = os.getenv("PASSWORD")
+BACKEND_URL = os.getenv("BACKEND_URL")
+
 ENGLISH_CHANNEL_ID = "UC8KFs307LrTkQCu-P1Fl6dw"
 TRANSCRIPTS_FOLDER = "transcripts"
 
@@ -38,30 +42,20 @@ def get_videos_from_channel(channel_id):
         for item in playlist_response['items']:
             title = item['snippet']['title']
             video_id = item['snippet']['resourceId']['videoId']
-            thumnail = None # todo: populate this
-            url = None # todo: populate this
-            livestream = False # todo: populate this
+            thumbnail = item['snippet']['thumbnails']['high']['url']  
+            url = f"https://www.youtube.com/watch?v={video_id}"
+            livestream = '[LIVE]' in title or item['snippet'].get('liveBroadcastContent') == 'live'
             videos.append({
-            	"title": title,
-            	"video_id": video_id,
-            	"thumnail": thumnail,
-            	"url": url,
-            	"livestream": livestream
+                "title": title,
+                "video_id": video_id,
+                "thumbnail": thumbnail,
+                "url": url,
+                "livestream": livestream
             })
 
         next_page_token = playlist_response.get('nextPageToken')
         if not next_page_token:
             break
-
-    #      const apiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
-    # const channelId = 'UC8KFs307LrTkQCu-P1Fl6dw';
-    # const maxResults = 5;
-
-    # const response = await fetch(
-    #   `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=${maxResults}`
-    # );
-    # const data = await response.json();
-    # // setVideos(data.items);
 
     return videos
 
@@ -124,13 +118,54 @@ def ai_generator():
 			print(f"ERROR: File {filename} failed.")
 
 
+def login_and_get_token(username: str, password: str, backend_url: str):
+    login_url = f"{backend_url}/token"
+    payload = {
+        "username": username,
+        "password": password
+    }
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    try:
+        response = requests.post(login_url, data=payload, headers=headers)
+        if response.status_code == 200:
+            token_data = response.json()
+            return token_data["access_token"]
+        else:
+            return None
+    except Exception:
+        return None
+
+
 def get_videos_and_thumbnails():
-	# here get the vids + thumbnails, and post them to the backend
-	# should separate between youtube videos and interviews
+    access_token = login_and_get_token(USERNAME, PASSWORD, BACKEND_URL)
+    if not access_token:
+        return
 
-	videos = get_videos_from_channel(ENGLISH_CHANNEL_ID)
+    videos = get_videos_from_channel(ENGLISH_CHANNEL_ID)
 
-	
+    api_endpoint = f"{BACKEND_URL}/videos/"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
+    }
+
+    for video in videos:
+        payload = {
+            "title": video["title"],
+            "thumbnail": video["thumbnail"],
+            "url": video["url"],
+            "livestream": str(video["livestream"]).lower()
+        }
+
+        try:
+            response = requests.post(api_endpoint, json=payload, headers=headers)
+            if response.status_code != 200:
+                print(f"Failed to upload video '{video['title']}': {response.text}")
+        except Exception as e:
+            print(f"An error occurred while posting video '{video['title']}': {e}")
 
 
 def main():
