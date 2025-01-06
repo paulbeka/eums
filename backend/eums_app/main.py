@@ -26,7 +26,13 @@ app.mount("/thumbnails", StaticFiles(directory="thumbnails"), name="thumbnails")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://134.122.92.255:80"],
+    allow_origins=[
+        "http://localhost:3000", 
+        "http://localhost:80",
+        "http://0.0.0.0:3000",
+        "http://0.0.0.0:80",
+        "http://134.122.92.255:80", 
+        "http://134.122.92.255:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -135,8 +141,8 @@ def post_video_endpoint(payload: Dict[str, str], db: Session = Depends(get_db), 
 
 
 @app.get("/videos/")
-def get_videos_endpoint(db: Session = Depends(get_db)):
-    return get_videos(db)
+def get_videos_endpoint(livestreams: Boolean, db: Session = Depends(get_db)):
+    return get_videos(livestreams, db)
 
 
 #### EMAIL ####

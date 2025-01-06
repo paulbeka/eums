@@ -38,7 +38,16 @@ def get_videos_from_channel(channel_id):
         for item in playlist_response['items']:
             title = item['snippet']['title']
             video_id = item['snippet']['resourceId']['videoId']
-            videos.append((title, video_id))
+            thumnail = None # todo: populate this
+            url = None # todo: populate this
+            livestream = False # todo: populate this
+            videos.append({
+            	"title": title,
+            	"video_id": video_id,
+            	"thumnail": thumnail,
+            	"url": url,
+            	"livestream": livestream
+            })
 
         next_page_token = playlist_response.get('nextPageToken')
         if not next_page_token:
@@ -85,8 +94,8 @@ def fetch_transcription(video_title, video_id):
 def get_transcriptions():
 	transcript_count = 0
 	videos = get_videos_from_channel(ENGLISH_CHANNEL_ID)
-	for title, video_id in videos:
-		success = fetch_transcription(title, video_id)
+	for video in videos:
+		success = fetch_transcription(video["title"], video["video_id"])
 		transcript_count += int(success)
 
 	print(f"Got transcriptions for {transcript_count}/{len(videos)}")
@@ -118,8 +127,10 @@ def ai_generator():
 def get_videos_and_thumbnails():
 	# here get the vids + thumbnails, and post them to the backend
 	# should separate between youtube videos and interviews
-	pass
 
+	videos = get_videos_from_channel(ENGLISH_CHANNEL_ID)
+
+	
 
 
 def main():

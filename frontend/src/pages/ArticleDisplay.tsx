@@ -5,6 +5,7 @@ import api from "../components/api/Api";
 import Loading from "../components/frontend_util/Loading";
 import { convertFromRaw } from 'draft-js'
 import { stateToHTML } from "draft-js-export-html";
+import { Link } from "react-router-dom";
 import "./CSS/ArticleDisplay.css";
 
 
@@ -24,13 +25,25 @@ const ArticleDisplay = () => {
   }, [articleId])
 
   return (
-    <div>
-      {articleContent ? 
-      <div 
-        className="post-content" 
-        dangerouslySetInnerHTML={{__html: stateToHTML(convertFromRaw(JSON.parse(articleContent['content'])))}} 
-      />
-      : <Loading />}
+    <div className="article-display-container">
+      <div className="article-display-content">
+        <div className="article-display-control-bar">
+          <Link to={"/"} className="back-button">
+            <img
+              style={{ width: "20px", marginRight: "1em" }}
+              src="/images/back-arrow.svg"
+              alt="Back"
+            />
+            <span>Back</span>
+          </Link>
+        </div>
+        {articleContent ? 
+        <div 
+          className="post-content" 
+          dangerouslySetInnerHTML={{__html: stateToHTML(convertFromRaw(JSON.parse(articleContent['content'])))}} 
+        />
+        : <Loading />}
+      </div>
     </div>
   )
 }

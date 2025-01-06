@@ -30,3 +30,4 @@ class Video(Base):
     title = Column(String, index=True, nullable=False)
     thumbnail = Column(String, nullable=False)
     url = Column(String, nullable=False)
+    livestream = Column(Boolean, nullable=False)

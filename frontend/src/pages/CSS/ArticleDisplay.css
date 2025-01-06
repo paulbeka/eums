@@ -1,4 +1,12 @@
+.article-display-container {
+  padding: 1em;
+}
+
+.article-display-content {
+  width: 80%;
+  margin: 1em auto;
+}
+
 .post-content {
-  width: 65%;
   margin: 1em auto;
 }
