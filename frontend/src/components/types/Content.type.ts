@@ -10,5 +10,6 @@ export type Article = {
 export type Video = {
   title: string;
   thumbnail: string;
+  url: string;
 }
 

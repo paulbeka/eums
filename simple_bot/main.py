@@ -9,8 +9,8 @@ from ai_transcriber import transcription_to_article
 load_dotenv()
 
 API_KEY = os.getenv("API_KEY")
-USERNAME = os.getenv("USERNAME")
-PASSWORD = os.getenv("PASSWORD")
+USERNAME = os.getenv("BOT_USERNAME")
+PASSWORD = os.getenv("BOT_PASSWORD")
 BACKEND_URL = os.getenv("BACKEND_URL")
 
 ENGLISH_CHANNEL_ID = "UC8KFs307LrTkQCu-P1Fl6dw"
@@ -140,6 +140,7 @@ def login_and_get_token(username: str, password: str, backend_url: str):
 
 
 def get_videos_and_thumbnails():
+    print(USERNAME, PASSWORD)
     access_token = login_and_get_token(USERNAME, PASSWORD, BACKEND_URL)
     if not access_token:
         return

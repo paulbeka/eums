@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Video } from "../components/types/Content.type";
 import { Link } from "react-router-dom";
+import { getVideos } from "../components/api/Api";
 import "./CSS/AllVideos.css";
 
 
@@ -9,7 +10,9 @@ const AllVideos = () => {
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [videos, setVideos] = useState<Video[]>([]);
   
-  useEffect(() => {}, []);
+  useEffect(() => {
+    getVideos(false).then(res => setVideos(res))
+  }, []);
 
   return (
     <div className="all-videos-container">
@@ -50,9 +53,14 @@ const AllVideos = () => {
         <div className="all-videos-video-container">
           {videos.map(video => {
             return (
-              <div>
-                {video.title}
-              </div>
+              <Link to={video.url} className="all-videos-video">
+                <div className="video-thumbnail-container" style={{border: "3px solid black" }}>
+                  <img src={video.thumbnail} className="video-thumbnail"/>
+                </div>
+                <div style={{margin: "1em"}}>
+                  {video.title}
+                </div>
+              </Link>
             )
           })}
         </div>

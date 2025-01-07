@@ -41,3 +41,17 @@
   align-items: center;
   cursor: pointer;
 }
+
+.all-videos-video-container {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  margin-top: 1em;
+}
+
+.all-videos-video {
+  width: 30%;
+  overflow: hidden;
+  margin: 1em;
+}
+

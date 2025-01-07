@@ -95,6 +95,6 @@ def create_video(db: Session, title: str, thumbnail: str, url: str, livestream: 
     return video.id
 
 
-def get_videos(livestreams: Boolean, db: Session, skip: int = 0, limit: int = 10):
-    query = db.query(Video).filter(Video.livestreams == livestreams)
+def get_videos(livestreams: bool, db: Session, skip: int = 0, limit: int = 10):
+    query = db.query(Video).filter(Video.livestream == livestreams)
     return query.offset(skip).limit(limit).all()

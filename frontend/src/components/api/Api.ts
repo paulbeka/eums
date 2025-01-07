@@ -76,8 +76,8 @@ export const changeVisibility = async (changedArticles: Record<number, boolean>)
 }
 
 
-export const getVideos = async () => {
-  return api.get("/videos/")
+export const getVideos = async (livestreams: boolean) => {
+  return api.get(`/videos/?livestreams=${livestreams}`)
   .then(response => {
     if (response.status !== 200) {
       throw "Request failed! Contact an admin.";

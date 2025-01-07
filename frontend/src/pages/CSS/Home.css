@@ -45,10 +45,37 @@
 
 .video-container {
   width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 1em;
 }
 
 .video-item {
+  width: 90%;
+  position: relative;
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
 
+.video-thumbnail-container {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9; 
+  overflow: hidden; 
+  border-radius: 20px; 
+  position: relative;
+}
+
+.video-thumbnail {
+  width: 100%;
+  height: auto;
+  position: absolute;
+  top: -17%; 
+  bottom: -12%;
+  left: 0;
+  right: 0;
+  object-fit: cover; 
 }
 
 .article-container {

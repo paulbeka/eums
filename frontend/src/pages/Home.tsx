@@ -4,6 +4,7 @@ import { Video, Article } from '../components/types/Content.type';
 import { Link } from 'react-router-dom';
 import { getArticles, getVideos } from '../components/api/Api';
 import { BASE_URL } from "../Config";
+import { relative } from 'path';
 
 
 const Home = () => {
@@ -27,7 +28,7 @@ const Home = () => {
     document.title = 'Home';
     // TODO: handle errors
     getArticles(true).then(res => setArticles(res))  
-    getVideos().then(res => setVideos(res))
+    getVideos(false).then(res => setVideos(res))
   }, []);
 
   const getArticleParagraphs = (article: Article) => {
@@ -64,10 +65,17 @@ const Home = () => {
       </div>
       <div className="top-home-content">
         <div className="video-container eums-box-shadow">
-          {videos.map(video => 
+          {videos.slice(0,5).map(video => 
             <div className="video-item">
-              <img src={video.thumbnail} className="video-thumbnail"/>
-              <p>{video.title}</p>
+              <div className="video-thumbnail-container">
+                <img src={video.thumbnail} className="video-thumbnail"/>
+              </div>
+              <p style={{
+                  width: "90%",
+                  margin: "0 auto",
+                  marginTop: "10px"
+                }}
+              >{video.title}</p>
             </div>
           )}
         </div>

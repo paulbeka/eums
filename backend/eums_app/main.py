@@ -137,11 +137,12 @@ def change_article_visibility_endpoint(
 
 @app.post("/videos/")
 def post_video_endpoint(payload: Dict[str, str], db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    return run_if_authenticated(token, create_video)
+    return run_if_authenticated(token, create_video, db, 
+        payload["title"], payload["thumbnail"], payload["url"], payload["livestream"] == "true")
 
 
 @app.get("/videos/")
-def get_videos_endpoint(livestreams: Boolean, db: Session = Depends(get_db)):
+def get_videos_endpoint(livestreams: bool, db: Session = Depends(get_db)):
     return get_videos(livestreams, db)
 
 
