@@ -65,15 +65,7 @@ def fetch_transcription(video_title, video_id):
 		transcript = YouTubeTranscriptApi.get_transcript(video_id)
 		transcript_text = " ".join([entry['text'] for entry in transcript])
 
-		transcription_data = {
-			"videoTitle": video_title,
-			"videoId": video_id,
-			"transcription": transcript_text
-		}
-
-		safe_title = "_".join(video_title.split())
-		filename = f"{TRANSCRIPTS_FOLDER}/{safe_title}.json"
-
+		transcrip
 		with open(filename, "w", encoding="utf-8") as file:
 			json.dump(transcription_data, file, ensure_ascii=False, indent=4)
 
@@ -140,7 +132,6 @@ def login_and_get_token(username: str, password: str, backend_url: str):
 
 
 def get_videos_and_thumbnails():
-    print(USERNAME, PASSWORD)
     access_token = login_and_get_token(USERNAME, PASSWORD, BACKEND_URL)
     if not access_token:
         return

@@ -4,14 +4,13 @@ import { Video, Article } from '../components/types/Content.type';
 import { Link } from 'react-router-dom';
 import { getArticles, getVideos } from '../components/api/Api';
 import { BASE_URL } from "../Config";
-import { relative } from 'path';
 
 
 const Home = () => {
 
   const [videos, setVideos] = useState<Video[]>([]);
+  const [interviews, setInterviews] = useState<Video[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
-  const [interviews, setInterviews] = useState([]);
 
   const mediaIcons = [
     { icon: "/images/social_media_icons/youtube", link: "" },
@@ -27,8 +26,9 @@ const Home = () => {
   useEffect(() => {
     document.title = 'Home';
     // TODO: handle errors
-    getArticles(true).then(res => setArticles(res))  
-    getVideos(false).then(res => setVideos(res))
+    getArticles(true).then(res => setArticles(res));  
+    getVideos(false).then(res => setVideos(res));
+    getVideos(true).then(res => setInterviews(res)); // get interviews
   }, []);
 
   const getArticleParagraphs = (article: Article) => {
@@ -47,7 +47,7 @@ const Home = () => {
         <div className="video-options">
           <div style={{display: "flex"}}>
             <img src="/images/down-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
-            <p className="toolbar-title">Our latest videos</p>
+            <p className="toolbar-title" style={{ fontSize: "14pt" }}>Our latest videos</p>
           </div>
           <Link to={"all-videos"} className="hot-topics-button">
             <p style={{ padding: "0 1em" }}>See all</p>
@@ -65,8 +65,8 @@ const Home = () => {
       </div>
       <div className="top-home-content">
         <div className="video-container eums-box-shadow">
-          {videos.slice(0,5).map(video => 
-            <div className="video-item">
+          {videos.slice(0, 5).map(video => 
+            <Link to={video.url} target="_blank" className="video-item">
               <div className="video-thumbnail-container">
                 <img src={video.thumbnail} className="video-thumbnail"/>
               </div>
@@ -76,7 +76,7 @@ const Home = () => {
                   marginTop: "10px"
                 }}
               >{video.title}</p>
-            </div>
+            </Link>
           )}
         </div>
         <div className="article-container eums-box-shadow">
@@ -148,6 +148,22 @@ const Home = () => {
               <p style={{padding: "0.5em 1em"}}>See All</p>
             </Link>
           </div>
+
+          <div>
+            {interviews.slice(0,1).map(video => 
+              <Link to={video.url} target="_blank" className="video-item">
+                <div className="video-thumbnail-container">
+                  <img src={video.thumbnail} className="video-thumbnail"/>
+                </div>
+                <p style={{
+                    width: "90%",
+                    margin: "0 auto",
+                    marginTop: "10px"
+                  }}
+                >{video.title}</p>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 
@@ -162,7 +178,7 @@ const Home = () => {
             <br />
             <div className="media-icons">
               {mediaIcons.map(icon => (
-                <Link to={icon.link} className="media-icon">
+                <Link to={icon.link} target="_blank" className="media-icon">
                   <img
                     src={`${icon.icon}.svg`}
                     onMouseOver={(event) => {

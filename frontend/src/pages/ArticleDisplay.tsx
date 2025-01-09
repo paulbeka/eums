@@ -6,6 +6,7 @@ import Loading from "../components/frontend_util/Loading";
 import { convertFromRaw } from 'draft-js'
 import { stateToHTML } from "draft-js-export-html";
 import { Link } from "react-router-dom";
+import { BASE_URL } from "../Config";
 import "./CSS/ArticleDisplay.css";
 
 
@@ -36,12 +37,27 @@ const ArticleDisplay = () => {
             />
             <span>Back</span>
           </Link>
+          <div className="article-share-and-download-container">
+            <Link to="" className="article-share-button">
+              <img src="/images/download-icon.svg" className="article-share-icon" />
+              <span>Download</span>
+            </Link>
+            <Link to="" className="article-share-button">
+              <img src="/images/share.svg" className="article-share-icon" />
+              <span>Share</span>
+            </Link>
+          </div>
         </div>
         {articleContent ? 
-        <div 
-          className="post-content" 
-          dangerouslySetInnerHTML={{__html: stateToHTML(convertFromRaw(JSON.parse(articleContent['content'])))}} 
-        />
+        <>
+          <div className="article-image-title-container">
+            <img src={`${BASE_URL}/thumbnails/${articleContent.thumbnail}`} className="article-main-image" />
+          </div>
+          <div 
+            className="post-content" 
+            dangerouslySetInnerHTML={{__html: stateToHTML(convertFromRaw(JSON.parse(articleContent['content'])))}} 
+          />
+        </>
         : <Loading />}
       </div>
     </div>

@@ -19,14 +19,14 @@
 }
 
 .video-options {
-  width: 30%;
+  width: 25%;
   display: flex;
   justify-content: space-between;
   padding: 1em;
 }
 
 .article-options {
-  width: 70%;
+  width: 75%;
   display: flex;
   justify-content: space-between;
   padding: 1em;
@@ -44,7 +44,7 @@
 }
 
 .video-container {
-  width: 30%;
+  width: 25%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -79,7 +79,7 @@
 }
 
 .article-container {
-  width: 70%;
+  width: 75%;
   background: white;
   border-left: 0;
 }

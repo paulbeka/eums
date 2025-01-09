@@ -53,7 +53,7 @@ const AllVideos = () => {
         <div className="all-videos-video-container">
           {videos.map(video => {
             return (
-              <Link to={video.url} className="all-videos-video">
+              <Link to={video.url} target="_blank" className="all-videos-video">
                 <div className="video-thumbnail-container" style={{border: "3px solid black" }}>
                   <img src={video.thumbnail} className="video-thumbnail"/>
                 </div>
