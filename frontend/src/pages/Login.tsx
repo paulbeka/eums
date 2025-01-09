@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import "./CSS/Login.css";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../Config";
+import axios from "axios";
+import "./CSS/Login.css";
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,7 +18,7 @@ const Login = () => {
   const submitLogin = async (e: any) => {
     e.preventDefault();  // Prevents page refresh
     try {
-      const response = await axios.post("http://localhost:8000/token", {
+      const response = await axios.post(`${BASE_URL}/token`, {
         username,
         password,
       }, {

@@ -1,5 +1,6 @@
 import { useState, useEffect, ReactElement } from "react";
 import { Navigate } from "react-router-dom";
+import { BASE_URL } from '../../Config';
 import axios from "axios";
 
 interface ProtectedRouteProps {
@@ -13,7 +14,7 @@ function ProtectedRoute({ element: Component }: ProtectedRouteProps): ReactEleme
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/verify-token", {
+        const response = await axios.get(`${BASE_URL}/verify-token`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
