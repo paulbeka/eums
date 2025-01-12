@@ -39,10 +39,6 @@ const ArticleDisplay = () => {
           </Link>
           <div className="article-share-and-download-container">
             <Link to="" className="article-share-button">
-              <img src="/images/download-icon.svg" className="article-share-icon" />
-              <span>Download</span>
-            </Link>
-            <Link to="" className="article-share-button">
               <img src="/images/share.svg" className="article-share-icon" />
               <span>Share</span>
             </Link>
@@ -50,8 +46,11 @@ const ArticleDisplay = () => {
         </div>
         {articleContent ? 
         <>
-          <div className="article-image-title-container">
+          <div className="main-article-image-container">
             <img src={`${BASE_URL}/thumbnails/${articleContent.thumbnail}`} className="article-main-image" />
+            <div className="main-article-title">
+                <p>{articleContent["title"]}</p>
+              </div>
           </div>
           <div 
             className="post-content" 

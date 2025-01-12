@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import "./NavBar.css";
 import { Link } from "react-router-dom";
 import { FaBagShopping } from "react-icons/fa6";
+import { BrowserView, MobileView } from "react-device-detect";
 
 const NavBar: React.FC<{ 
   currentPage: string,
-  setCurrentPage: React.Dispatch<React.SetStateAction<string>>
-}> = ({ currentPage, setCurrentPage }) => {
+  setCurrentPage: React.Dispatch<React.SetStateAction<string>>,
+  isOpenMobile: boolean,
+  setIsOpenMobile: React.Dispatch<React.SetStateAction<boolean>>
+}> = ({ currentPage, setCurrentPage, isOpenMobile, setIsOpenMobile }) => {
   
   const [navItems, setNavItems] = useState([
     { path: '/about', text: 'About Us'},
@@ -30,16 +33,13 @@ const NavBar: React.FC<{
     }
   }, []);
 
-  const renderLanguageSelector = () => {
-    return (
-      <select name="languages" className="language-selector">
-        <option value="english">English</option>
-        <option value="french">French</option>      
-      </select>
-    );
-  };
+  const mobileHandleClick = (item: {path: string, text: string}) => {
+    setCurrentPage(item.text);
+    setIsOpenMobile(false);
+  }
 
-  return (
+  return (<>
+    <BrowserView>
     <div className="navbar" style={{ backgroundImage: 'url(/images/navbar-background.svg)' }}>
       <div className="navlink-container">
         <div className="left-content">
@@ -53,16 +53,29 @@ const NavBar: React.FC<{
           ))}
         </div>
         <div className="right-content">
-          <Link to="/" style={{ marginRight: "1em" }}>
-            <FaBagShopping color="white" />
+          <Link to="/" target="_blank" style={{ marginRight: "1em" }}>
+            <FaBagShopping color="white" size={25} />
           </Link>
-          {renderLanguageSelector()}
         </div>
       </div>
       <div className="navlogo-container">
 
       </div>
     </div>
+    </BrowserView>
+    <MobileView>
+      <div className={`mobile-navbar-container ${isOpenMobile ? "active" : ""}`}>
+        <img className="navbar-logo-mobile" src="/images/navbar_logo.png" alt="Navbar Logo" />
+        <div className="mobile-navbar-link-container">
+          {[{path: '/', text: "Home"}, ...navItems].map((item, index) => (
+              <Link key={index} to={item.path} onClick={() => mobileHandleClick(item)} className="text-nav-mobile">
+                <span className={`${currentPage === item.text ? "bold-text-nav-mobile" : ""} text-nav-mobile`}>{item.text}</span>
+              </Link>
+            ))}
+        </div>
+      </div>
+    </MobileView>
+    </>
   );
 }
 

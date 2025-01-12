@@ -12,6 +12,7 @@ import ArticleDisplay from './pages/ArticleDisplay';
 import ArticlePoster from './pages/ArticlePoster';
 import AllArticles from './pages/AllArticles';
 import AllVideos from './pages/AllVideos';
+import AllInterviews from './pages/AllInterviews';
 
 
 function App() {
@@ -25,7 +26,8 @@ function App() {
           
           <Route path="article/:articleId" element={<ArticleDisplay />} />
           <Route path="all-articles" element={<AllArticles />} /> 
-          <Route path="all-videos" element={<AllVideos />} />          
+          <Route path="all-videos" element={<AllVideos />} />     
+          <Route path="all-interviews" element={<AllInterviews />} />     
 
           <Route path="login" element={<Login />} />
           

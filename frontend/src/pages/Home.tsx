@@ -4,6 +4,7 @@ import { Video, Article } from '../components/types/Content.type';
 import { Link } from 'react-router-dom';
 import { getArticles, getVideos } from '../components/api/Api';
 import { BASE_URL } from "../Config";
+import { BrowserView, MobileView } from "react-device-detect";
 
 
 const Home = () => {
@@ -46,8 +47,7 @@ const Home = () => {
       <div className="top-bar-options">
         <div className="video-options">
           <div style={{display: "flex"}}>
-            <img src="/images/down-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
-            <p className="toolbar-title" style={{ fontSize: "14pt" }}>Our latest videos</p>
+            <p className="toolbar-title">Videos</p>
           </div>
           <Link to={"all-videos"} className="hot-topics-button">
             <p style={{ padding: "0 1em" }}>See all</p>
@@ -55,7 +55,6 @@ const Home = () => {
         </div>
         <div className="article-options">
           <div style={{display: "flex"}}>
-            <img src="/images/down-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
             <p className="toolbar-title">Hot topics</p>
           </div>
           <Link to={"all-articles"} className="hot-topics-button">
@@ -65,7 +64,7 @@ const Home = () => {
       </div>
       <div className="top-home-content">
         <div className="video-container eums-box-shadow">
-          {videos.slice(0, 5).map(video => 
+          {videos.slice(0, 4).map(video => 
             <Link to={video.url} target="_blank" className="video-item">
               <div className="video-thumbnail-container">
                 <img src={video.thumbnail} className="video-thumbnail"/>
@@ -123,12 +122,8 @@ const Home = () => {
         <div className="map-container eums-box-shadow">
           <div className="map-top-bar">
             <div style={{display: "flex"}}>
-              <img src="/images/down-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
               <p className="map-title">Country by Country</p>
             </div>
-            <Link to={""} className="hot-topics-button">
-              <p style={{padding: "0.5em 1em"}}>See All</p>
-            </Link>
           </div>
           <div className="map-section-container">
             <img src="/images/eu-map.svg" style={{ width: "50%", margin: "1em", maxWidth: "700px"}}/>
@@ -141,10 +136,9 @@ const Home = () => {
         <div className="interview-container eums-box-shadow">
           <div className="map-top-bar">
             <div style={{display: "flex"}}>
-              <img src="/images/down-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
               <p className="map-title" style={{color: "black"}}>Interviews</p>
             </div>
-            <Link to={""} className="hot-topics-button">
+            <Link to={"all-interviews"} className="hot-topics-button">
               <p style={{padding: "0.5em 1em"}}>See All</p>
             </Link>
           </div>
@@ -170,7 +164,6 @@ const Home = () => {
       <div className="bottom-home-content">
         <div className="media-links-container eums-box-shadow">
           <div style={{display: "flex"}}>
-            <img src="/images/down-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
             <p className="map-title" style={{color: "black"}}>Join the Community</p>
           </div>
           <div className="media-links-content">
@@ -197,7 +190,6 @@ const Home = () => {
         </div>
         <div className="support-container eums-box-shadow">
           <div style={{display: "flex"}}>
-            <img src="/images/color-arrow.svg" style={{ width: "20px", marginRight: "10px" }} />
             <p className="map-title" style={{color: "black"}}>Support Us</p>
           </div>
           <div className="support-content">
