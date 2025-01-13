@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -21,6 +21,7 @@ class Article(Base):
     content = Column(Text, nullable=False)
     public = Column(Boolean, nullable=False)
     thumbnail = Column(String)
+    tag_id = Column(Integer, ForeignKey('topic_tags.id'))
 
 
 class Video(Base):
@@ -31,3 +32,10 @@ class Video(Base):
     thumbnail = Column(String, nullable=False)
     url = Column(String, nullable=False)
     livestream = Column(Boolean, nullable=False)
+
+
+class TopicTag(Base):
+    __tablename__ = "topic_tags"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    tag = Column(String, nullable=False)

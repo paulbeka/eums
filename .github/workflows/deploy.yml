@@ -101,6 +101,15 @@ jobs:
                 }
             }' > ./frontend/nginx/default.conf
 
+            SCRIPT_PATH="./simple_bot/cron_setup.sh"
+            CRON_SCHEDULE="0 * * * *" # Runs every hour at the start of the hour
+
+            chmod +x "$SCRIPT_PATH"
+            (crontab -l 2>/dev/null | grep -v "$SCRIPT_PATH"; echo "$CRON_SCHEDULE $SCRIPT_PATH") | crontab -
+
+            echo "Current cron jobs:"
+            crontab -l
+
             # Bring up the Docker containers with the updated build files
             docker-compose down
             docker-compose up --build -d

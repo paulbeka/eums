@@ -124,6 +124,7 @@
 
 .main-article-paragraph {
   padding: 0 1em;
+  width: 50%;
   text-align: justify;  
 }
 
@@ -290,81 +291,3 @@
   cursor: pointer;
 }
 
-/* General styles for mobile */
-@media (max-width: 768px) {
-  .home {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .top-bar-options {
-    flex-direction: column;
-    width: 100%;
-    padding: 1em;
-  }
-
-  .video-options, .article-options {
-    width: 100%;
-    justify-content: center;
-    text-align: center;
-    padding: 0.5em;
-  }
-
-  .top-home-content, .middle-home-content, .bottom-home-content {
-    flex-direction: column;
-    padding-inline: 1em;
-    width: 100%;
-  }
-
-  .video-container, .article-container, .map-container, .interview-container, 
-  .media-links-container, .support-container {
-    width: 100%;
-    margin-bottom: 1em;
-    padding: 1em;
-  }
-
-  .video-item, .bottom-article-content-container, .main-article-image-container {
-    width: 100%;
-  }
-
-  .video-thumbnail-container, .bottom-article-thumbnail, .main-article-thumbnail {
-    aspect-ratio: 16 / 9;
-    height: auto;
-  }
-
-  .main-article-title, .other-article-title {
-    font-size: 1.5rem;
-    bottom: 10px;
-    left: 10px;
-  }
-
-  .map-title {
-    font-size: 16pt;
-  }
-
-  .hot-topics-button {
-    width: 100%;
-    justify-content: center;
-    padding: 0.5em;
-  }
-
-  .media-icons {
-    justify-content: center;
-  }
-
-  .media-icon {
-    width: 20%;
-  }
-
-  .split-content {
-    width: 100%;
-    border-right: none;
-    margin-bottom: 1em;
-    padding: 0.5em;
-  }
-
-  .color-button {
-    width: 100%;
-    text-align: center;
-  }
-}

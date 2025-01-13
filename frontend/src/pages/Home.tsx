@@ -14,22 +14,25 @@ const Home = () => {
   const [articles, setArticles] = useState<Article[]>([]);
 
   const mediaIcons = [
-    { icon: "/images/social_media_icons/youtube", link: "" },
-    { icon: "/images/social_media_icons/instagram", link: "" },
-    { icon: "/images/social_media_icons/discord", link: "" },
-    { icon: "/images/social_media_icons/patreon", link: "" },
-    { icon: "/images/social_media_icons/x", link: "" },
-    { icon: "/images/social_media_icons/tiktok", link: "" },
-    { icon: "/images/social_media_icons/linkedin", link: "" },
+    { icon: "/images/social_media_icons/youtube", link: "https://www.youtube.com/@EUMadeSimple/videos" },
+    { icon: "/images/social_media_icons/instagram", link: "https://www.instagram.com/eu_made_simple/" },
+    { icon: "/images/social_media_icons/discord", link: "https://discord.gg/jrzyVUjW" },
+    { icon: "/images/social_media_icons/patreon", link: "https://www.patreon.com/eumadesimple" },
+    { icon: "/images/social_media_icons/x", link: "https://x.com/EU_Made_Simple/" },
+    { icon: "/images/social_media_icons/tiktok", link: "https://www.tiktok.com/@eumadesimple" },
+    { icon: "/images/social_media_icons/linkedin", link: "https://www.linkedin.com/company/eumadesimple/" },
     { icon: "/images/social_media_icons/spotify", link: "" }  
   ]
 
   useEffect(() => {
     document.title = 'Home';
     // TODO: handle errors
-    getArticles(true).then(res => setArticles(res));  
-    getVideos(false).then(res => setVideos(res));
-    getVideos(true).then(res => setInterviews(res)); // get interviews
+    getArticles(true).then(res => setArticles(res))
+    .catch((err) => {}); 
+    getVideos(false).then(res => setVideos(res))
+    .catch((err) => {});
+    getVideos(true).then(res => setInterviews(res))
+    .catch((err) => {});
   }, []);
 
   const getArticleParagraphs = (article: Article) => {
@@ -42,7 +45,8 @@ const Home = () => {
     )
   }
 
-  return (
+  return (<>
+    <BrowserView>
     <div className="home">
       <div className="top-bar-options">
         <div className="video-options">
@@ -198,7 +202,7 @@ const Home = () => {
               <div className="split-content" style={{ paddingRight: "2em" }}>
                 <p style={{ textAlign: "justify", marginRight: "1em" }}><b>Become a Patreon</b> and be part of the EUMS members! By becoming a Patreon you can even have influence over <b>decision making</b> of the community strategy or choose which topics we will treat in our videos*.</p>
                 <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", marginTop: "1em" }}>
-                  <button className="color-button">Join!</button>
+                  <Link to="https://www.patreon.com/eumadesimple" className="color-button">Join!</Link>
                 </div>
               </div>
               <div className="split-content">
@@ -212,7 +216,11 @@ const Home = () => {
         </div>
       </div>
     </div>
-  )
+    </BrowserView>
+    <MobileView>
+    
+    </MobileView>
+  </>)
 }
 
 export default Home;

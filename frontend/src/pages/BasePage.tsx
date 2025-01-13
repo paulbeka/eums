@@ -11,13 +11,6 @@ const BasePage = () => {
   const [currentPage, setCurrentPage] = useState<string>("HOME");
   const [navbarOpenMobile, setNavbarOpenMobile] = useState(!isMobile);
 
-  const [pageTitle, setPageTitle] = useState('EUMS');
-  const [pageDescription, setPageDescription] = useState("Welcome to my professional website! I'm Paul Bekaert, and here you can explore my CV, skills, and past experience. Dive into my React-based portfolio to see my work in action and learn more about my qualifications.");
-
-  useEffect(() => {
-
-  }, []);
-
   return (
     <div className="main-container">
       <NavBar 

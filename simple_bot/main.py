@@ -144,6 +144,13 @@ def get_videos_and_thumbnails():
         "Content-Type": "application/json"
     }
 
+    # todo: get from the backend to check what videos already exist first.
+    response = requests.get(api_endpoint, headers=headers)
+    if response.status_code != 200:
+    	raise Exception("The get request to fetch existing videos failed!")
+
+    existing_videos = response.data
+
     for video in videos:
         payload = {
             "title": video["title"],

@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 import json
 
-from .models import User, Article, Video
+from .models import User, Article, Video, TopicTag
 from .util import save_thumbnail
 
 
@@ -98,3 +98,17 @@ def create_video(db: Session, title: str, thumbnail: str, url: str, livestream: 
 def get_videos(livestreams: bool, db: Session, skip: int = 0, limit: int = 10):
     query = db.query(Video).filter(Video.livestream == livestreams)
     return query.offset(skip).limit(limit).all()
+
+
+### CATEGORY TAGS ###
+
+def create_tag(db: Session, tag: str):
+    tag = TopicTag(tag=tag)
+    db.add(tag)
+    db.commit()
+    db.refresh(tag)
+    return tag.id
+
+
+def get_tags(db: Session):
+    return db.query(TopicTag).all()
