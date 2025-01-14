@@ -138,20 +138,28 @@ def get_videos_and_thumbnails():
 
     videos = get_videos_from_channel(ENGLISH_CHANNEL_ID)
 
-    api_endpoint = f"{BACKEND_URL}/videos/"
+    api_endpoint = f"{BACKEND_URL}/videos"
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json"
     }
 
-    # todo: get from the backend to check what videos already exist first.
-    response = requests.get(api_endpoint, headers=headers)
-    if response.status_code != 200:
-    	raise Exception("The get request to fetch existing videos failed!")
+    all_content = set()
 
-    existing_videos = response.data
+    # todo: get from the backend to check what videos already exist first.
+    response = requests.get(f"{api_endpoint}?livestreams=false", headers=headers)
+    if response.status_code != 200:
+        raise Exception("The get request to fetch existing videos failed!")
+    all_content.update(set([item["title"] for item in json.loads(response.text)]))
+
+    response = requests.get(f"{api_endpoint}?livestreams=true", headers=headers)
+    if response.status_code != 200:
+        raise Exception("The get request to fetch existing videos failed!")
+    all_content.update(set([item["title"] for item in json.loads(response.text)]))
 
     for video in videos:
+        if video["title"] in all_content:
+            break
         payload = {
             "title": video["title"],
             "thumbnail": video["thumbnail"],
