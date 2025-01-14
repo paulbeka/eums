@@ -35,3 +35,4 @@ urllib3_secure_extra==0.1.0
 xmlrpclib==1.0.1
 youtube_transcript_api==0.6.3
 zstandard==0.23.0
+google-api-python-client==2.159.0

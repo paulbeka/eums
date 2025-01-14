@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 608.31 92.43">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        font-family: Lovelo-Black, Lovelo;
+        font-size: 75.88px;
+        font-weight: 800;
+      }
+
+      .cls-2 {
+        fill: #e7ad0f;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g>
+      <text class="cls-1" transform="translate(26.4 69.59)"><tspan x="0" y="0">Eu made simple</tspan></text>
+      <path class="cls-2" d="M23.9.99l4.34,13.35c.19.59.74.99,1.36.99h14.04c1.39,0,1.97,1.78.84,2.59l-11.36,8.25c-.5.36-.71,1.01-.52,1.6l4.34,13.35c.43,1.32-1.08,2.42-2.2,1.6l-11.36-8.25c-.5-.36-1.18-.36-1.68,0l-11.36,8.25c-1.12.82-2.63-.28-2.2-1.6l4.34-13.35c.19-.59-.02-1.24-.52-1.6L.59,17.92c-1.12-.82-.55-2.59.84-2.59h14.04c.62,0,1.17-.4,1.36-.99L21.17.99c.43-1.32,2.3-1.32,2.73,0Z"/>
+    </g>
+  </g>
+</svg>
