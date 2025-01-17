@@ -44,13 +44,15 @@ def get_videos_from_channel(channel_id):
             video_id = item['snippet']['resourceId']['videoId']
             thumbnail = item['snippet']['thumbnails']['high']['url']  
             url = f"https://www.youtube.com/watch?v={video_id}"
-            livestream = '[LIVE]' in title or item['snippet'].get('liveBroadcastContent') == 'live'
+            livestream = "live" in title.lower().split()
+            upload_date = item["snippet"]["publishedAt"]
             videos.append({
                 "title": title,
                 "video_id": video_id,
                 "thumbnail": thumbnail,
                 "url": url,
-                "livestream": livestream
+                "livestream": livestream,
+                "upload_date": upload_date
             })
 
         next_page_token = playlist_response.get('nextPageToken')
@@ -158,14 +160,15 @@ def get_videos_and_thumbnails():
     all_content.update(set([item["title"] for item in json.loads(response.text)]))
 
     for video in videos:
-        print(video)
+        print(video["title"], video["upload_date"], video["livestream"])
         if video["title"] in all_content:
             break
         payload = {
             "title": video["title"],
             "thumbnail": video["thumbnail"],
             "url": video["url"],
-            "livestream": str(video["livestream"]).lower()
+            "livestream": str(video["livestream"]).lower(),
+            "upload_date": video["upload_date"]
         }
 
         try:

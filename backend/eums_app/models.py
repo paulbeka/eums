@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Date
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -32,6 +32,7 @@ class Video(Base):
     thumbnail = Column(String, nullable=False)
     url = Column(String, nullable=False)
     livestream = Column(Boolean, nullable=False)
+    upload_date = Column(Date, nullable=False)
 
 
 class TopicTag(Base):

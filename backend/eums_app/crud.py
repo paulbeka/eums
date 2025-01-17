@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+from datetime import datetime
 import json
 
 from .models import User, Article, Video, TopicTag
@@ -87,8 +88,10 @@ def change_article_visibility(db: Session, articleId: int, public: bool):
 
 ### VIDEOS ###
 
-def create_video(db: Session, title: str, thumbnail: str, url: str, livestream: str):
-    video = Video(title=title, thumbnail=thumbnail, url=url, livestream=livestream)
+def create_video(db: Session, title: str, thumbnail: str, url: str, livestream: str, upload_date: str):
+    parsed_date = datetime.strptime(upload_date, "%Y-%m-%dT%H:%M:%SZ")
+    video = Video(title=title, thumbnail=thumbnail, 
+        url=url, livestream=livestream, upload_date=parsed_date)
     db.add(video)
     db.commit()
     db.refresh(video)
@@ -96,7 +99,7 @@ def create_video(db: Session, title: str, thumbnail: str, url: str, livestream: 
 
 
 def get_videos(livestreams: bool, db: Session, skip: int = 0, limit: int = 10):
-    query = db.query(Video).filter(Video.livestream == livestreams)
+    query = db.query(Video).filter(Video.livestream == livestreams).order_by(Video.upload_date.desc())
     return query.offset(skip).limit(limit).all()
 
 
