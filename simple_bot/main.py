@@ -158,6 +158,7 @@ def get_videos_and_thumbnails():
     all_content.update(set([item["title"] for item in json.loads(response.text)]))
 
     for video in videos:
+        print(video)
         if video["title"] in all_content:
             break
         payload = {

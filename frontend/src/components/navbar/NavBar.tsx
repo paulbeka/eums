@@ -59,7 +59,7 @@ const NavBar: React.FC<{
         </div>
       </div>
       <div className="navlogo-container">
-        <img src="/images/eumadesimplelogo.svg" />
+        {/* <img src="/images/eumadesimplelogo.svg" style={{ width: "100%" }}/> */}
       </div>
     </div>
     </BrowserView>

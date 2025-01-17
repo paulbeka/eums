@@ -83,6 +83,21 @@
   object-fit: cover; 
 }
 
+.interview-thumbnail {
+  width: 100%;
+  height: auto;
+  position: absolute;
+  top: 1%; 
+  bottom: -12%;
+  left: 0;
+  right: 0;
+  object-fit: cover; 
+}
+
+.interview-item {
+  margin: 300px;
+}
+
 .article-container {
   width: 75%;
   background: white;
@@ -115,6 +130,10 @@
   font-size: 2rem;
   font-weight: bold;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.navlogo-container {
+  width: 40%;
 }
 
 .main-article-paragraph-containers {
