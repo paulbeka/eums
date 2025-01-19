@@ -10,17 +10,7 @@ import { BrowserView, MobileView } from "react-device-detect";
 const Home = () => {
 
   const [videos, setVideos] = useState<Video[]>([]);
-  const [interviews, setInterviews] = useState<Video[]>([
-    {
-      title: "The Evolution of European Defence - Live Interview Ft. @theglobalgambit",
-      thumbnail: "https://i.ytimg.com/vi/WBZG7dd3axA/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLBJSzLTGFKvPtF_GiB2daVhP25y0A",
-      url: "https://www.youtube.com/watch?v=WBZG7dd3axA"
-    }, {
-      title: "The future of European democracy; is the centre fading away? Live Broadcast",
-      thumbnail: "https://i.ytimg.com/vi/EQN3maf1M3k/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLDf8948U02EEDVryetvMN22nQZu0w",
-      url: "https://www.youtube.com/watch?v=EQN3maf1M3k"
-    }
-  ]);
+  const [interviews, setInterviews] = useState<Video[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
 
   const mediaIcons = [
@@ -41,8 +31,8 @@ const Home = () => {
     .catch((err) => {}); 
     getVideos(false).then(res => setVideos(res))
     .catch((err) => {});
-    // getVideos(true).then(res => setInterviews(res))
-    // .catch((err) => {});
+    getVideos(true).then(res => setInterviews(res))
+    .catch((err) => {});
   }, []);
 
   const getArticleParagraphs = (article: Article) => {
@@ -161,7 +151,7 @@ const Home = () => {
             {interviews.slice(0,2).map(video => 
               <Link to={video.url} target="_blank" style={{ marginTop: "20px"}}>
                 <div className="video-thumbnail-container">
-                  <img src={video.thumbnail} className="interview-thumbnail"/>
+                  <img src={video.thumbnail} className="video-thumbnail"/>
                 </div>
                 <p style={{
                     width: "90%",

@@ -5,14 +5,21 @@ import { getVideos } from "../components/api/Api";
 import "./CSS/AllVideos.css";
 
 
-const AllVideos = () => {
+const AllVideos = ({ livestreams } : { livestreams: boolean }) => {
 
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [videos, setVideos] = useState<Video[]>([]);
   
   useEffect(() => {
-    getVideos(false).then(res => setVideos(res))
+    getVideos(livestreams).then((res: any) => setVideos(res))
   }, []);
+
+  const getArticlesAfterFilter = () => {
+    if (searchFilter === "") {
+      return videos;
+    }
+    return videos.filter(video => video.title.includes(searchFilter));
+  }
 
   return (
     <div className="all-videos-container">
@@ -51,7 +58,7 @@ const AllVideos = () => {
         </div>
 
         <div className="all-videos-video-container">
-          {videos.map(video => {
+          {getArticlesAfterFilter().map(video => {
             return (
               <Link to={video.url} target="_blank" className="all-videos-video">
                 <div className="video-thumbnail-container" style={{border: "3px solid black" }}>

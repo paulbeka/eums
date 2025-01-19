@@ -83,17 +83,6 @@
   object-fit: cover; 
 }
 
-.interview-thumbnail {
-  width: 100%;
-  height: auto;
-  position: absolute;
-  top: 1%; 
-  bottom: -12%;
-  left: 0;
-  right: 0;
-  object-fit: cover; 
-}
-
 .article-container {
   width: 75%;
   background: white;
