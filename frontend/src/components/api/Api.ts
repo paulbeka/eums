@@ -33,18 +33,23 @@ export const getArticles = async (getPublicOnly: boolean) => {
     });
 }
 
-export const postArticle = async (payload: { title: string, content: RawDraftContentState, thumbnail: any }) => {
+export const postArticle = async (payload: { 
+    title: string, 
+    content: RawDraftContentState, 
+    thumbnail: any, 
+    selectedTags: string[] 
+  }) => {
   return api.post("/articles/", payload)
-  .then(response => {
-    if (response.status === 200) {
-      return response.data;
-    } else {
-      return false;
-    }
-  })
-  .catch(err => {
-    return false
-  });
+    .then(response => {
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        return false;
+      }
+    })
+    .catch(err => {
+      return false
+    });
 }
 
 
@@ -86,6 +91,17 @@ export const getVideos = async (livestreams: boolean) => {
   })
   .catch(err => {
     throw err;
+  })
+}
+
+
+export const getTags = async () => {
+  return api.get("/tags")
+  .then(response => {
+    if (response.status !== 200) {
+      throw "Request failed!";
+    }
+    return response.data;
   })
 }
 

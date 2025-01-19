@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from datetime import datetime
+from typing import List
 import json
 
 from .models import User, Article, Video, TopicTag
@@ -36,11 +37,16 @@ def get_article(articleId: str, db: Session, public_only: bool = True):
     return query.first()
 
 
-def create_article(db: Session, title: str, content: dict, public: bool, thumbnail_base64: str):
+def create_article(db: Session, title: str, content: dict, public: bool, thumbnail_base64: str, tags: List[str]):
     thumbnail_filename = None
     if thumbnail_base64:
         thumbnail_filename = f"{title.replace(' ', '_')}_thumbnail.png"
         save_thumbnail(thumbnail_base64, thumbnail_filename)
+
+    existingTags = {tag.name for tag in get_tags(db)}
+    new_tags = [tag for tag in tags if tag not in existingTags]
+    for tag in new_tags:
+        create_tag(db, tag)
 
     db_article = Article(
         title=title, 

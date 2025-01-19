@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 
 class Token(BaseModel):
@@ -11,6 +11,7 @@ class ArticleResponse(BaseModel):
     title: str
     content: Dict[str, Any]
     thumbnail: str = None
+    selectedTags: List[str]
 
     class Config:
         orm_mode = True

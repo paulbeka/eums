@@ -4,7 +4,8 @@ import { Editor } from "react-draft-wysiwyg";
 import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import "./CSS/ArticlePoster.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import api, { postArticle } from "../components/api/Api";
+import api, { postArticle, getTags } from "../components/api/Api";
+import TagSelector from "../components/frontend_util/TagSelector";
 
 const ArticlePoster = ({ edit }: { edit: boolean }) => {
   const navigate = useNavigate();
@@ -12,24 +13,28 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
   const [title, setTitle] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [thumbnail, setThumbnail] = useState<string | null>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  
   const [success, setSuccess] = useState(true);
+  const [availableTags, setAvailableTags] = useState<string[]>([]);
 
   useEffect(() => {
     if (edit) {
-      api
-        .get(`/article/${articleId}`)
-        .then((response) => {
-          setTitle(response.data.title);
-          setEditorState(
-            EditorState.createWithContent(
-              convertFromRaw(JSON.parse(response.data.content))
-            )
-          );
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      api.get(`/article/${articleId}`)
+      .then((response) => {
+        setTitle(response.data.title);
+        setSelectedTags(response.data.tags);
+        setEditorState(
+          EditorState.createWithContent(
+            convertFromRaw(JSON.parse(response.data.content))
+          )
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+      });
     }
+    getTags().then((res) => setAvailableTags(res));
   }, [articleId, edit]);
 
   const handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,11 +51,16 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
     }
   };
 
+  const handleModifyTags = () => {
+
+  }
+
   const submitArticle = async () => {
     const formData = {
       title,
       content: convertToRaw(editorState.getCurrentContent()),
       thumbnail,
+      selectedTags
     };
 
     try {
@@ -90,6 +100,8 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
             onChange={handleThumbnailChange}
           />
         </div>
+
+        {TagSelector({selectedTags, setSelectedTags})}
 
         <div className="editor-content">
           <Editor
