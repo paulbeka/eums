@@ -43,7 +43,7 @@ def create_article(db: Session, title: str, content: dict, public: bool, thumbna
         thumbnail_filename = f"{title.replace(' ', '_')}_thumbnail.png"
         save_thumbnail(thumbnail_base64, thumbnail_filename)
 
-    existingTags = {tag.name for tag in get_tags(db)}
+    existingTags = {tag.tag for tag in get_tags(db)}
     new_tags = [tag for tag in tags if tag not in existingTags]
     for tag in new_tags:
         create_tag(db, tag)
