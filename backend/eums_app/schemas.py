@@ -22,3 +22,4 @@ class ContactForm(BaseModel):
     email: EmailStr
     subject: str
     message: str
+    captcha: str

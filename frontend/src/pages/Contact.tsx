@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { sendEmail } from '../components/api/Api';
+import { CAPTCHA_SITE_KEY } from '../Config';
+import ReCAPTCHA from 'react-google-recaptcha';
 import "./CSS/Contact.css";
 
 const Contact = () => {
@@ -14,6 +16,10 @@ const Contact = () => {
   useEffect(() => {
     document.title = 'Contact';
   }, []);
+
+  const handleCaptchaChange = (value: any) => {
+    console.log(value);
+  }
 
   const submitContact = async (e: any) => {
     e.preventDefault();  
@@ -71,6 +77,12 @@ const Contact = () => {
             <textarea 
               value={message} onChange={(e) => setMessage(e.target.value)} 
               className="input-box" id="message" required 
+            />
+          </div>
+          <div>
+            <ReCAPTCHA
+              sitekey={CAPTCHA_SITE_KEY}
+              onChange={handleCaptchaChange}
             />
           </div>
           {error && (

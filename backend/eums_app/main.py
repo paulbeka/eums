@@ -8,7 +8,7 @@ from typing import Optional, Dict, Callable, Any, List
 from email.message import EmailMessage
 from .auth import authenticate_user, create_access_token
 from .schemas import Token, ArticleResponse, ContactForm
-from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM, SMTP_SETTINGS
+from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM, SMTP_SETTINGS, CAPTCHA_KEY
 from .models import Base, User, Article
 from .db import engine, get_db
 from .crud import *
@@ -165,7 +165,15 @@ def get_videos_endpoint(livestreams: bool, db: Session = Depends(get_db)):
 
 @app.post("/contact")
 async def send_email(contact: ContactForm):
-    print(contact)
+
+    url = f"https://www.google.com/recaptcha/api/siteverify?secret={CAPTCHA_KEY}&response={contact.captcha}"
+
+    response = requests.post(url)
+    result = response.json()
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail="Captcha verification failed")
+
     try:
         # Create the email message
         email_message = EmailMessage()
