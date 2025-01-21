@@ -107,7 +107,7 @@ export const getTags = async () => {
 
 
 export const sendEmail = async (payload: any) => {
-  api.post("/contact", payload)
+  return api.post("/contact", payload)
   .then(res => {
     if (res.status !== 200) {
       throw new Error(`Error: ${res.status}`)

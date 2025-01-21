@@ -1,5 +1,7 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
+import { CAPTCHA_SITE_KEY } from './Config';
 import BasePage from './pages/BasePage';
 import Home from './pages/Home';
 import PageNotFound from './pages/PageNotFound';
@@ -21,7 +23,12 @@ function App() {
         <Route path="/" element={<BasePage />} >
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
-          <Route path="contact" element={<Contact />} />
+          
+          <Route path="contact" element={
+            <GoogleReCaptchaProvider reCaptchaKey={CAPTCHA_SITE_KEY}>
+              <Contact />
+            </GoogleReCaptchaProvider>  
+          } />
           
           <Route path="article/:articleId" element={<ArticleDisplay />} />
           <Route path="all-articles" element={<AllArticles />} /> 

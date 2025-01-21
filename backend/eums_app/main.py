@@ -15,7 +15,7 @@ from .crud import *
 
 from datetime import timedelta
 from jose import JWTError, jwt
-import aiosmtplib
+import aiosmtplib, requests
 
 
 Base.metadata.create_all(bind=engine)
