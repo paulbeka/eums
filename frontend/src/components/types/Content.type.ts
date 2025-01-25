@@ -4,6 +4,7 @@ export type Article = {
   content: string;
   public: boolean;
   thumbnail: string;
+  tags: string[]
 };
 
 

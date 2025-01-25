@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
 from datetime import datetime
 from typing import List
@@ -26,15 +26,27 @@ def create_user(db: Session, username: str, hashed_password: str):
 
 
 def get_articles(db: Session, skip: int = 0, limit: int = 10, public_only: bool = True):
-    query = db.query(Article)
+    query = db.query(Article).options(joinedload(Article.tags))
     if public_only:
         query = query.filter(Article.public == True)
-    return query.offset(skip).limit(limit).all()
+    articles = query.offset(skip).limit(limit).all()
 
+    return [
+        {
+            "id": article.id,
+            "title": article.title,
+            "content": article.content,
+            "public": article.public,
+            "thumbnail": article.thumbnail,
+            "tags": [{"id": tag.id, "tag": tag.tag} for tag in article.tags],
+        }
+        for article in articles
+    ]
 
 def get_article(articleId: str, db: Session, public_only: bool = True):
     query = db.query(Article).filter(Article.id == articleId)
     return query.first()
+
 
 
 def create_article(db: Session, title: str, content: dict, public: bool, thumbnail_base64: str, tags: List[str]):
@@ -43,17 +55,23 @@ def create_article(db: Session, title: str, content: dict, public: bool, thumbna
         thumbnail_filename = f"{title.replace(' ', '_')}_thumbnail.png"
         save_thumbnail(thumbnail_base64, thumbnail_filename)
 
-    existingTags = {tag.tag for tag in get_tags(db)}
-    new_tags = [tag for tag in tags if tag not in existingTags]
-    for tag in new_tags:
-        create_tag(db, tag)
+    existing_tags = db.query(TopicTag).filter(TopicTag.tag.in_(tags)).all()
+    existing_tag_names = {tag.tag for tag in existing_tags}
+
+    new_tags = [tag for tag in tags if tag not in existing_tag_names]
+    for tag_name in new_tags:
+        new_tag = TopicTag(tag=tag_name)
+        db.add(new_tag)
+        existing_tags.append(new_tag) 
 
     db_article = Article(
-        title=title, 
-        content=json.dumps(content), 
+        title=title,
+        content=json.dumps(content),
         public=public,
-        thumbnail=thumbnail_filename
+        thumbnail=thumbnail_filename,
+        tags=existing_tags  
     )
+
     db.add(db_article)
     db.commit()
     db.refresh(db_article)

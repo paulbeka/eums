@@ -37,12 +37,16 @@ const Home = () => {
 
   const getArticleParagraphs = (article: Article) => {
     const parsedBlogPost = JSON.parse(article.content);
-    return (
-      <div className="main-article-paragraph-containers">
-        <p className="main-article-paragraph">{parsedBlogPost.blocks[0].text}</p>
-        <p className="main-article-paragraph">{parsedBlogPost.blocks[1].text}</p>
-      </div>
-    )
+    if (parsedBlogPost.blocks.length > 1) {
+      return (
+        <div className="main-article-paragraph-containers">
+          <p className="main-article-paragraph">{parsedBlogPost.blocks[0].text}</p>
+          <p className="main-article-paragraph">{parsedBlogPost.blocks[1].text}</p>
+        </div>
+      )
+    } else {
+      return <><br /></>
+    }
   }
 
   return (<>
