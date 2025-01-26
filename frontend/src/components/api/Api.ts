@@ -26,7 +26,6 @@ api.interceptors.request.use(
 export const getArticles = async (getPublicOnly: boolean) => {
   return api.get(getPublicOnly ? '/articles/' : '/articles/?public_only=false')
     .then(response => {
-      console.log(response.data)
       return response.data;
     })
     .catch(error => {

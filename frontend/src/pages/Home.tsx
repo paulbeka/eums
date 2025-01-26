@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { getArticles, getVideos } from '../components/api/Api';
 import { BASE_URL } from "../Config";
 import { BrowserView, MobileView } from "react-device-detect";
+import ArticleDisplay from './ArticleDisplay';
 
 
 const Home = () => {
@@ -92,6 +93,7 @@ const Home = () => {
             <Link to={`/article/${articles[0].id}`} className="main-article-image-container">
               <img className="main-article-thumbnail" src={`${BASE_URL}/thumbnails/${articles[0].thumbnail}`} />
               <div className="main-article-title">
+                <p>{articles[0].tags[0]?.tag}</p>
                 <p>{articles[0].title}</p>
               </div>
             </Link>
@@ -111,6 +113,7 @@ const Home = () => {
               <div className="bottom-article-content-container">
                 <img className="bottom-article-thumbnail" src={`${BASE_URL}/thumbnails/${article.thumbnail}`} />
                 <div className="other-article-title">
+                  <h3>{article.tags[0]?.tag.toUpperCase()}</h3>
                   <h3>{article.title}</h3>
                 </div>
               </div>
