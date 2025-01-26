@@ -3,6 +3,8 @@ import { Video } from "../components/types/Content.type";
 import { Link } from "react-router-dom";
 import { getVideos } from "../components/api/Api";
 import "./CSS/AllVideos.css";
+import ErrorLoading from "../components/frontend_util/ErrorLoading";
+import Loading from "../components/frontend_util/Loading";
 
 
 const AllVideos = ({ livestreams } : { livestreams: boolean }) => {
@@ -10,8 +12,11 @@ const AllVideos = ({ livestreams } : { livestreams: boolean }) => {
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [videos, setVideos] = useState<Video[]>([]);
   
+  const [videoLoadError, setVideoLoadError] = useState(false)
+
   useEffect(() => {
     getVideos(livestreams).then((res: any) => setVideos(res))
+    .catch(err => setVideoLoadError(true));
   }, []);
 
   const getArticlesAfterFilter = () => {
@@ -58,6 +63,7 @@ const AllVideos = ({ livestreams } : { livestreams: boolean }) => {
         </div>
 
         <div className="all-videos-video-container">
+          {videos.length ? <>
           {getArticlesAfterFilter().map(video => {
             return (
               <Link to={video.url} target="_blank" className="all-videos-video">
@@ -69,7 +75,7 @@ const AllVideos = ({ livestreams } : { livestreams: boolean }) => {
                 </div>
               </Link>
             )
-          })}
+          })}</> : videoLoadError ? <ErrorLoading /> : <Loading />}
         </div>
       </div>
     </div>

@@ -4,17 +4,22 @@ import { Article } from "../components/types/Content.type";
 import { getArticles } from "../components/api/Api";
 import { BASE_URL } from "../Config";
 import { Link } from "react-router-dom";
+import ErrorLoading from "../components/frontend_util/ErrorLoading";
+import Loading from "../components/frontend_util/Loading";
 
 
 const AllArticles = () => {
-  const [filters, setFilters] = useState(["France", "Ukraine", "Mercosaur", "Germany", "Syria"]);
+  const [filters, setFilters] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState<string>("");
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [articles, setArticles] = useState<Article[]>([]);
 
+  const [articleError, setArticleError] = useState(false);
+
   useEffect(() => {
     document.title = "All Articles";
-    getArticles(true).then((res) => setArticles(res));
+    getArticles(true).then((res) => setArticles(res))
+    .catch((err) => setArticleError(true));
   }, []);
 
   const filterBy = (filter: string) => {
@@ -84,6 +89,7 @@ const AllArticles = () => {
         </div>
 
         <div className="all-articles-container">
+          {articles.length ? <>
           {filteredArticles.map((article) => (<>
             <div key={article.id} className="all-article-container">
               <img
@@ -115,7 +121,7 @@ const AllArticles = () => {
               />
             </center>
             </>
-          ))}
+          ))}</> : articleError ? <ErrorLoading /> : <Loading />}
         </div>
       </div>
     </div>
