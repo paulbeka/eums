@@ -8,7 +8,10 @@
   margin: 0 auto;
   display: flex;
   min-height: 300px;
+  height: auto;
+  align-items: stretch;
 }
+
 
 .top-bar-options {
   display: flex;
@@ -49,6 +52,7 @@
   flex-direction: column;
   align-items: center;
   padding-bottom: 1em;
+  overflow-y: scroll;
 }
 
 .video-item {
@@ -87,6 +91,7 @@
   width: 75%;
   background: white;
   border-left: 0;
+  height: auto;
 }
 
 .main-article {

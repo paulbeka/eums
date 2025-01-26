@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import "./CSS/Home.css";
 import { Video, Article } from '../components/types/Content.type';
 import { Link } from 'react-router-dom';
 import { getArticles, getVideos } from '../components/api/Api';
 import { BASE_URL } from "../Config";
 import { BrowserView, MobileView } from "react-device-detect";
-import ArticleDisplay from './ArticleDisplay';
+import Loading from '../components/frontend_util/Loading';
+import ErrorLoading from '../components/frontend_util/ErrorLoading';
 
 
 const Home = () => {
@@ -13,6 +14,10 @@ const Home = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [interviews, setInterviews] = useState<Video[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
+
+  const [videoError, setVideoError] = useState(false);
+  const [interviewError, setInterviewError] = useState(false);
+  const [articleError, setArticleError] = useState(false);
 
   const mediaIcons = [
     { icon: "/images/social_media_icons/youtube", link: "https://www.youtube.com/@EUMadeSimple/videos" },
@@ -27,13 +32,21 @@ const Home = () => {
 
   useEffect(() => {
     document.title = 'Home';
-    // TODO: handle errors
-    getArticles(true).then(res => setArticles(res))
-    .catch((err) => {}); 
-    getVideos(false).then(res => setVideos(res))
-    .catch((err) => {});
-    getVideos(true).then(res => setInterviews(res))
-    .catch((err) => {});
+    getArticles(true).then(res => {
+      setArticles(res);
+      setArticleError(false);
+    })
+    .catch((err) => setArticleError(true)); 
+    getVideos(false).then(res => {
+      setVideos(res);
+      setVideoError(false);
+    })
+    .catch((err) => setVideoError(true));
+    getVideos(true).then(res => {
+      setInterviews(res);
+      setInterviewError(false)
+    })
+    .catch((err) => setInterviewError(true));
   }, []);
 
   const getArticleParagraphs = (article: Article) => {
@@ -73,6 +86,7 @@ const Home = () => {
       </div>
       <div className="top-home-content">
         <div className="video-container eums-box-shadow">
+          {videos.length ? <>
           {videos.slice(0, 4).map(video => 
             <Link to={video.url} target="_blank" className="video-item">
               <div className="video-thumbnail-container">
@@ -85,10 +99,11 @@ const Home = () => {
                 }}
               >{video.title}</p>
             </Link>
-          )}
+          )}</> : videoError ? <ErrorLoading /> : <Loading />}
         </div>
         <div className="article-container eums-box-shadow">
           {articles.length ? <>
+
           <div className="main-article">
             <Link to={`/article/${articles[0].id}`} className="main-article-image-container">
               <img className="main-article-thumbnail" src={`${BASE_URL}/thumbnails/${articles[0].thumbnail}`} />
@@ -107,17 +122,18 @@ const Home = () => {
               <center><hr style={{width: "50%"}}/></center>
             </div>
           </div>
+
           <div className="other-articles">
             {articles.slice(1,3).map(article =>
-            <Link to={`/article/${article.id}`} className="bottom-article">
-              <div className="bottom-article-content-container">
-                <img className="bottom-article-thumbnail" src={`${BASE_URL}/thumbnails/${article.thumbnail}`} />
-                <div className="other-article-title">
-                  <h3>{article.tags[0]?.tag.toUpperCase()}</h3>
-                  <h3>{article.title}</h3>
+              <Link to={`/article/${article.id}`} className="bottom-article">
+                <div className="bottom-article-content-container">
+                  <img className="bottom-article-thumbnail" src={`${BASE_URL}/thumbnails/${article.thumbnail}`} />
+                  <div className="other-article-title">
+                    <h3>{article.tags[0]?.tag.toUpperCase()}</h3>
+                    <h3>{article.title}</h3>
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
             )}
           </div>
           <div className="article-container-footer">
@@ -126,7 +142,8 @@ const Home = () => {
               <p style={{padding: "0.5em", marginRight: "0.5em"}}>More Hot Topics!</p>
             </Link>
           </div>
-        </> : <></>}
+          </> : articleError ? <ErrorLoading /> : 
+          <Loading />}
         </div>
       </div>
       <div className="middle-home-content">
@@ -155,6 +172,7 @@ const Home = () => {
           </div>
 
           <div style={{ margin: "1em", display: "flex", flexDirection: "column"}}>
+            {interviews.length ? <>
             {interviews.slice(0,2).map(video => 
               <Link to={video.url} target="_blank" style={{ marginTop: "20px"}}>
                 <div className="video-thumbnail-container">
@@ -167,7 +185,7 @@ const Home = () => {
                   }}
                 >{video.title}</p>
               </Link>
-            )}
+            )}</> : interviewError ? <ErrorLoading /> : <Loading />}
           </div>
         </div>
       </div>
