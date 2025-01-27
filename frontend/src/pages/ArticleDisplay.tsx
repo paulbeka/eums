@@ -45,7 +45,7 @@ const ArticleDisplay = () => {
           </div>
         </div>
         {articleContent ? 
-        <>
+        <div className="post-content-container">
           <div className="main-article-image-container">
             <img src={`${BASE_URL}/thumbnails/${articleContent.thumbnail}`} className="article-main-image" />
             <div className="main-article-title">
@@ -56,7 +56,7 @@ const ArticleDisplay = () => {
             className="post-content" 
             dangerouslySetInnerHTML={{__html: stateToHTML(convertFromRaw(JSON.parse(articleContent['content'])))}} 
           />
-        </>
+        </div>
         : <Loading />}
       </div>
     </div>

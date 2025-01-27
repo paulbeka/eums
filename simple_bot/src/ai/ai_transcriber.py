@@ -40,3 +40,28 @@ def transcription_to_article(transcript_path):
 
 	return (data["title"], news_article)
 	
+
+def ai_generator():
+
+    transcript_files = os.listdir(TRANSCRIPTS_FOLDER)
+    generated_articles = os.listdir(GENERATED_ARTICLES_FOLDER)
+
+    missing_transcripts = set(transcript_files) - set(generated_articles)
+
+    for filename in list(missing_transcripts)[0:3]:
+        try:
+            title, article = transcription_to_article(os.path.join(TRANSCRIPTS_FOLDER, filename))
+
+            payload = {
+                "title": title,
+                "content": article
+            }
+
+            with open(f"{GENERATED_ARTICLES_FOLDER}/{filename}", "w", encoding="utf-8") as file:
+                json.dump(payload, file, ensure_ascii=False, indent=4)
+
+            print(f"Generated {title}.")
+        except Exception as e:
+            print(e)
+            print(f"ERROR: File {filename} failed.")
+            

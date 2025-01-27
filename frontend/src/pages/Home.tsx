@@ -150,7 +150,7 @@ const Home = () => {
         <div className="map-container eums-box-shadow">
           <div className="map-top-bar">
             <div style={{display: "flex"}}>
-              <p className="map-title">Country by Country</p>
+              <p className="map-title">Country by Country (Under Construction)</p>
             </div>
           </div>
           <div className="map-section-container">

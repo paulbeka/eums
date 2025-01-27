@@ -7,8 +7,14 @@
   margin: 1em auto;
 }
 
+.post-content-container {
+  width: 60%;
+  margin: 0 auto;
+}
+
 .post-content {
-  margin: 1em auto;
+  margin: 2em auto;
+  width: 80%;
 }
 
 .article-share-and-download-container {
