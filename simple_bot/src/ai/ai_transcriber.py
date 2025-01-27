@@ -2,8 +2,14 @@ from transformers import pipeline
 from dotenv import load_dotenv
 import re, openai, os, json
 
+
 load_dotenv()
+
+
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+TRANSCRIPTS_FOLDER = "transcripts"
+GENERATED_ARTICLES_FOLDER = "generated_articles"
 
 
 def clean_transcript(text):
@@ -64,4 +70,3 @@ def ai_generator():
         except Exception as e:
             print(e)
             print(f"ERROR: File {filename} failed.")
-            

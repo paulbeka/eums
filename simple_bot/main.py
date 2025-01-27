@@ -7,10 +7,6 @@ from src.publisher.publisher import publish_ai_content
 from src.video_updater.video_updater import get_videos_and_thumbnails
 
 
-TRANSCRIPTS_FOLDER = "transcripts"
-GENERATED_ARTICLES_FOLDER = "generated_articles"
-
-
 def main():
     parser = argparse.ArgumentParser(description="Process YouTube videos and generate articles.")
     
@@ -19,6 +15,9 @@ def main():
     subparsers.add_parser("transcribe", help="Fetch and save transcriptions from the YouTube channel.")
     subparsers.add_parser("generate", help="Generate articles from transcriptions.")
     subparsers.add_parser("populate", help="Get videos + interviews and their thumbnails, and populate the website")
+    subparsers.add_parser("publish", help="Publish the generated AI articles (and send an email to owners)")
+
+    ### TODO (in the future): Populate some kind of newsletter to email to subscribers
 
     args = parser.parse_args()
 

@@ -1,9 +1,18 @@
+from ..util import login_and_get_token, get_videos_from_channel
+from dotenv import load_dotenv
+import os, requests, json
+
+
+load_dotenv()
+BACKEND_URL = os.getenv("BACKEND_URL")
+
+
 def get_videos_and_thumbnails():
-    access_token = login_and_get_token(USERNAME, PASSWORD, BACKEND_URL)
+    access_token = login_and_get_token()
     if not access_token:
         return
 
-    videos = get_videos_from_channel(ENGLISH_CHANNEL_ID)
+    videos = get_videos_from_channel()
 
     api_endpoint = f"{BACKEND_URL}/videos"
     headers = {
