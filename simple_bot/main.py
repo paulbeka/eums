@@ -15,6 +15,7 @@ def main():
     subparsers.add_parser("transcribe", help="Fetch and save transcriptions from the YouTube channel.")
     subparsers.add_parser("generate", help="Generate articles from transcriptions.")
     subparsers.add_parser("populate", help="Get videos + interviews and their thumbnails, and populate the website")
+    subparsers.add_parser("publish_missing_videos", help="Fetch all latest videos, feed them to AI, and publish them")
     subparsers.add_parser("publish", help="Publish the generated AI articles (and send an email to owners)")
 
     ### TODO (in the future): Populate some kind of newsletter to email to subscribers
@@ -27,6 +28,10 @@ def main():
         ai_generator()
     elif args.command == "publish":
     	publish_ai_content()
+   	elif args.command == "publish_missing_videos":
+   		get_transcriptions()
+   		ai_generator()
+   		publish_ai_content()
     elif args.command == "populate":
     	get_videos_and_thumbnails()
     else:
