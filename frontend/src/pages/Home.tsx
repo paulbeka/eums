@@ -171,7 +171,7 @@ const Home = () => {
             </Link>
           </div>
 
-          <div style={{ margin: "1em", display: "flex", flexDirection: "column"}}>
+          <div style={{ margin: "1em", display: "flex", flexDirection: "column", height: "100%" }}>
             {interviews.length ? <>
             {interviews.slice(0,2).map(video => 
               <Link to={video.url} target="_blank" style={{ marginTop: "20px"}}>

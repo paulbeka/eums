@@ -1,9 +1,13 @@
-import React from "react";
-
+import "./CSS/Loading.css";
 
 const Loading = () => {
-  return <div>Loading...</div>
-}
-
+  return (
+    <div style={{ margin: "auto auto" }} className="loading-container">
+      <span className="dot"></span>
+      <span className="dot"></span>
+      <span className="dot"></span>
+    </div>
+  );
+};
 
 export default Loading;
