@@ -27,13 +27,13 @@ def main():
     elif args.command == "generate":
         ai_generator()
     elif args.command == "publish":
-    	publish_ai_content()
-   	elif args.command == "publish_missing_videos":
-   		get_transcriptions()
-   		ai_generator()
-   		publish_ai_content()
+        publish_ai_content()
+    elif args.command == "publish_missing_videos":
+        get_transcriptions()
+        ai_generator()
+        publish_ai_content()
     elif args.command == "populate":
-    	get_videos_and_thumbnails()
+        get_videos_and_thumbnails()
     else:
         print("Please choose either 'transcribe' or 'generate'.")
         

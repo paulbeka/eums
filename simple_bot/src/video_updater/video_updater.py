@@ -22,20 +22,19 @@ def get_videos_and_thumbnails():
 
     all_content = set()
 
-    # todo: get from the backend to check what videos already exist first.
     response = requests.get(f"{api_endpoint}?livestreams=false", headers=headers)
     if response.status_code != 200:
         raise Exception("The get request to fetch existing videos failed!")
-    all_content.update(set([item["title"] for item in json.loads(response.text)]))
+    all_content.update(set([item["url"] for item in json.loads(response.text)]))
 
     response = requests.get(f"{api_endpoint}?livestreams=true", headers=headers)
     if response.status_code != 200:
         raise Exception("The get request to fetch existing videos failed!")
-    all_content.update(set([item["title"] for item in json.loads(response.text)]))
+    all_content.update(set([item["url"] for item in json.loads(response.text)]))
 
     for video in videos:
         print(video["title"], video["upload_date"], video["livestream"])
-        if video["title"] in all_content:
+        if video["url"] in all_content:
             break
         payload = {
             "title": video["title"],

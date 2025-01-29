@@ -1,4 +1,5 @@
-#### TODO: TURN THE JSON INTO DRAFT-JS FORMAT
+
+
 def publish_ai_content():
 	access_token = login_and_get_token()
 	api_endpoint = f"{BACKEND_URL}/article"
@@ -12,7 +13,7 @@ def publish_ai_content():
 
 		payload = {
 			"title": data["title"],
-			"content": string_to_draftjs(data["content"])
+			"content": string_to_draftjs(data["content"]),
 			"thumbnail": "",
 			"selectedTags": []
 		}

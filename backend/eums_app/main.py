@@ -12,6 +12,7 @@ from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM, SMTP_SET
 from .models import Base, User, Article
 from .db import engine, get_db
 from .crud import *
+from .email.email_util import send_article_uploaded_to_admins
 
 from datetime import timedelta
 from jose import JWTError, jwt
@@ -86,9 +87,11 @@ async def verify_token_endpoint(token: str = Depends(oauth2_scheme)):
 
 @app.post("/articles/")
 def create_article_endpoint(article: ArticleResponse, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    print(article)
-    return run_if_authenticated(token, create_article, db, 
+    article = run_if_authenticated(token, create_article, db, 
         article.title, article.content, False, article.thumbnail, article.selectedTags)
+    ### TODO: SEND EMAIL TO ADMINS WITH THE CREATED ARTICLE
+    send_article_uploaded_to_admins(article)
+    return article
 
 
 @app.get("/articles/")
