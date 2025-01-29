@@ -26,7 +26,7 @@ async def send_article_uploaded_to_admins(articleId):
 				username=SMTP_SETTINGS["username"],
 				password=SMTP_SETTINGS["password"],
 				use_tls=False,
-				start_tls=True,  # Use STARTTLS for secure connection
+				start_tls=True
 			)
 
 			return {"message": f"Email sent successfully to f{admin}"}
