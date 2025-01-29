@@ -86,11 +86,11 @@ async def verify_token_endpoint(token: str = Depends(oauth2_scheme)):
 #### ARTICLES ####
 
 @app.post("/articles/")
-def create_article_endpoint(article: ArticleResponse, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+async def create_article_endpoint(article: ArticleResponse, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     article = run_if_authenticated(token, create_article, db, 
         article.title, article.content, False, article.thumbnail, article.selectedTags)
     ### TODO: SEND EMAIL TO ADMINS WITH THE CREATED ARTICLE
-    send_article_uploaded_to_admins(article)
+    await send_article_uploaded_to_admins(article)
     return article
 
 
