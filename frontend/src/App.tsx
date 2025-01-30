@@ -14,6 +14,7 @@ import ArticleDisplay from './pages/ArticleDisplay';
 import ArticlePoster from './pages/ArticlePoster';
 import AllArticles from './pages/AllArticles';
 import AllVideos from './pages/AllVideos';
+import "@fontsource/poppins";
 
 
 function App() {

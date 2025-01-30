@@ -108,16 +108,22 @@ const Home = () => {
             <Link to={`/article/${articles[0].id}`} className="main-article-image-container">
               <img className="main-article-thumbnail" src={`${BASE_URL}/thumbnails/${articles[0].thumbnail}`} />
               <div className="main-article-title">
-                <p>{articles[0].tags[0]?.tag}</p>
-                <p>{articles[0].title}</p>
+                {articles[0].tags[0]?.tag ? 
+                  <h2 style={{ fontSize: "40px" }} className="home-page-article-title">
+                    {articles[0].tags[0]?.tag.toUpperCase()}
+                  </h2>
+                  : <></>
+                }
+                <h2 style={{ fontSize: "40px" }} className="home-page-article-title">{articles[0].title}</h2>
               </div>
             </Link>
             <div>
               {getArticleParagraphs(articles[0])}
               <div style={{ display: "flex", justifyContent: "flex-end"}}>
-                <Link to={`/article/${articles[0].id}`}
-                  style={{ color: "gray", paddingBottom: "1em", paddingRight: "2em", cursor: "pointer"}}
-                ><i><u>Continue reading...</u></i></Link>
+                <Link 
+                  to={`/article/${articles[0].id}`}
+                  className="home-page-continue-reading-link"
+                ><i>Continue reading...</i></Link>
               </div>
               <center><hr style={{width: "50%"}}/></center>
             </div>
@@ -129,8 +135,11 @@ const Home = () => {
                 <div className="bottom-article-content-container">
                   <img className="bottom-article-thumbnail" src={`${BASE_URL}/thumbnails/${article.thumbnail}`} />
                   <div className="other-article-title">
-                    <h3>{article.tags[0]?.tag.toUpperCase()}</h3>
-                    <h3>{article.title}</h3>
+                    {article.tags[0]?.tag ?
+                      <h3 className="home-page-article-title">{article.tags[0]?.tag.toUpperCase()}</h3>
+                      : <></>
+                    }
+                    <h3 className="home-page-article-title">{article.title}</h3>
                   </div>
                 </div>
               </Link>
