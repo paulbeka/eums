@@ -51,4 +51,13 @@
   width: 100%;
 }
 
+.article-display-main-article-title {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  font-size: 20pt;
+  color: white;
+  font-weight: bold;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
 

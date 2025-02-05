@@ -48,7 +48,7 @@ const ArticleDisplay = () => {
         <div className="post-content-container">
           <div className="main-article-image-container">
             <img src={`${BASE_URL}/thumbnails/${articleContent.thumbnail}`} className="article-main-image" />
-            <div className="main-article-title">
+            <div className="article-display-main-article-title">
                 <p>{articleContent["title"]}</p>
               </div>
           </div>

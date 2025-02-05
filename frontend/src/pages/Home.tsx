@@ -109,12 +109,12 @@ const Home = () => {
               <img className="main-article-thumbnail" src={`${BASE_URL}/thumbnails/${articles[0].thumbnail}`} />
               <div className="main-article-title">
                 {articles[0].tags[0]?.tag ? 
-                  <h2 style={{ fontSize: "40px" }} className="home-page-article-title">
+                  <h2 style={{ fontSize: "30px" }} className="home-page-article-title">
                     {articles[0].tags[0]?.tag.toUpperCase()}
                   </h2>
                   : <></>
                 }
-                <h2 style={{ fontSize: "40px" }} className="home-page-article-title">{articles[0].title}</h2>
+                <h2 style={{ fontSize: "30px" }} className="home-page-article-title">{articles[0].title}</h2>
               </div>
             </Link>
             <div>
