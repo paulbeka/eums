@@ -35,6 +35,7 @@ def get_videos_and_thumbnails():
     for video in videos:
         print(video["title"], video["upload_date"], video["livestream"])
         if video["url"] in all_content:
+            print("Already exists!")
             break
         payload = {
             "title": video["title"],

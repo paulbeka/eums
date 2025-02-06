@@ -122,6 +122,16 @@ def create_video(db: Session, title: str, thumbnail: str, url: str, livestream: 
     return video.id
 
 
+def delete_video(db: Session, videoId: str):
+    video = db.query(Video).filter(Video.id == videoId).first()
+    if video:
+        db.delete(video)
+        db.commit()
+        return {"detail": "Video deleted successfully"}
+    else:
+        raise Exception("Video not found")
+
+
 def get_videos(livestreams: bool, db: Session, skip: int = 0, limit: int = 10):
     query = db.query(Video).filter(Video.livestream == livestreams).order_by(Video.upload_date.desc())
     return query.offset(skip).limit(limit).all()

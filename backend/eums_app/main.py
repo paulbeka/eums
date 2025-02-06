@@ -159,6 +159,11 @@ def post_video_endpoint(payload: Dict[str, str], db: Session = Depends(get_db), 
         payload["title"], payload["thumbnail"], payload["url"], payload["livestream"] == "true", payload["upload_date"])
 
 
+@app.delete("/videos/{videoId}")
+def delete_video_endpoint(videoId: str, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    return run_if_authenticated(token, delete_video, db, videoId)
+
+
 @app.get("/videos/")
 def get_videos_endpoint(livestreams: bool, db: Session = Depends(get_db)):
     return get_videos(livestreams, db)
