@@ -16,7 +16,6 @@ const NavBar: React.FC<{
     { path: '/contact', text: 'Contact'}
   ]);
 
-  // todo: use redux instead of getItem("access_item")
   useEffect(() => {
     if (localStorage.getItem("access_token")?.length) {
       setNavItems(prevItems => {
@@ -59,7 +58,7 @@ const NavBar: React.FC<{
         </div>
       </div>
       <div className="navlogo-container">
-        {/* <img src="/images/eumadesimplelogo.svg" style={{ width: "100%" }}/> */}
+        <img src="/images/eumadesimplelogo.svg" style={{ width: "100%" }}/>
       </div>
     </div>
     </BrowserView>

@@ -41,9 +41,15 @@ function App() {
           <Route path="*" element={<PageNotFound />} />
 
           {/* Anything here needs auth access */}
-          <Route path="article-manager" element={<ProtectedRoute element={<AdminArticleManager />} />} />
-          <Route path="article-poster" element={<ProtectedRoute element={<ArticlePoster edit={false} />} />} />
-          <Route path="article-manager/edit/:articleId" element={<ProtectedRoute element={<ArticlePoster edit={true} />} />} />
+          <Route path="article-manager" element={
+            <ProtectedRoute element={<AdminArticleManager />} />
+          } />
+          <Route path="article-poster" element={
+            <ProtectedRoute element={<ArticlePoster edit={false} />} />
+          } />
+          <Route path="article-manager/edit/:articleId" element={
+            <ProtectedRoute element={<ArticlePoster edit={true} />} />
+          } />
         </Route>
       </Routes>
     </BrowserRouter>
