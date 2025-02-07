@@ -16,7 +16,7 @@ const Login = () => {
   }, []);
 
   const submitLogin = async (e: any) => {
-    e.preventDefault();  // Prevents page refresh
+    e.preventDefault();
     try {
       const response = await axios.post(`${BASE_URL}/token`, {
         username,

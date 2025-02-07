@@ -11,6 +11,8 @@ import ErrorLoading from '../components/frontend_util/ErrorLoading';
 
 const Home = () => {
 
+  const N_VIDEOS = 10;
+
   const [videos, setVideos] = useState<Video[]>([]);
   const [interviews, setInterviews] = useState<Video[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
@@ -29,6 +31,19 @@ const Home = () => {
     { icon: "/images/social_media_icons/linkedin", link: "https://www.linkedin.com/company/eumadesimple/" },
     { icon: "/images/social_media_icons/spotify", link: "" }  
   ]
+
+  function adjustHeight() {
+    const left = document.querySelector<HTMLElement>(".video-container");
+    const right = document.querySelector<HTMLElement>(".article-container");
+  
+    const minHeight = Math.min(left!.scrollHeight, right!.scrollHeight);
+  
+    left!.style.maxHeight = `${minHeight}px`;
+    right!.style.maxHeight = `${minHeight}px`;
+  }
+
+  window.addEventListener("load", adjustHeight);
+  window.addEventListener("resize", adjustHeight);
 
   useEffect(() => {
     document.title = 'Home';
@@ -87,7 +102,7 @@ const Home = () => {
       <div className="top-home-content">
         <div className="video-container eums-box-shadow">
           {videos.length ? <>
-          {videos.slice(0, 4).map(video => 
+          {videos.slice(0, N_VIDEOS).map(video => 
             <Link to={video.url} target="_blank" className="video-item">
               <div className="video-thumbnail-container">
                 <img src={video.thumbnail} className="video-thumbnail"/>
