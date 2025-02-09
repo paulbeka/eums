@@ -5,7 +5,6 @@ import "./Footer.css";
 const Footer = () => {
   const footerLinks = [
     { text: "Who We Are", link: "about" },
-    { text: "Videos", link: "videos" },
     { text: "Contact Us", link: "contact" },
   ];
 

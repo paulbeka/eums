@@ -183,8 +183,7 @@ const Home = () => {
               <p style={{padding: "0.5em", marginRight: "0.5em"}}>More Hot Topics!</p>
             </Link>
           </div>
-          </> : articleError ? <ErrorLoading /> : 
-          <Loading />}
+          </> : articleError ? <ErrorLoading /> : <Loading />}
           <br />
         </div>
       </div>

@@ -19,8 +19,6 @@ from jose import JWTError, jwt
 import aiosmtplib, requests
 
 
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI()
 app.mount("/thumbnails", StaticFiles(directory="thumbnails"), name="thumbnails")
 

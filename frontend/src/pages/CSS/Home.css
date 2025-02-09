@@ -97,6 +97,7 @@
   background: white;
   border-left: 0;
   height: auto;
+  min-height: 400px;
 }
 
 .main-article {
