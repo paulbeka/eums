@@ -54,7 +54,6 @@
   align-items: center;
   padding-bottom: 1em;
   overflow-y: scroll;
-  height: 100%;
 }
 
 .video-item:first-child {
@@ -353,4 +352,25 @@
 
 .bottom-article-content-container:hover .home-page-article-title::after {
   width: 100%;
+}
+
+
+/* Scrollbar Stuff */
+.top-home-content ::-webkit-scrollbar {
+  width: 10px;
+}
+
+.top-home-content ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 40px;
+  margin: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

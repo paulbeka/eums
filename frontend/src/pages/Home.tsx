@@ -32,17 +32,34 @@ const Home = () => {
     { icon: "/images/social_media_icons/spotify", link: "" }  
   ]
 
-  function adjustHeight() {
-    const left = document.querySelector<HTMLElement>(".video-container");
-    const right = document.querySelector<HTMLElement>(".article-container");
+  function waitForElements(selector1: string, selector2: string): Promise<[HTMLElement, HTMLElement]> {
+    return new Promise((resolve) => {
+      const checkElements = () => {
+        const left = document.querySelector<HTMLElement>(selector1);
+        const right = document.querySelector<HTMLElement>(selector2);
+        if (left && right) {
+          resolve([left, right]);
+        }
+      };
+      checkElements();
+      const observer = new MutationObserver(() => {
+        checkElements();
+      });
   
-    const minHeight = Math.min(left!.scrollHeight, right!.scrollHeight);
-  
-    left!.style.maxHeight = `${minHeight}px`;
-    right!.style.maxHeight = `${minHeight}px`;
+      observer.observe(document.body, { childList: true, subtree: true });
+    });
   }
-
-  window.addEventListener("load", adjustHeight);
+  
+  async function adjustHeight() {
+    const [left, right] = await waitForElements(".video-container", ".article-container");
+  
+    const minHeight = Math.min(left.scrollHeight, right.scrollHeight);
+  
+    left.style.maxHeight = `${minHeight}px`;
+    right.style.maxHeight = `${minHeight}px`;
+  }
+  
+  adjustHeight();
   window.addEventListener("resize", adjustHeight);
 
   useEffect(() => {
@@ -168,6 +185,7 @@ const Home = () => {
           </div>
           </> : articleError ? <ErrorLoading /> : 
           <Loading />}
+          <br />
         </div>
       </div>
       <div className="middle-home-content">
