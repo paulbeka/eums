@@ -78,7 +78,9 @@
 }
 
 .video-thumbnail-container:hover {
-  box-shadow: 4px 4px; 
+  box-shadow: 4px 4px;
+  filter: brightness(70%);
+  transform: translate(-2px, -2px); /* Moves away from shadow */
 }
 
 .video-thumbnail {
@@ -116,6 +118,13 @@
   border-radius: 20px;
   object-fit: cover;
   max-height: 300px;
+  transition: all 0.3s;
+}
+
+.main-article-image-container:hover {
+  .main-article-thumbnail {
+    filter: brightness(70%);
+  }
 }
 
 .main-article-title {
@@ -157,11 +166,18 @@
   width: 90%;
 }
 
+.bottom-article-content-container:hover {
+  .bottom-article-thumbnail {
+    filter: brightness(70%);
+  }
+}
+
 .bottom-article-thumbnail {
   width: 100%;
   height: 300px;
   object-fit: cover;
   border-radius: 20px;
+  transition: all 0.3s;
 }
 
 .other-article-title {
@@ -192,6 +208,7 @@
 
 .hot-topics-button:hover {
   box-shadow: 2px 3px;
+  transform: translate(-2px, -2px);
 }
 
 
@@ -226,6 +243,8 @@
 .map-section-container {
   display: flex;
   color: white;
+  height: 100%;
+  align-items: center;
 }
 
 .interview-container {

@@ -11,6 +11,7 @@ const AllVideos = ({ livestreams } : { livestreams: boolean }) => {
 
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [videos, setVideos] = useState<Video[]>([]);
+  const [sortBy, setSortBy] = useState<string>("");
   
   const [videoLoadError, setVideoLoadError] = useState(false)
 
@@ -19,11 +20,24 @@ const AllVideos = ({ livestreams } : { livestreams: boolean }) => {
     .catch(err => setVideoLoadError(true));
   }, []);
 
+  useEffect(() => {
+    if (sortBy === "recent") {
+      setVideos((prevVideos) => 
+        [...prevVideos].sort((a, b) => new Date(b.upload_date).getTime() - new Date(a.upload_date).getTime())
+      );
+    } else if (sortBy === "old") {
+      setVideos((prevVideos) => 
+        [...prevVideos].sort((a, b) => new Date(a.upload_date).getTime() - new Date(b.upload_date).getTime())
+      );
+    }
+  }, [sortBy]);
+  
   const getArticlesAfterFilter = () => {
     if (searchFilter === "") {
       return videos;
     }
-    return videos.filter(video => video.title.includes(searchFilter));
+    return videos.filter(video => 
+      video.title.toLowerCase().includes(searchFilter));
   }
 
   return (
@@ -40,13 +54,10 @@ const AllVideos = ({ livestreams } : { livestreams: boolean }) => {
           </Link>
           <div className="search-container-features">
             <div className="video-search-quicklinks">
-              <div className="video-quicklink">
+              <div onClick={() => setSortBy("recent")} className="video-quicklink">
                 <span>Most Recent</span>
               </div>
-              <div className="video-quicklink">
-                <span>Popular</span>
-              </div>
-              <div className="video-quicklink">
+              <div onClick={() => setSortBy("old")} className="video-quicklink">
                 <span>Oldest</span>
               </div>
             </div>
@@ -56,7 +67,7 @@ const AllVideos = ({ livestreams } : { livestreams: boolean }) => {
                 type="text"
                 className="searchbar"
                 placeholder="Search..."
-                onChange={(e) => setSearchFilter(e.target.value)}
+                onChange={(e) => setSearchFilter(e.target.value.toLowerCase())}
               />
             </div>
           </div>

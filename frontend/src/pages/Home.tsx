@@ -29,7 +29,7 @@ const Home = () => {
     { icon: "/images/social_media_icons/x", link: "https://x.com/EU_Made_Simple/" },
     { icon: "/images/social_media_icons/tiktok", link: "https://www.tiktok.com/@eumadesimple" },
     { icon: "/images/social_media_icons/linkedin", link: "https://www.linkedin.com/company/eumadesimple/" },
-    { icon: "/images/social_media_icons/spotify", link: "" }  
+    { icon: "/images/social_media_icons/spotify", link: "https://open.spotify.com/show/0Nb6smcVnEtmRI2IkRqP56" }  
   ]
 
   function waitForElements(selector1: string, selector2: string): Promise<[HTMLElement, HTMLElement]> {
@@ -39,28 +39,48 @@ const Home = () => {
         const right = document.querySelector<HTMLElement>(selector2);
         if (left && right) {
           resolve([left, right]);
+          return true;
         }
+        return false;
       };
-      checkElements();
+  
+      if (checkElements()) return;
+  
       const observer = new MutationObserver(() => {
-        checkElements();
+        if (checkElements()) observer.disconnect(); 
       });
   
       observer.observe(document.body, { childList: true, subtree: true });
     });
   }
   
-  async function adjustHeight() {
-    const [left, right] = await waitForElements(".video-container", ".article-container");
+  useEffect(() => {
+    const adjustHeight = async () => {
+      const [left, right] = await waitForElements(".video-container", ".article-container");
   
-    const minHeight = Math.min(left.scrollHeight, right.scrollHeight);
+      const updateHeight = () => {
+        const minHeight = Math.min(left.scrollHeight, right.scrollHeight);
+        left.style.height = `${minHeight}px`;
+        right.style.height = `${minHeight}px`;
+      };
   
-    left.style.maxHeight = `${minHeight}px`;
-    right.style.maxHeight = `${minHeight}px`;
-  }
+      updateHeight();
   
-  adjustHeight();
-  window.addEventListener("resize", adjustHeight);
+      const resizeObserver = new ResizeObserver(() => {
+        requestAnimationFrame(updateHeight); // Prevent rapid-fire updates
+      });
+  
+      resizeObserver.observe(left);
+      resizeObserver.observe(right);
+  
+      return () => resizeObserver.disconnect(); // Cleanup on unmount
+    };
+  
+    adjustHeight();
+  
+    window.addEventListener("resize", adjustHeight);
+    return () => window.removeEventListener("resize", adjustHeight); // Cleanup
+  }, [videos, articles]);
 
   useEffect(() => {
     document.title = 'Home';
@@ -195,17 +215,19 @@ const Home = () => {
             </div>
           </div>
           <div className="map-section-container">
-            <img src="/images/eu-map.svg" style={{ width: "50%", margin: "1em", maxWidth: "700px"}}/>
+            <img src="/images/eu-map.svg" style={{ width: "60%", margin: "1em", maxWidth: "700px"}}/>
             <div style={{ margin: "1em" }}>
               <p style={{ fontWeight: "bold", fontSize: "16pt", marginTop: "1em"}}>Country by country</p>
-              <p style={{ marginTop: "1em", textAlign: "justify"}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent in arcu porttitor, accumsan urna vel, efficitur ipsum. Etiam dapibus ut mi a sollicitudin. Aenean non tempor felis, et hendrerit mauris. Integer ex felis, iaculis non eros faucibus, tempus sodales metus. Suspendisse dignissim a mauris eget blandit. Nunc fringilla ut velit nec rhoncus. In in dui ullamcorper, rhoncus velit non, laoreet augue. Nulla purus velit, vehicula in finibus ac, viverra ac dui. Cras imperdiet est lacus, at tempus mi ultrices sed.</p>
+              <p style={{ marginTop: "1em"}}>This section is currently under construction, and so is not yet accessible to all users. Future goals including creating an interactive European map where users 
+                can access EU data by country, such as important elections, news, and events! 
+                Keep a look out, as we will be releasing this feature as soon as possible.</p>
             </div>
           </div>
         </div>
         <div className="interview-container eums-box-shadow">
           <div className="map-top-bar">
             <div style={{display: "flex"}}>
-              <p className="map-title" style={{color: "black"}}>Interviews</p>
+              <p className="map-title" style={{color: "black"}}>Livestreams</p>
             </div>
             <Link to={"all-interviews"} className="hot-topics-button">
               <p style={{padding: "0.5em 1em"}}>See All</p>

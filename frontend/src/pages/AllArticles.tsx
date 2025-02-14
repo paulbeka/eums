@@ -91,7 +91,7 @@ const AllArticles = () => {
         <div className="all-articles-container">
           {articles.length ? <>
           {filteredArticles.map((article) => (<>
-            <div key={article.id} className="all-article-container">
+            <Link to={`/article/${article.id}`} key={article.id} className="all-article-container">
               <img
                 className="all-articles-article-image"
                 src={`${BASE_URL}/thumbnails/${article.thumbnail}`}
@@ -110,7 +110,7 @@ const AllArticles = () => {
                   <i>Continue reading...</i>
                 </Link>
               </div>
-            </div>
+            </Link>
             <center>
               <hr
                 style={{

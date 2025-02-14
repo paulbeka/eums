@@ -73,13 +73,17 @@
 
 .all-article-container {
   width: 100%;
-  background-image: url("../../../public/images/article-holder.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center center;
   margin-block: 3em;
-  padding: 4em;
+  padding: 1em;
   display: flex;
+  border: 3px solid black;
+  border-radius: 20px;
+}
+
+.all-article-container:hover {
+  .all-articles-article-image {
+    filter: brightness(70%);
+  }
 }
 
 .all-articles-article-image {
@@ -87,6 +91,7 @@
   max-width: 500px;
   border-radius: 20px;
   border: 3px solid black;
+  transition: all 0.1s;
 }
 
 .all-articles-side-content {

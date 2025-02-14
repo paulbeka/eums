@@ -2,6 +2,7 @@ import { useState, useEffect, ReactElement } from "react";
 import { Navigate } from "react-router-dom";
 import { BASE_URL } from '../../Config';
 import axios from "axios";
+import Loading from "../frontend_util/Loading";
 
 interface ProtectedRouteProps {
   element: ReactElement;
@@ -34,7 +35,7 @@ function ProtectedRoute({ element: Component }: ProtectedRouteProps): ReactEleme
   }, [token]);
 
   if (isValid === null) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return isValid ? Component : <Navigate to="/login" replace />;

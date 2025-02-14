@@ -1,3 +1,11 @@
 /venv/
 
 /eums_app/.env
+
+eums.db
+__pycache__/
+*.pyc
+*.pyo
+migrations/
+
+.env
