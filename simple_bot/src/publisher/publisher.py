@@ -1,4 +1,5 @@
 
+## TODO: adapt this to post only text content to the updated article displayer (how do we do bold, underlined..?)
 
 def publish_ai_content():
 	access_token = login_and_get_token()

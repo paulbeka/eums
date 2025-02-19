@@ -3,11 +3,15 @@ from sqlalchemy.orm import sessionmaker
 from eums_app.models import User 
 from eums_app.db import Base, SessionLocal  
 from werkzeug.security import generate_password_hash 
+import os
 
 
-DATABASE_URL = "sqlite:///./eums.db" # get from env
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable is not set")
+
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base.metadata.create_all(bind=engine)

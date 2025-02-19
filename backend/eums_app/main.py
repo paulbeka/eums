@@ -16,10 +16,12 @@ from .email.email_util import send_article_uploaded_to_admins
 
 from datetime import timedelta
 from jose import JWTError, jwt
-import aiosmtplib, requests
+import aiosmtplib, requests, os
 
 
 app = FastAPI()
+os.makedirs("thumbnails", exist_ok=True)
+
 app.mount("/thumbnails", StaticFiles(directory="thumbnails"), name="thumbnails")
 
 app.add_middleware(
