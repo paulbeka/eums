@@ -305,8 +305,56 @@ const Home = () => {
       </div>
     </div>
     </BrowserView>
+
     <MobileView>
-    
+      <div className="home-mobile-container">
+        <div className="mobile-articles-container">
+          <h1 style={{textAlign: "center"}}>Articles</h1>
+
+          {articles.length ? articles.slice(0, 3).map(article => (
+            <Link to={`/article/${article.id}`} className="mobile-article-container">
+              <img className="mobile-article-thumbnail" src={`${BASE_URL}/thumbnails/${article.thumbnail}`} />
+              <h3 style={{ marginLeft: "10px" }}>{article.title}</h3>
+            </Link>
+          )) : articleError ? <ErrorLoading /> : <Loading />}
+        </div>
+
+        <Link to={"all-articles"} className="mobile-hot-topics-button">
+          <p>See All</p>
+        </Link>
+        
+        <hr style={{ width: "90%", margin: "auto" }}/>
+
+        <div className="mobile-articles-container">
+          <h1 style={{textAlign: "center"}}>Videos</h1>
+          {videos.length ? videos.slice(0, 3).map(video => (
+            <Link to={video.url} target="_blank" className="mobile-article-container">
+              <img className="mobile-video-thumbnail" src={video.thumbnail} />
+              <h3 style={{ marginLeft: "10px" }}>{video.title}</h3>
+            </Link>
+          )) : videoError ? <ErrorLoading /> : <Loading />}
+        </div>
+
+        <Link to={"all-videos"} className="mobile-hot-topics-button">
+          <p>See All</p>
+        </Link>
+
+        <hr style={{ width: "90%", margin: "auto" }}/>
+
+        <div className="mobile-articles-container">
+          <h1 style={{textAlign: "center"}}>Interviews</h1>
+          {interviews.length ? interviews.slice(0, 2).map(interview => (
+            <Link to={interview.url} target="_blank" className="mobile-article-container">
+              <img className="mobile-video-thumbnail" src={interview.thumbnail} />
+              <h3 style={{ marginLeft: "10px" }}>{interview.title}</h3>
+            </Link>
+          )) : interviewError ? <ErrorLoading /> : <Loading />}
+        </div>
+
+        <Link to={"all-interviews"} className="mobile-hot-topics-button">
+          <p>See All</p>
+        </Link>
+      </div>
     </MobileView>
   </>)
 }
