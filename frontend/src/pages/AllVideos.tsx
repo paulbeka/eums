@@ -5,6 +5,7 @@ import { getVideos } from "../components/api/Api";
 import "./CSS/AllVideos.css";
 import ErrorLoading from "../components/frontend_util/ErrorLoading";
 import Loading from "../components/frontend_util/Loading";
+import { BrowserView, MobileView } from "react-device-detect";
 
 
 const AllVideos = ({ livestreams } : { livestreams: boolean }) => {
@@ -40,57 +41,70 @@ const AllVideos = ({ livestreams } : { livestreams: boolean }) => {
       video.title.toLowerCase().includes(searchFilter));
   }
 
-  return (
-    <div className="all-videos-container">
-      <div className="all-videos-content">
-        <div className="all-videos-control-bar">
-          <Link to={"/"} className="back-button">
-            <img
-              style={{ width: "20px", marginRight: "1em" }}
-              src="/images/back-arrow.svg"
-              alt="Back"
-            />
-            <span>Back</span>
-          </Link>
-          <div className="search-container-features">
-            <div className="video-search-quicklinks">
-              <div onClick={() => setSortBy("recent")} className="video-quicklink">
-                <span>Most Recent</span>
-              </div>
-              <div onClick={() => setSortBy("old")} className="video-quicklink">
-                <span>Oldest</span>
-              </div>
-            </div>
-            <div className="searchbar-container">
-              <div className="searchbar-icon"></div>
-              <input
-                type="text"
-                className="searchbar"
-                placeholder="Search..."
-                onChange={(e) => setSearchFilter(e.target.value.toLowerCase())}
+  return (<>
+    <BrowserView>
+      <div className="all-videos-container">
+        <div className="all-videos-content">
+          <div className="all-videos-control-bar">
+            <Link to={"/"} className="back-button">
+              <img
+                style={{ width: "20px", marginRight: "1em" }}
+                src="/images/back-arrow.svg"
+                alt="Back"
               />
+              <span>Back</span>
+            </Link>
+            <div className="search-container-features">
+              <div className="video-search-quicklinks">
+                <div onClick={() => setSortBy("recent")} className="video-quicklink">
+                  <span>Most Recent</span>
+                </div>
+                <div onClick={() => setSortBy("old")} className="video-quicklink">
+                  <span>Oldest</span>
+                </div>
+              </div>
+              <div className="searchbar-container">
+                <div className="searchbar-icon"></div>
+                <input
+                  type="text"
+                  className="searchbar"
+                  placeholder="Search..."
+                  onChange={(e) => setSearchFilter(e.target.value.toLowerCase())}
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="all-videos-video-container">
-          {videos.length ? <>
-          {getArticlesAfterFilter().map(video => {
-            return (
-              <Link to={video.url} target="_blank" className="all-videos-video">
-                <div className="video-thumbnail-container" style={{border: "3px solid black" }}>
-                  <img src={video.thumbnail} className="video-thumbnail"/>
-                </div>
-                <div style={{margin: "1em"}}>
-                  {video.title}
-                </div>
-              </Link>
-            )
-          })}</> : videoLoadError ? <ErrorLoading /> : <Loading />}
+          <div className="all-videos-video-container">
+            {videos.length ? <>
+            {getArticlesAfterFilter().map(video => {
+              return (
+                <Link to={video.url} target="_blank" className="all-videos-video">
+                  <div className="video-thumbnail-container" style={{border: "3px solid black" }}>
+                    <img src={video.thumbnail} className="video-thumbnail"/>
+                  </div>
+                  <div style={{margin: "1em"}}>
+                    {video.title}
+                  </div>
+                </Link>
+              )
+            })}</> : videoLoadError ? <ErrorLoading /> : <Loading />}
+          </div>
         </div>
       </div>
-    </div>
-  )
+    </BrowserView>
+
+    <MobileView>
+      <div className="mobile-all-videos-container">
+        {videos.length ? videos.slice(0, 10).map(video => (
+          <Link to={video.url} target="_blank" className="mobile-article-container">
+            <img className="mobile-video-thumbnail" src={video.thumbnail} />
+            <h3 style={{ marginLeft: "10px" }}>{video.title}</h3>
+          </Link>
+        )) : videoLoadError ? <ErrorLoading /> : <Loading />}
+      </div>
+    </MobileView>
+  </>)
 }
 
 export default AllVideos;

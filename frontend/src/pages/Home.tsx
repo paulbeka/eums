@@ -327,7 +327,7 @@ const Home = () => {
 
         <div className="mobile-articles-container">
           <h1 style={{textAlign: "center"}}>Videos</h1>
-          {videos.length ? videos.slice(0, 3).map(video => (
+          {videos.length ? videos.slice(0, 10).map(video => (
             <Link to={video.url} target="_blank" className="mobile-article-container">
               <img className="mobile-video-thumbnail" src={video.thumbnail} />
               <h3 style={{ marginLeft: "10px" }}>{video.title}</h3>

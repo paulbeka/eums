@@ -6,6 +6,7 @@ import { BASE_URL } from "../Config";
 import { Link } from "react-router-dom";
 import ErrorLoading from "../components/frontend_util/ErrorLoading";
 import Loading from "../components/frontend_util/Loading";
+import { BrowserView, MobileView } from "react-device-detect";
 
 
 const AllArticles = () => {
@@ -52,7 +53,8 @@ const AllArticles = () => {
     return searchMatch && categoryMatch;
   });
 
-  return (
+  return (<>
+  <BrowserView>
     <div className="all-articles-container">
       <div className="all-articles-content">
         <div className="item-bar">
@@ -125,7 +127,18 @@ const AllArticles = () => {
         </div>
       </div>
     </div>
-  );
+  </BrowserView>
+  <MobileView>
+    <div className="mobile-articles-container">
+      {articles.length ? articles.slice(0, 3).map(article => (
+        <Link to={`/article/${article.id}`} className="mobile-article-container">
+          <img className="mobile-article-thumbnail" src={`${BASE_URL}/thumbnails/${article.thumbnail}`} />
+          <h3 style={{ marginLeft: "10px" }}>{article.title}</h3>
+        </Link>
+      )) : articleError ? <ErrorLoading /> : <Loading />}
+    </div>
+  </MobileView>
+  </>);
 };
 
 export default AllArticles;

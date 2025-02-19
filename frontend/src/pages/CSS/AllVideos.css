@@ -57,3 +57,22 @@
   margin: 1em;
 }
 
+.mobile-all-videos-container {
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1em;
+  padding-top: 2em;
+
+  .mobile-article-container {
+    margin: 1em;
+  }
+
+  .mobile-video-thumbnail {
+    width: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+    aspect-ratio: 16/9;
+  }
+}
