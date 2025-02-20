@@ -52,7 +52,7 @@ const NavBar: React.FC<{
           ))}
         </div>
         <div className="right-content">
-          <Link to="/" target="_blank" style={{ marginRight: "1em" }}>
+          <Link to="https://www.youtube.com/@EUMadeSimple/store" target="_blank" style={{ marginRight: "1em" }}>
             <FaBagShopping color="white" size={25} />
           </Link>
         </div>

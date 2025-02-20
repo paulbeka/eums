@@ -1,0 +1,74 @@
+.eums-shadow-box {
+  border: 3px solid black;
+  box-shadow: 4px 4px;
+  border-radius: 25px;
+}
+
+.about-text-explainers {
+  margin: 1em;
+  margin-top: 0;
+  display: flex;
+}
+
+.about-text-explainer {
+  margin: 1em;
+  padding: 2em;
+  text-align: justify;
+}
+
+.team-container {
+  margin: 2em auto;
+  width: 90%;
+}
+
+.team-members-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.member-container {
+  width: 40%;
+  margin: 2em;
+  padding: 1em;
+  display: flex;
+  gap: 1em;
+}
+
+.about-person-image {
+  width: 200px;
+  max-height: 300px;
+}
+
+.about-person-details-container {
+  margin-top: 1em;
+}
+
+
+/* PHONE CONTENT */
+
+.mobile-about-container {
+  padding: 1em;
+
+  .about-text-explainers {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .about-text-explainer {
+    margin: 0;
+    margin-bottom: 2em;
+  }
+
+  .team-members-container {
+    margin: 0;
+    display: flex;
+  }
+
+  .member-container {
+    width: 90%;
+    margin: 0;
+    margin-bottom: 2em;
+  }
+}
+
