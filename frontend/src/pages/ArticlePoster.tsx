@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Editor } from "react-draft-wysiwyg";
-import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import "./CSS/ArticlePoster.css";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import api, { postArticle, getTags } from "../components/api/Api";
 import TagSelector from "../components/frontend_util/TagSelector";
 
@@ -11,7 +8,7 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
   const navigate = useNavigate();
   const { articleId } = useParams();
   const [title, setTitle] = useState("");
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [editorState, setEditorState] = useState("");
   const [thumbnail, setThumbnail] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   
@@ -24,11 +21,7 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
       .then((response) => {
         setTitle(response.data.title);
         setSelectedTags(response.data.tags);
-        setEditorState(
-          EditorState.createWithContent(
-            convertFromRaw(JSON.parse(response.data.content))
-          )
-        );
+        setEditorState(response.data.content);
       })
       .catch((error) => {
         console.error(error);
@@ -58,7 +51,7 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
   const submitArticle = async () => {
     const formData = {
       title,
-      content: convertToRaw(editorState.getCurrentContent()),
+      content: editorState,
       thumbnail,
       selectedTags
     };
@@ -73,6 +66,10 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
       setSuccess(false);
     }
   };
+
+  const getNumberOfWords = () => {
+    return editorState.split(" ").filter(value => value !== "").length;
+  }
 
   return (
     <div className="article-poster">
@@ -103,13 +100,14 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
 
         {TagSelector({selectedTags, setSelectedTags})}
 
-        <div className="editor-content">
-          <Editor
-            editorState={editorState}
-            onEditorStateChange={setEditorState}
-            editorClassName="form-control blog-editor"
-          />
+        <div className="article-content-metadata">
+          <h3>Article Content</h3>
+          <p>{getNumberOfWords()}/3000 words</p>
         </div>
+        <textarea 
+          className="editor-content" 
+          onChange={(e) => setEditorState(e.target.value)}
+        />
 
         <div className="save-post-container">
           <button className="submitButton" onClick={submitArticle}>

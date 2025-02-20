@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 import { Article } from "../components/types/Content.type";
 import api from "../components/api/Api";
 import Loading from "../components/frontend_util/Loading";
-import { convertFromRaw } from 'draft-js'
-import { stateToHTML } from "draft-js-export-html";
 import { Link } from "react-router-dom";
 import { BASE_URL } from "../Config";
 import "./CSS/ArticleDisplay.css";
@@ -15,6 +13,14 @@ const ArticleDisplay = () => {
 
   const { articleId } = useParams();
   const [articleContent, setArticleContent] = useState<Article>();
+
+  const formatArticleContent = (content: string) => {
+    return content
+      .replace(/\\u([a-fA-F0-9]{4})/g, (match, group) => 
+        String.fromCharCode(parseInt(group, 16)) 
+      )
+      .replace(/(?:\\r\\n|\\r|\\n)/g, '<br>'); 
+  }
 
   useEffect(() => {
     api.get(`/article/${articleId}`)
@@ -56,7 +62,7 @@ const ArticleDisplay = () => {
           </div>
           <div 
             className="post-content" 
-            dangerouslySetInnerHTML={{__html: stateToHTML(convertFromRaw(JSON.parse(articleContent['content'])))}} 
+            dangerouslySetInnerHTML={{__html: "<p>" + formatArticleContent(articleContent['content']) + "</p>"}} 
           />
         </div>
         : <Loading />}
@@ -73,7 +79,7 @@ const ArticleDisplay = () => {
             <h2 style={{ marginBlock: "1em" }}>{articleContent["title"]}</h2>
           </div>
           <div 
-            dangerouslySetInnerHTML={{__html: stateToHTML(convertFromRaw(JSON.parse(articleContent['content'])))}} 
+            dangerouslySetInnerHTML={{__html: "<p>" + formatArticleContent(articleContent['content']) + "</p>"}} 
           />
         </div>
         : <Loading />}

@@ -102,12 +102,13 @@ const Home = () => {
   }, []);
 
   const getArticleParagraphs = (article: Article) => {
-    const parsedBlogPost = JSON.parse(article.content);
-    if (parsedBlogPost.blocks.length > 1) {
+    const blockList = article.content.split("\\n")
+      .filter(item => item !== "");
+    if (blockList.length > 1) {
       return (
         <div className="main-article-paragraph-containers">
-          <p className="main-article-paragraph">{parsedBlogPost.blocks[0].text}</p>
-          <p className="main-article-paragraph">{parsedBlogPost.blocks[1].text}</p>
+          <p className="main-article-paragraph">{blockList[0]}</p>
+          <p className="main-article-paragraph">{blockList[1]}</p>
         </div>
       )
     } else {

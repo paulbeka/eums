@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { RawDraftContentState } from 'draft-js';
 import { BASE_URL } from "../../Config";
 
 
@@ -35,7 +34,7 @@ export const getArticles = async (getPublicOnly: boolean) => {
 
 export const postArticle = async (payload: { 
     title: string, 
-    content: RawDraftContentState, 
+    content: string, 
     thumbnail: any, 
     selectedTags: string[] 
   }) => {

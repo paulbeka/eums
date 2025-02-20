@@ -9,7 +9,7 @@ class Token(BaseModel):
 
 class ArticleResponse(BaseModel):
     title: str
-    content: Dict[str, Any]
+    content: str
     thumbnail: str = None
     selectedTags: List[str]
 

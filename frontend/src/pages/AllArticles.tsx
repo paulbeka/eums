@@ -17,6 +17,11 @@ const AllArticles = () => {
 
   const [articleError, setArticleError] = useState(false);
 
+  const fixBackslashes = (str: string) => {
+    return JSON.parse(`"${str.replace(/"/g, '\\"')}"`) 
+      .replace(/(?:\r\n|\r|\n)/g, '<br>');
+  };
+
   useEffect(() => {
     document.title = "All Articles";
     getArticles(true).then((res) => setArticles(res))
@@ -32,11 +37,12 @@ const AllArticles = () => {
   };
 
   const getArticleParagraphs = (article: Article) => {
-    const parsedBlogPost = JSON.parse(article.content);
+    const blockList = article.content.split("\\n")
+      .filter(item => item !== "");
     return (
       <div className="all-articles-article-paragraph">
-        <p style={{ textAlign: "justify" }}>{parsedBlogPost.blocks[0]?.text || ""}</p>
-        <p style={{ textAlign: "justify" }}>{parsedBlogPost.blocks[1]?.text || ""}</p>
+        <p style={{ textAlign: "justify" }}>{blockList[0] || ""}</p>
+        <p style={{ textAlign: "justify" }}>{blockList[1] || ""}</p>
       </div>
     );
   };

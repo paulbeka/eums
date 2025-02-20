@@ -17,13 +17,6 @@
   padding: 5px;
 }
 
-.editor-content {
-  margin-block: 2em;
-  padding: 1em;
-  border: 1px solid black;
-  border-radius: 20px;
-}
-
 .save-post-container {
   margin-block: 1em;
   display: flex;
@@ -38,4 +31,20 @@
   border-radius: 20px;
   font-weight: bold;
   cursor: pointer;
+}
+
+.editor-content {
+  margin-block: 1em;
+  padding: 1em;
+  border: 1px solid black;
+  border-radius: 20px;
+  min-height: 300px;
+  width: 100%;
+}
+
+.article-content-metadata {
+  margin-top: 3em; 
+  margin-inline: 1em;
+  display: flex;
+  justify-content: space-between;
 }
