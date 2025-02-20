@@ -8,6 +8,7 @@ import { stateToHTML } from "draft-js-export-html";
 import { Link } from "react-router-dom";
 import { BASE_URL } from "../Config";
 import "./CSS/ArticleDisplay.css";
+import { BrowserView, MobileView } from "react-device-detect";
 
 
 const ArticleDisplay = () => {
@@ -25,7 +26,8 @@ const ArticleDisplay = () => {
     });
   }, [articleId])
 
-  return (
+  return (<>
+  <BrowserView>
     <div className="article-display-container">
       <div className="article-display-content">
         <div className="article-display-control-bar">
@@ -60,7 +62,24 @@ const ArticleDisplay = () => {
         : <Loading />}
       </div>
     </div>
-  )
+  </BrowserView>
+
+  <MobileView>
+    <div className="article-display-mobile-container">
+      {articleContent ? 
+        <div>
+          <div style={{ margin: "auto" }}>
+            <img src={`${BASE_URL}/thumbnails/${articleContent.thumbnail}`} className="article-main-image" />
+            <h2 style={{ marginBlock: "1em" }}>{articleContent["title"]}</h2>
+          </div>
+          <div 
+            dangerouslySetInnerHTML={{__html: stateToHTML(convertFromRaw(JSON.parse(articleContent['content'])))}} 
+          />
+        </div>
+        : <Loading />}
+    </div>
+  </MobileView>
+  </>)
 }
 
 export default ArticleDisplay;
