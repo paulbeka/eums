@@ -54,7 +54,7 @@ const TagSelector = ({
 
   return (
   <div className="article-poster-set-tags-container">
-    <label className="tags-label">Tags:</label>
+    <label className="tags-label">Tags (max 3):</label>
     <div className="tag-input-wrapper">
       <div className="selected-tags">
         {selectedTags.map((tag) => (

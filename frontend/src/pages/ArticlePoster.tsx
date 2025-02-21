@@ -44,10 +44,6 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
     }
   };
 
-  const handleModifyTags = () => {
-
-  }
-
   const submitArticle = async () => {
     const formData = {
       title,
@@ -67,8 +63,8 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
     }
   };
 
-  const getNumberOfWords = () => {
-    return editorState.split(" ").filter(value => value !== "").length;
+  const getNumberOfWords = (str: string) => {
+    return str.split(" ").filter(value => value !== "").length;
   }
 
   return (
@@ -80,7 +76,10 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
         </div>
 
         <div className="setproperties-container">
-          <label>Post title:</label>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <p>Post title:</p>
+            <p>{getNumberOfWords(title)}/20</p>
+          </div>
           <input
             value={title}
             className="title-input"
@@ -88,6 +87,8 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
             onChange={(e) => setTitle(e.target.value)}
           />
         </div>
+
+        <br />
 
         <div className="setproperties-container">
           <label>Upload Thumbnail:</label>
@@ -102,7 +103,7 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
 
         <div className="article-content-metadata">
           <h3>Article Content</h3>
-          <p>{getNumberOfWords()}/3000 words</p>
+          <p>{getNumberOfWords(editorState)}/3000 words</p>
         </div>
         <textarea 
           className="editor-content" 

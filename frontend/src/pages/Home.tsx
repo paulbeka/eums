@@ -85,7 +85,7 @@ const Home = () => {
   useEffect(() => {
     document.title = 'Home';
     getArticles(true).then(res => {
-      setArticles(res);
+      setArticles([...res].sort((a, b) => b.id - a.id));
       setArticleError(false);
     })
     .catch((err) => setArticleError(true)); 
