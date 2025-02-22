@@ -7,6 +7,8 @@ import { BASE_URL } from "../Config";
 import { BrowserView, MobileView } from "react-device-detect";
 import Loading from '../components/frontend_util/Loading';
 import ErrorLoading from '../components/frontend_util/ErrorLoading';
+import { Helmet } from 'react-helmet-async';
+import { formatArticleContent } from "../components/util_tools/Util";
 
 
 const Home = () => {
@@ -107,8 +109,8 @@ const Home = () => {
     if (blockList.length > 1) {
       return (
         <div className="main-article-paragraph-containers">
-          <p className="main-article-paragraph">{blockList[0]}</p>
-          <p className="main-article-paragraph">{blockList[1]}</p>
+          <p className="main-article-paragraph">{formatArticleContent(blockList[0])}</p>
+          <p className="main-article-paragraph">{formatArticleContent(blockList[1])}</p>
         </div>
       )
     } else {
@@ -117,6 +119,10 @@ const Home = () => {
   }
 
   return (<>
+    <Helmet>
+      <title>EUMS - Home</title>
+      <meta name="description" content="The EUMS Home page." />
+    </Helmet>
     <BrowserView>
     <div className="home">
       <div className="top-bar-options">

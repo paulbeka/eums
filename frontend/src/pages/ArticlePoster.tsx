@@ -78,7 +78,7 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
         <div className="setproperties-container">
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <p>Post title:</p>
-            <p>{getNumberOfWords(title)}/20</p>
+            <p>{getNumberOfWords(title)}/10</p>
           </div>
           <input
             value={title}

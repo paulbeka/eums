@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { BrowserView, MobileView } from "react-device-detect";
 import "./CSS/About.css";
+import { Helmet } from 'react-helmet-async';
 
 
 const About = () => {
@@ -18,6 +19,10 @@ const About = () => {
   ];
 
   return <>
+    <Helmet>
+      <title>EUMS - About</title>
+      <meta name="description" content="What is EU Made Simple?" />
+    </Helmet>
     <BrowserView>
       <div className="about-container">
         <div className="about-text-explainers">

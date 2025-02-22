@@ -16,45 +16,48 @@ import AllArticles from './pages/AllArticles';
 import AllVideos from './pages/AllVideos';
 import "@fontsource/poppins";
 import React from 'react';
+import { HelmetProvider } from 'react-helmet-async';
 
 
 function App() {
   return (
     <React.StrictMode>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<BasePage />} >
-            <Route index element={<Home />} />
-            <Route path="about" element={<About />} />
-            
-            <Route path="contact" element={
-              <GoogleReCaptchaProvider reCaptchaKey={CAPTCHA_SITE_KEY}>
-                <Contact />
-              </GoogleReCaptchaProvider>  
-            } />
-            
-            <Route path="article/:articleId" element={<ArticleDisplay />} />
-            <Route path="all-articles" element={<AllArticles />} /> 
-            <Route path="all-videos" element={<AllVideos livestreams={false} />} />     
-            <Route path="all-interviews" element={<AllVideos livestreams={true} />} />     
+      <HelmetProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<BasePage />} >
+              <Route index element={<Home />} />
+              <Route path="about" element={<About />} />
+              
+              <Route path="contact" element={
+                <GoogleReCaptchaProvider reCaptchaKey={CAPTCHA_SITE_KEY}>
+                  <Contact />
+                </GoogleReCaptchaProvider>  
+              } />
+              
+              <Route path="article/:articleId" element={<ArticleDisplay />} />
+              <Route path="all-articles" element={<AllArticles />} /> 
+              <Route path="all-videos" element={<AllVideos livestreams={false} />} />     
+              <Route path="all-interviews" element={<AllVideos livestreams={true} />} />     
 
-            <Route path="login" element={<Login />} />
-            
-            <Route path="*" element={<PageNotFound />} />
+              <Route path="login" element={<Login />} />
+              
+              <Route path="*" element={<PageNotFound />} />
 
-            {/* Anything here needs auth access */}
-            <Route path="article-manager" element={
-              <ProtectedRoute element={<AdminArticleManager />} />
-            } />
-            <Route path="article-poster" element={
-              <ProtectedRoute element={<ArticlePoster edit={false} />} />
-            } />
-            <Route path="article-manager/edit/:articleId" element={
-              <ProtectedRoute element={<ArticlePoster edit={true} />} />
-            } />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+              {/* Anything here needs auth access */}
+              <Route path="article-manager" element={
+                <ProtectedRoute element={<AdminArticleManager />} />
+              } />
+              <Route path="article-poster" element={
+                <ProtectedRoute element={<ArticlePoster edit={false} />} />
+              } />
+              <Route path="article-manager/edit/:articleId" element={
+                <ProtectedRoute element={<ArticlePoster edit={true} />} />
+              } />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </HelmetProvider>
     </React.StrictMode>
   );
 }

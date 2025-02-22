@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import ErrorLoading from "../components/frontend_util/ErrorLoading";
 import Loading from "../components/frontend_util/Loading";
 import { BrowserView, MobileView } from "react-device-detect";
+import { formatArticleContent } from "../components/util_tools/Util";
 
 
 const AllArticles = () => {
@@ -16,11 +17,6 @@ const AllArticles = () => {
   const [articles, setArticles] = useState<Article[]>([]);
 
   const [articleError, setArticleError] = useState(false);
-
-  const fixBackslashes = (str: string) => {
-    return JSON.parse(`"${str.replace(/"/g, '\\"')}"`) 
-      .replace(/(?:\r\n|\r|\n)/g, '<br>');
-  };
 
   useEffect(() => {
     document.title = "All Articles";
@@ -41,8 +37,8 @@ const AllArticles = () => {
       .filter(item => item !== "");
     return (
       <div className="all-articles-article-paragraph">
-        <p style={{ textAlign: "justify" }}>{blockList[0] || ""}</p>
-        <p style={{ textAlign: "justify" }}>{blockList[1] || ""}</p>
+        <p style={{ textAlign: "justify" }}>{formatArticleContent(blockList[0]) || ""}</p>
+        <p style={{ textAlign: "justify" }}>{formatArticleContent(blockList[1]) || ""}</p>
       </div>
     );
   };

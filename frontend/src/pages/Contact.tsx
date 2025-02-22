@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useGoogleReCaptcha, GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import { sendEmail } from "../components/api/Api";
 import { CAPTCHA_SITE_KEY } from "../Config";
-
+import { Helmet } from 'react-helmet-async';
 import "./CSS/Contact.css";
+
 
 const Contact = () => {
   const [name, setName] = useState("");
@@ -55,7 +56,11 @@ const Contact = () => {
     }
   };
 
-  return (
+  return (<>
+    <Helmet>
+      <title>EUMS - Contact</title>
+      <meta name="description" content="Contact EU Made Simple Here" />
+    </Helmet>
     <div className="contact">
       {isSubmitted ? (
         <div className="thank-you-message">
@@ -119,7 +124,7 @@ const Contact = () => {
         </form>
       )}
     </div>
-  );
+  </>);
 };
 
 export default Contact;
