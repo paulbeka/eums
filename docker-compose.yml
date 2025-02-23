@@ -41,7 +41,7 @@ services:
       - REACT_APP_BACKEND_URL=http://localhost:8000
     volumes:
       - ./frontend/build:/usr/share/nginx/html
-      - ./certbot/conf:/etc/letsencrypt
+      - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - certbot
     restart: always
@@ -51,9 +51,11 @@ services:
     image: certbot/certbot
     container_name: certbot
     volumes:
-      - ./certbot/conf:/etc/letsencrypt  # Persist SSL certificates
+      - /etc/letsencrypt:/etc/letsencrypt  # Persist SSL certificates
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 12h & wait $${!}; certbot renew --webroot -w /var/www/certbot --quiet; done'"
 
 volumes:
   postgres_data:
   thumbnails_data:
+  - ./frontend/build:/usr/share/nginx/html
+  - ./certbot/conf:/etc/letsencrypt
