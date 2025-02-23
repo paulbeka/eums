@@ -57,5 +57,3 @@ services:
 volumes:
   postgres_data:
   thumbnails_data:
-  - ./frontend/build:/usr/share/nginx/html
-  - ./certbot/conf:/etc/letsencrypt
