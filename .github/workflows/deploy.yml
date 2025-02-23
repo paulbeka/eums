@@ -93,27 +93,34 @@ jobs:
               listen 80;
               server_name eumadesimple.eu www.eumadesimple.eu;
               
+              # Redirect HTTP to HTTPS
               location /.well-known/acme-challenge/ {
                   root /var/www/certbot;
               }
 
-              return 301 https://\$host\$request_uri;
+              # Redirect all HTTP traffic to HTTPS
+              return 301 https://$host$request_uri;
             }
 
             server {
-                listen 443 ssl;
-                server_name eumadesimple.eu www.eumadesimple.eu;
+              listen 443 ssl;
+              server_name eumadesimple.eu www.eumadesimple.eu;
 
-                ssl_certificate /etc/letsencrypt/live/eumadesimple.eu/fullchain.pem;
-                ssl_certificate_key /etc/letsencrypt/live/eumadesimple.eu/privkey.pem;
+              # SSL Configuration
+              ssl_certificate /etc/letsencrypt/live/eumadesimple.eu/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/eumadesimple.eu/privkey.pem;
+              ssl_session_cache shared:SSL:1m;
+              ssl_session_timeout 5m;
+              ssl_protocols TLSv1.2 TLSv1.3;
 
-                root /usr/share/nginx/html;
-                index index.html;
+              # Root for static files (frontend)
+              root /usr/share/nginx/html;
+              index index.html;
 
-                location / {
-                    try_files \$uri \$uri/ /index.html;
-                }
-            }' > ./frontend/nginx/default.conf
+              location / {
+                  # Try to serve static files, fallback to index.html for React
+                  try_files $uri $uri/ /index.html;
+              }' > ./frontend/nginx/default.conf
 
             SCRIPT_PATH="./simple_bot/cron_setup.sh"
             CRON_SCHEDULE="0 * * * *" # Runs every hour at the start of the hour
