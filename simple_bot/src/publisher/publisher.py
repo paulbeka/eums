@@ -1,5 +1,12 @@
+from ..util import login_and_get_token
+from dotenv import load_dotenv
+import os, requests
 
-## TODO: adapt this to post only text content to the updated article displayer (how do we do bold, underlined..?)
+
+load_dotenv()
+
+BACKEND_URL = os.getenv("BACKEND_URL")
+
 
 def publish_ai_content():
 	access_token = login_and_get_token()
@@ -12,9 +19,11 @@ def publish_ai_content():
 		data = json.load(f)
 		f.close()
 
+		print(data["content"])
+
 		payload = {
 			"title": data["title"],
-			"content": string_to_draftjs(data["content"]),
+			"content": data["content"],
 			"thumbnail": "",
 			"selectedTags": []
 		}
@@ -32,27 +41,30 @@ def publish_ai_content():
 			print(f"An error occurred while posting video '{video['title']}': {e}")
 
 
-def string_to_draftjs(content):
-	contentParagraphs = content.split("\n")
-	
-	draftjs_content = {
-		"blocks": [],
-		"entityMap": {}
-	}
+def publish_ai_content_pipeline(articles):
+	access_token = login_and_get_token()
+	api_endpoint = f"{BACKEND_URL}/articles"
 
-	for i, paragraph in enumerate(contentParagraphs):
-		if len(paragraph) <= 0:
-			continue
-		draftjs_content["blocks"].append({
-			"key":	str(i),
-			"text": paragraph,
-			"type": "unstyled",
-			"depth": 0,
-			"inlineStyleRanges": [],
-			"entityRanges": []
-		})
+	for article in articles:
 
-	if len(draftjs_content["blocks"]) <= 0:
-		raise RuntimeError("No content!")#
+		print(article["content"])
 
-	return draftjs_content
+		payload = {
+			"title": article["title"],
+			"content": article["content"],
+			"thumbnail": "",
+			"selectedTags": []
+		}
+
+		headers = {
+			"Authorization": f"Bearer {access_token}",
+			"Content-Type": "application/json"
+		}
+
+		try:
+			response = requests.post(api_endpoint, json=payload, headers=headers)
+			if response.status_code != 200:
+				print(f"Failed to upload video '{video['title']}': {response.text}")
+		except Exception as e:
+			print(f"An error occurred while posting video '{video['title']}': {e}")
+

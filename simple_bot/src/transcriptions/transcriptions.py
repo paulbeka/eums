@@ -11,10 +11,9 @@ API_KEY = os.getenv("API_KEY")
 
 def fetch_transcription(video_title, video_id):
 	try:
-		transcript = YouTubeTranscriptApi.get_transcript(video_id, API_KEY)
+		transcript = YouTubeTranscriptApi.get_transcript(video_id)
 		transcript_text = " ".join([entry['text'] for entry in transcript])
 
-		transcrip
 		with open(filename, "w", encoding="utf-8") as file:
 			json.dump(transcription_data, file, ensure_ascii=False, indent=4)
 
@@ -25,6 +24,22 @@ def fetch_transcription(video_title, video_id):
 		print(e)
 		print(f"Transcript not available for {video_title}")
 		return False
+
+
+def get_transcriptions_pipeline():
+	videos = get_videos_from_channel()
+	transcripts = []
+	for video in videos[0:2]:
+		try:
+			print(f"Fetching video transcript for: {video["title"]}")
+			transcript = YouTubeTranscriptApi.get_transcript(video["video_id"])
+			transcripts.append({
+				"title": video["title"],
+				"content": " ".join([entry['text'] for entry in transcript])
+			})
+		except Exception as e:
+			print(e)
+	return transcripts
 
 
 def get_transcriptions():

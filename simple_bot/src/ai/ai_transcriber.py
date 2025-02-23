@@ -53,10 +53,11 @@ def ai_generator():
 	transcript_files = os.listdir(TRANSCRIPTS_FOLDER)
 	generated_articles = os.listdir(GENERATED_ARTICLES_FOLDER)
 
-	missing_transcripts = set(transcript_files) - set(generated_articles)
+	transcipt_list = set(transcript_files) - set(generated_articles)
 
-	for filename in list(missing_transcripts)[0:3]:
+	for filename in list(transcipt_list):
 		try:
+
 			title, article = transcription_to_article(os.path.join(TRANSCRIPTS_FOLDER, filename))
 
 			if "live" in title.lower():
@@ -73,3 +74,19 @@ def ai_generator():
 			print(f"Generated {title}.")
 		except Exception as e:
 			print(f"ERROR: File {filename} failed.")
+
+
+def ai_generate_list(transcripts):
+	articles = []
+
+	for transcript in transcripts:
+		try:
+			print(f"Transcribing: {transcript['title']}")
+			articles.append({
+				"title": transcript['title'],
+				"content": create_news_article(transcript["content"])
+			})
+
+		except Exception as e:
+			print(f"ERROR: {transcript["title"]} failed.")
+	return articles

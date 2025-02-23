@@ -91,7 +91,7 @@ jobs:
             # Create custom Nginx configuration
             echo 'server {
                 listen 80;
-                server_name _;
+                server_name eumadesimple.eu www.eumadesimple.eu;
 
                 root /usr/share/nginx/html;
                 index index.html;

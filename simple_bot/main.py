@@ -1,9 +1,9 @@
 from dotenv import load_dotenv
 import os, argparse
 
-from src.ai.ai_transcriber import ai_generator
-from src.transcriptions.transcriptions import get_transcriptions
-from src.publisher.publisher import publish_ai_content
+from src.ai.ai_transcriber import ai_generator, ai_generate_list
+from src.transcriptions.transcriptions import get_transcriptions, get_transcriptions_pipeline
+from src.publisher.publisher import publish_ai_content, publish_ai_content_pipeline
 from src.video_updater.video_updater import get_videos_and_thumbnails
 
 
@@ -29,9 +29,9 @@ def main():
     elif args.command == "publish":
         publish_ai_content()
     elif args.command == "publish_missing_videos":
-        get_transcriptions()
-        ai_generator()
-        publish_ai_content()
+        transcripts = get_transcriptions_pipeline()
+        articles = ai_generate_list(transcripts)
+        publish_ai_content_pipeline(articles)
     elif args.command == "populate":
         get_videos_and_thumbnails()
     else:
