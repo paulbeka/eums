@@ -19,7 +19,7 @@ jobs:
 
       - name: Install dependencies and build the app
         env:
-          REACT_APP_BASE_URL: http://134.122.92.255:8000
+          REACT_APP_BASE_URL: http://eumadesimple.eu:8000
         run: |
           cd frontend
           npm install
