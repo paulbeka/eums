@@ -90,14 +90,28 @@ jobs:
             mkdir -p ./frontend/nginx
             # Create custom Nginx configuration
             echo 'server {
-                listen 80;
+              listen 80;
+              server_name eumadesimple.eu www.eumadesimple.eu;
+              
+              location /.well-known/acme-challenge/ {
+                  root /var/www/certbot;
+              }
+
+              return 301 https://\$host\$request_uri;
+            }
+
+            server {
+                listen 443 ssl;
                 server_name eumadesimple.eu www.eumadesimple.eu;
+
+                ssl_certificate /etc/letsencrypt/live/eumadesimple.eu/fullchain.pem;
+                ssl_certificate_key /etc/letsencrypt/live/eumadesimple.eu/privkey.pem;
 
                 root /usr/share/nginx/html;
                 index index.html;
 
                 location / {
-                    try_files $uri $uri/ /index.html;
+                    try_files \$uri \$uri/ /index.html;
                 }
             }' > ./frontend/nginx/default.conf
 
