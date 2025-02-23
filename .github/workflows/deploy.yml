@@ -120,7 +120,8 @@ jobs:
               location / {
                   # Try to serve static files, fallback to index.html for React
                   try_files $uri $uri/ /index.html;
-              }' > ./frontend/nginx/default.conf
+              }
+            }' > ./frontend/nginx/default.conf
 
             SCRIPT_PATH="./simple_bot/cron_setup.sh"
             CRON_SCHEDULE="0 * * * *" # Runs every hour at the start of the hour
