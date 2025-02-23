@@ -108,8 +108,8 @@ jobs:
                 server_name eumadesimple.eu www.eumadesimple.eu;
 
                 # SSL Configuration
-                ssl_certificate /etc/letsencrypt/live/eumadesimple.eu/fullchain.pem;
-                ssl_certificate_key /etc/letsencrypt/live/eumadesimple.eu/privkey.pem;
+                ssl_certificate /certbot/conf/live/eumadesimple.eu/fullchain.pem;
+                ssl_certificate_key /certbot/conf/live/eumadesimple.eu/privkey.pem;
                 ssl_session_cache shared:SSL:1m;
                 ssl_session_timeout 5m;
                 ssl_protocols TLSv1.2 TLSv1.3;
