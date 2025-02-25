@@ -19,7 +19,7 @@ jobs:
 
       - name: Install dependencies and build the app
         env:
-          REACT_APP_BASE_URL: https://backend/api
+          REACT_APP_BASE_URL: http://backend/api
         run: |
           cd frontend
           npm install
