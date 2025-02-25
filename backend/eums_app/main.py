@@ -42,6 +42,8 @@ app.add_middleware(
         "https://eumadesimple.eu:3000",
         "https://eumadesimple.eu:80",
         "https://eumadesimple.eu"
+        "https://eumadesimple.eu/api",
+        "http://backend:8000/"
         ],
     allow_credentials=True,
     allow_methods=["*"],
