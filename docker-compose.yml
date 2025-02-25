@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: ./backend/Dockerfile
     ports:
-      - "8000:8000"
+      - "8000"
     environment:
       - SECRET_KEY=defaultsecret
       - DATABASE_URL=postgresql+psycopg2://admin:admin@db:5432/eums
