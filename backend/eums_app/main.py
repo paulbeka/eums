@@ -42,7 +42,7 @@ app.add_middleware(
         "http://eumadesimple.eu",
         "https://eumadesimple.eu:3000",
         "https://eumadesimple.eu:80",
-        "https://eumadesimple.eu"
+        "https://eumadesimple.eu",
         "https://www.eumadesimple.eu",
         "http://backend:8000/"
         ],
