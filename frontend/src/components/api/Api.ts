@@ -52,6 +52,26 @@ export const postArticle = async (payload: {
 }
 
 
+export const editArticle = async (id: string, payload: {
+  title: string, 
+  content: string, 
+  thumbnail: any, 
+  selectedTags: string[] 
+}) => {
+  return api.post(`/articles/edit/${id}`, payload)
+    .then(response => {
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        return false;
+      }
+    })
+    .catch(err => {
+      return false;
+    });
+}
+
+
 export const deleteArticle = async (articleId: number) => {
   return api.delete(`/article/${articleId}`)
     .then(response => {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./CSS/ArticlePoster.css";
-import api, { postArticle, getTags } from "../components/api/Api";
+import api, { postArticle, editArticle, getTags } from "../components/api/Api";
 import TagSelector from "../components/frontend_util/TagSelector";
 
 const ArticlePoster = ({ edit }: { edit: boolean }) => {
@@ -16,18 +16,18 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
   const [availableTags, setAvailableTags] = useState<string[]>([]);
 
   useEffect(() => {
+    getTags().then((res) => setAvailableTags(res));
     if (edit) {
       api.get(`/article/${articleId}`)
       .then((response) => {
         setTitle(response.data.title);
-        setSelectedTags(response.data.tags);
-        setEditorState(response.data.content);
+        setSelectedTags(response.data.tags.map((item: any) => item.tag));
+        setEditorState(JSON.parse(response.data.content));
       })
       .catch((error) => {
         console.error(error);
       });
     }
-    getTags().then((res) => setAvailableTags(res));
   }, [articleId, edit]);
 
   const handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,9 +53,9 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
     };
 
     try {
-      const articleId = await postArticle(formData);
-      if (articleId) {
-        navigate(`/article/${articleId}`);
+      const idResponse = edit ? await editArticle(articleId!, formData) : await postArticle(formData);
+      if (idResponse) {
+        navigate(`/article/${idResponse}`);
       }
     } catch (error) {
       console.error(error);
@@ -107,12 +107,13 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
         </div>
         <textarea 
           className="editor-content" 
+          value={editorState}
           onChange={(e) => setEditorState(e.target.value)}
         />
 
         <div className="save-post-container">
           <button className="submitButton" onClick={submitArticle}>
-            <span>Submit</span>
+            <span>{edit ? "Edit" : "Post"}</span>
           </button>
         </div>
 

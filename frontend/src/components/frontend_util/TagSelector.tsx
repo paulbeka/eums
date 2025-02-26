@@ -57,7 +57,7 @@ const TagSelector = ({
     <label className="tags-label">Tags (max 3):</label>
     <div className="tag-input-wrapper">
       <div className="selected-tags">
-        {selectedTags.map((tag) => (
+        {selectedTags?.map((tag) => (
           <span key={tag} className="tag">
             {tag}
             <button onClick={() => handleRemoveTag(tag)} className="remove-tag">

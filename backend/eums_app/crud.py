@@ -44,8 +44,16 @@ def get_articles(db: Session, skip: int = 0, limit: int = 10, public_only: bool 
     ]
 
 def get_article(articleId: str, db: Session, public_only: bool = True):
-    query = db.query(Article).filter(Article.id == articleId)
-    return query.first()
+    query = db.query(Article).options(joinedload(Article.tags)).filter(Article.id == articleId)
+    article = query.first()
+    return {
+        "id": article.id,
+        "title": article.title,
+        "content": article.content,
+        "public": article.public,
+        "thumbnail": article.thumbnail,
+        "tags": [{"id": tag.id, "tag": tag.tag} for tag in article.tags],
+    }
 
 
 
@@ -79,6 +87,7 @@ def create_article(db: Session, title: str, content: dict, public: bool, thumbna
 
 
 def edit_article(db: Session, id: int, title: str, content: str, public: bool):
+    # TODO: Add edit tags functionality
     db_article = db.query(Article).filter(Article.id == id).first()
     if not db_article:
         raise Exception("Article not found")
