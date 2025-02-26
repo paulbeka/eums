@@ -68,7 +68,7 @@ const AdminArticleManager = () => {
     <div className="article-manager">
       <div className="article-manager-content">
         <h2>Manage articles here</h2>
-        <div className="article-container">
+        <div>
           {articles.map((article) => (
             <div className="article-div" key={article.id}>
               <Link to={`/article/${article.id}`}>{article.title}</Link>

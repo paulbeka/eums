@@ -19,6 +19,7 @@
 
 .article-share-and-download-container {
   display: flex;
+  cursor: pointer;
 }
 
 .article-share-icon {
