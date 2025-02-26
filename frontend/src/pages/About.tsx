@@ -29,26 +29,22 @@ const About = () => {
           <div className="about-text-explainer eums-shadow-box">
             <h2>Who are we?</h2>
             <br />
-            <p>Welcome to EU Made Simple! Our purpose? Delivering easy to digest, comprehensive, and easy to understand information about EU news and politics.
-              Originally starting with English youtube videos, we now have over 7 channels in different European languages! This website is the newest addition
-              to our media presence, where we share with you custom written news articles!
-            </p>
+            <p>Welcome to EU Made Simple! We're a team of passionate individuals dedicated to making 
+              EU news and politics accessible to everyone.</p>
           </div>
+
           <div className="about-text-explainer eums-shadow-box">
             <h2>What is our Mission?</h2>
             <br />
-            <p>Welcome to EU Made Simple! Our purpose? Delivering easy to digest, comprehensive, and easy to understand information about EU news and politics.
-              Originally starting with English youtube videos, we now have over 7 channels in different European languages! This website is the newest addition
-              to our media presence, where we share with you custom written news articles!
-            </p>
+            <p>Our goal is to simplify EU politics through clear, engaging content. From YouTube to 
+              this website, we bring you reliable, easy-to-understand news.</p>
           </div>
+
           <div className="about-text-explainer eums-shadow-box">
-            <h2>Who are we?</h2>
+            <h2>Why this Website?</h2>
             <br />
-            <p>Welcome to EU Made Simple! Our purpose? Delivering easy to digest, comprehensive, and easy to understand information about EU news and politics.
-              Originally starting with English youtube videos, we now have over 7 channels in different European languages! This website is the newest addition
-              to our media presence, where we share with you custom written news articles!
-            </p>
+            <p>This website is our latest step in expanding EU Made Simple. Here, we publish concise, 
+              well-researched articles to keep you informed.</p>
           </div>
         </div>
 
