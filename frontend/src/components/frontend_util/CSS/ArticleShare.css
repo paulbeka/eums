@@ -1,0 +1,39 @@
+.article-share-and-download-container {
+  position: relative;
+}
+
+.share-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin-top: 0.5em;
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+  width: 100%;
+  min-width: 200px;
+  justify-content: center;
+}
+
+.share-media-icon {
+  width: 33%;
+  margin-inline: 5px;
+}
+
+.share-arrow {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+}

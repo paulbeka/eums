@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { useState, useEffect } from 'react';
 import "./CSS/Home.css";
 import { Video, Article } from '../components/types/Content.type';
 import { Link } from 'react-router-dom';

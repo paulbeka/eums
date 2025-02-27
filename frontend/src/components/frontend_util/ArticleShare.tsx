@@ -1,11 +1,18 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { isMobile } from "react-device-detect";
+import { Link } from 'react-router-dom';
+import "./CSS/ArticleShare.css";
 
 
 const ArticleShare = () => {
 
   const [browserShareDropdown, setBrowserShareDropdown] = useState(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  const mediaIcons = [
+    { icon: "/images/social_media_icons/linkedin", link: "https://www.linkedin.com/shareArticle?url=" },
+    { icon: "/images/social_media_icons/x", link: "https://x.com/intent/tweet?url" },
+  ];
 
   const handleShare = async () => {
     if (navigator.share && isMobile) {
@@ -23,6 +30,26 @@ const ArticleShare = () => {
     } 
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        event.target instanceof Node &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setBrowserShareDropdown(false);
+      }
+    };
+  
+    if (browserShareDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+  
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [browserShareDropdown]);
+  
   return (
     <div className="article-share-and-download-container">
       <div 
@@ -33,37 +60,24 @@ const ArticleShare = () => {
         <span>Share</span>
       </div>
       {browserShareDropdown && (
-        <div ref={dropdownRef} className="share-dropdown" style={{
-          position: "absolute",
-          top: "100%",
-          left: "50%",
-          transform: "translateX(-50%)",
-          backgroundColor: "white",
-          border: "1px solid #ccc",
-          borderRadius: "5px",
-          boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-          padding: "10px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          zIndex: 1000,
-        }}>
-          <div className="share-arrow" style={{
-            position: "absolute",
-            top: "-5px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "10px",
-            height: "10px",
-            backgroundColor: "white",
-            borderTop: "1px solid #ccc",
-            borderLeft: "1px solid #ccc",
-          }}></div>
-          <a href={`https://www.linkedin.com/shareArticle?url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer">X</a>
-          <a href={`https://www.instagram.com/`} target="_blank" rel="noopener noreferrer">Instagram</a>
-          <a href={`https://api.whatsapp.com/send?text=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer">WhatsApp</a>
-        </div>
+        <div ref={dropdownRef} className="share-dropdown">
+          <div className="share-arrow" />
+          {mediaIcons.map(icon => (
+            <Link to={`${icon.link}${encodeURIComponent(window.location.href)}`} target="_blank" className="share-media-icon">
+              <img
+                src={`${icon.icon}.svg`}
+                onMouseOver={(event) => {
+                  const img = event.currentTarget as HTMLImageElement;
+                  img.src = `${icon.icon}-shadow.svg`;
+                }}
+                onMouseOut={(event) => {
+                  const img = event.currentTarget as HTMLImageElement;
+                  img.src = `${icon.icon}.svg`;
+                }}
+              />              
+            </Link>)
+          )}
+       </div>
       )}
     </div>
   );
