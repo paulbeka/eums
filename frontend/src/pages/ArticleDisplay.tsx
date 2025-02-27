@@ -78,13 +78,16 @@ const ArticleDisplay = () => {
                 />
                 <h2 style={{ marginBlock: "1em" }}>{articleContent["title"]}</h2>
               </div>
-              <ArticleShare /> {/* Integrated Share Button for Mobile */}
               <div
                 dangerouslySetInnerHTML={{
                   __html:
                     "<p>" + formatArticleContent(articleContent["content"]) + "</p>",
                 }}
               />
+              <br />
+              <div style={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
+                <ArticleShare />
+              </div>
             </div>
           ) : (
             <Loading />
