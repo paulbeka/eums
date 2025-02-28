@@ -1,4 +1,5 @@
 import './App.css';
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import { CAPTCHA_SITE_KEY } from './Config';
@@ -17,9 +18,20 @@ import AllVideos from './pages/AllVideos';
 import "@fontsource/poppins";
 import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
+import ReactGA from 'react-ga4';
+import { useLocation } from 'react-router-dom';
 
+
+ReactGA.initialize('G-D8JV5H8HE7');
 
 function App() {
+
+  const location = useLocation();
+
+  useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: location.pathname });
+  }, [location]);
+  
   return (
     <React.StrictMode>
       <HelmetProvider>
