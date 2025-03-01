@@ -2,7 +2,7 @@ import './App.css';
 import { useEffect } from "react";
 import { Routes, Route } from 'react-router-dom';
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
-import { CAPTCHA_SITE_KEY, ANALYTICS_KEY } from './Config';
+import { CAPTCHA_SITE_KEY } from './Config';
 import BasePage from './pages/BasePage';
 import Home from './pages/Home';
 import PageNotFound from './pages/PageNotFound';
@@ -20,7 +20,7 @@ import ReactGA from 'react-ga4';
 import { useLocation } from 'react-router-dom';
 
 
-ReactGA.initialize(ANALYTICS_KEY);
+ReactGA.initialize("G-ZBFLNG1J1D");
 
 function App() {
 
