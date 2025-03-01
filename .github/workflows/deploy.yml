@@ -20,7 +20,6 @@ jobs:
       - name: Install dependencies and build the app
         env:
           REACT_APP_BASE_URL: https://eumadesimple.eu/api
-          REACT_APP_ANALYTICS_KEY: ${{ secrets.REACT_APP_ANALYTICS_KEY }}
           REACT_APP_CAPTCHA_SITE_KEY: ${{ secrets.REACT_APP_CAPTCHA_SITE_KEY }}
         run: |
           cd frontend

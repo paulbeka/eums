@@ -20,7 +20,7 @@ import ReactGA from 'react-ga4';
 import { useLocation } from 'react-router-dom';
 
 
-ReactGA.initialize("G-ZBFLNG1J1D");
+ReactGA.initialize("G-D8JV5H8HE7");
 
 function App() {
 
