@@ -11,11 +11,12 @@ const About = () => {
   }, []);
 
   const listOfMembers = [
-    {"name": "Lambertus Robben", "role": "Founder & CEO", "description": "", "image": "https://streetphotography.com/wp-content/uploads/2017/08/test.png"},
-    {"name": "Miguel", "role": "Social Media Manager", "description": "", "image": "https://streetphotography.com/wp-content/uploads/2017/08/test.png"},
-    {"name": "Pablo", "role": "Graphic Designer", "description": "", "image": "https://streetphotography.com/wp-content/uploads/2017/08/test.png"},
-    {"name": "Paul Bekaert", "role": "Head of French Channel", "description": "", "image": "https://streetphotography.com/wp-content/uploads/2017/08/test.png"},
-    {"name": "Johnny", "role": "Head of German Channel", "description": "", "image": "https://streetphotography.com/wp-content/uploads/2017/08/test.png"}
+    {"name": "Lambertus Robben", "role": "Founder & CEO", 
+      "description": "Lambertus first came up with the idea of a youtube channel explaining Europe when he lived in London, during the Brexit campain.", "image": "/images/profile_pictures/paul.jpg"},
+    {"name": "Miguel", "role": "Social Media Manager", "description": "Miguel manages the social media of EUMS", "image": "images/profile_pictures/paul.jpg"},
+    {"name": "Pablo", "role": "Graphic Designer", "description": "Pablo is our designer", "image": "images/profile_pictures/pablo.jpg"},
+    {"name": "Paul Bekaert", "role": "Head of French Channel", "description": "Paul manages both the French channel, l'UE Simplifiée, the EUMS website.", "image": "images/profile_pictures/paul.jpg"},
+    {"name": "Johnny", "role": "Head of German Channel", "description": "Johnny is head of the German channel.", "image": "images/profile_pictures/paul.jpg "}
   ];
 
   return <>
@@ -61,6 +62,7 @@ const About = () => {
                 <div className="about-person-details-container">
                   <h3>{person.name}</h3>
                   <p>{person.role}</p>
+                  <br />
                   <p>{person.description}</p>
                 </div>
               </div>
