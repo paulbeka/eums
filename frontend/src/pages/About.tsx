@@ -113,7 +113,9 @@ const About = () => {
                 <div className="about-person-details-container">
                   <h3>{person.name}</h3>
                   <p>{person.role}</p>
+                  <br />
                   <p>{person.description}</p>
+                  <br />
                 </div>
               </div>
             )}
