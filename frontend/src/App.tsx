@@ -18,6 +18,7 @@ import AllVideos from './pages/AllVideos';
 import "@fontsource/poppins";
 import ReactGA from 'react-ga4';
 import { useLocation } from 'react-router-dom';
+import { Register } from './pages/Register';
 
 
 ReactGA.initialize("G-D8JV5H8HE7");
@@ -48,6 +49,7 @@ function App() {
         <Route path="all-interviews" element={<AllVideos livestreams={true} />} />     
 
         <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
         
         <Route path="*" element={<PageNotFound />} />
 

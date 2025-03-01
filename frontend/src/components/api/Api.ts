@@ -124,7 +124,6 @@ export const getTags = async () => {
   })
 }
 
-
 export const sendEmail = async (payload: any) => {
   return api.post("/contact", payload)
   .then(res => {
@@ -134,6 +133,16 @@ export const sendEmail = async (payload: any) => {
     return true;
   })
   .catch(err => {return false})
+}
+
+export const registerUser = async (payload: any) => {
+  return api.post("/register", payload)
+  .then(response => {
+    if (response.status !== 200) {
+      throw new Error(`Error: ${response.status}`);
+    }
+    return true;
+  })
 }
 
 

@@ -12,7 +12,7 @@ const Login = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    document.title = 'Login';
+    document.title = 'EUMS - Login';
   }, []);
 
   const submitLogin = async (e: any) => {
