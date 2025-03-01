@@ -1,13 +1,16 @@
 .navbar {
-  width: 100%;
+  width: 100vw;
+  min-width: 100vw;
   display: flex;
-  height: 260px;
+  height: 20vh;
+  min-height: 10em;
   align-items: center;
   flex-direction: column;
-  background-size: auto auto;   /* Increases height and trims top whitespace */
-  background-position: center -20px; /* Moves image up by 20px */
+  background-size: 100% auto; /* Ensures the image zooms and cuts itself */
+  background-position: center calc(min(-32%, -125px)); /* Keeps it fixed */
   background-repeat: no-repeat;
-  overflow: hidden; 
+  background-attachment: fixed; /* Ensures it doesn't move when scrolling or resizing */
+  overflow: hidden;
 }
 
 .navlink-container {
