@@ -7,9 +7,8 @@
   align-items: center;
   flex-direction: column;
   background-size: 100% auto; /* Ensures the image zooms and cuts itself */
-  background-position: center calc(min(-32%, -125px)); /* Keeps it fixed */
+  background-position: center calc(max(120%, -175px)); /* Keeps it fixed */
   background-repeat: no-repeat;
-  background-attachment: fixed; /* Ensures it doesn't move when scrolling or resizing */
   overflow: hidden;
 }
 
