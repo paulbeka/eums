@@ -3,13 +3,13 @@
     "name": "Lambertus Robben", 
     "role": "Founder & CEO", 
     "description": "Lambertus first came up with the idea of a youtube channel explaining Europe when he lived in London, during the Brexit campain.", 
-    "image": "/images/profile_pictures/paul.jpg"
+    "image": "https://avatars.githubusercontent.com/u/14959?v=4"
   },
   {
     "name": "Miguel", 
     "role": "Social Media Manager", 
     "description": "Miguel manages the social media of EUMS", 
-    "image": "images/profile_pictures/paul.jpg"
+    "image": "images/profile_pictures/miguel.jpg"
   },
   {
     "name": "Pablo", 
@@ -33,6 +33,6 @@
     "name": "Johnny", 
     "role": "Head of German Channel", 
     "description": "Johnny is head of the German channel.", 
-    "image": "images/profile_pictures/paul.jpg "
+    "image": "https://avatars.githubusercontent.com/u/14959?v=4"
   }
 ]
