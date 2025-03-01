@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { FaBagShopping } from "react-icons/fa6";
 import { BrowserView, MobileView } from "react-device-detect";
 
+
 const NavBar: React.FC<{ 
   currentPage: string,
   setCurrentPage: React.Dispatch<React.SetStateAction<string>>,
@@ -36,7 +37,7 @@ const NavBar: React.FC<{
     setCurrentPage(item.text);
     setIsOpenMobile(false);
   }
-
+ 
   return (<>
     <BrowserView>
     <div className="navbar" style={{ backgroundImage: 'url(/images/navbar-background.svg)' }}>

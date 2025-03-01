@@ -67,6 +67,7 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
     return str.split(" ").filter(value => value !== "").length;
   }
 
+  let numberOfWords = getNumberOfWords(editorState);
   return (
     <div className="article-poster">
       <div className="article-content">
@@ -91,7 +92,7 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
         <br />
 
         <div className="setproperties-container">
-          <label>Upload Thumbnail:</label>
+          <label>Upload Thumbnail (choose a landscape image, ie bigger width smaller height is best):</label>
           <input
             type="file"
             accept="image/*"
@@ -103,7 +104,9 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
 
         <div className="article-content-metadata">
           <h3>Article Content</h3>
-          <p>{getNumberOfWords(editorState)}/3000 words</p>
+          <p style={{
+            color: `${numberOfWords > 3 ? "red" : ""}`
+          }}>{numberOfWords}/3000 words</p>
         </div>
         <textarea 
           className="editor-content" 
