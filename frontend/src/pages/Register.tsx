@@ -22,8 +22,6 @@ export const Register = () => {
     "Switzerland", "Norway", "United Kingdom", "Non-EU"
   ];
 
-  const genders = ["Male", "Female", "Other", "Prefer not to say"];
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -69,16 +67,6 @@ export const Register = () => {
             <option value="">Select a country</option>
             {euCountries.map((country) => (
               <option key={country} value={country}>{country}</option>
-            ))}
-          </select>
-        </label>
-
-        <label>
-          Gender (Optional):
-          <select name="gender" value={formData.gender} onChange={handleChange}>
-            <option value="">Select gender</option>
-            {genders.map((gender) => (
-              <option key={gender} value={gender}>{gender}</option>
             ))}
           </select>
         </label>

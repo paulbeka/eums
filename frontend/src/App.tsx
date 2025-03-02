@@ -19,6 +19,7 @@ import "@fontsource/poppins";
 import ReactGA from 'react-ga4';
 import { useLocation } from 'react-router-dom';
 import { Register } from './pages/Register';
+import { Profile } from './pages/Profile';
 
 
 ReactGA.initialize("G-D8JV5H8HE7");
@@ -50,6 +51,7 @@ function App() {
 
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="profile/:userId" element={<Profile />} />
         
         <Route path="*" element={<PageNotFound />} />
 

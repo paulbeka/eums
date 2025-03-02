@@ -88,5 +88,5 @@ def ai_generate_list(transcripts):
 			})
 
 		except Exception as e:
-			print(f"ERROR: {transcript["title"]} failed.")
+			print(f"ERROR: {transcript['title']} failed.")
 	return articles

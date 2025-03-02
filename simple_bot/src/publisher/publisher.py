@@ -10,7 +10,7 @@ BACKEND_URL = os.getenv("BACKEND_URL")
 
 def publish_ai_content():
 	access_token = login_and_get_token()
-	api_endpoint = f"{BACKEND_URL}/article"
+	api_endpoint = f"{BACKEND_URL}/articles/"
 
 	generated_articles = os.listdir(GENERATED_ARTICLES_FOLDER)
 	for ai_file in generated_articles:
@@ -43,7 +43,8 @@ def publish_ai_content():
 
 def publish_ai_content_pipeline(articles):
 	access_token = login_and_get_token()
-	api_endpoint = f"{BACKEND_URL}/articles"
+	api_endpoint = f"{BACKEND_URL}/articles/"
+	print(api_endpoint)
 
 	for article in articles:
 
@@ -64,7 +65,8 @@ def publish_ai_content_pipeline(articles):
 		try:
 			response = requests.post(api_endpoint, json=payload, headers=headers)
 			if response.status_code != 200:
-				print(f"Failed to upload video '{video['title']}': {response.text}")
+				print(response)
+				print(f"Failed to upload video '{article['title']}': {response}")
 		except Exception as e:
-			print(f"An error occurred while posting video '{video['title']}': {e}")
+			print(f"An error occurred while posting video '{article['title']}': {e}")
 
