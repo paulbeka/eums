@@ -8,6 +8,7 @@ import ErrorLoading from "../components/frontend_util/ErrorLoading";
 import Loading from "../components/frontend_util/Loading";
 import { BrowserView, MobileView } from "react-device-detect";
 import { formatArticleContent } from "../components/util_tools/Util";
+import { Helmet } from 'react-helmet-async';
 
 
 const AllArticles = () => {
@@ -19,7 +20,6 @@ const AllArticles = () => {
   const [articleError, setArticleError] = useState(false);
 
   useEffect(() => {
-    document.title = "All Articles";
     getArticles(true).then((res) => setArticles(res))
     .catch((err) => setArticleError(true));
   }, []);
@@ -56,6 +56,10 @@ const AllArticles = () => {
   });
 
   return (<>
+  <Helmet>
+    <title>EUMS - Articles</title>
+    <meta name="description" content="See and browser through all the EUMS Articles that have been posted!" />
+  </Helmet>
   <BrowserView>
     <div className="all-articles-container">
       <div className="all-articles-content">

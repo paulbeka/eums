@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { BrowserView, MobileView } from "react-device-detect";
 import "./CSS/About.css";
 import { Helmet } from 'react-helmet-async';
@@ -7,12 +6,6 @@ import listOfMembers from "./data/aboutList.json";
 
 const About = () => {
   
-  useEffect(() => {
-    document.title = 'About';
-  }, []);
-
-  console.log(listOfMembers);
-
   return <>
     <Helmet>
       <title>EUMS - About</title>

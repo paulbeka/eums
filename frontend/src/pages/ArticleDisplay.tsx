@@ -3,12 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Article } from "../components/types/Content.type";
 import api from "../components/api/Api";
 import Loading from "../components/frontend_util/Loading";
-import { Link } from "react-router-dom";
 import { BASE_URL } from "../Config";
 import "./CSS/ArticleDisplay.css";
 import { BrowserView, MobileView } from "react-device-detect";
 import { formatArticleContent } from "../components/util_tools/Util";
 import ArticleShare from "../components/frontend_util/ArticleShare"; 
+import { Helmet } from 'react-helmet-async';
+
 
 const ArticleDisplay = () => {
   const { articleId } = useParams();
@@ -29,6 +30,10 @@ const ArticleDisplay = () => {
 
   return (
     <>
+      <Helmet>
+        <title>{articleContent ? articleContent["title"] : "Loading..."}</title>
+        <meta name="description" content={articleContent? articleContent["content"].split(".")[0] : ""} />
+      </Helmet>
       <BrowserView>
         <div className="article-display-container">
           <div className="article-display-content">

@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { useGoogleReCaptcha, GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import { sendEmail } from "../components/api/Api";
-import { CAPTCHA_SITE_KEY } from "../Config";
 import { Helmet } from 'react-helmet-async';
 import "./CSS/Contact.css";
 
@@ -16,10 +15,6 @@ const Contact = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const { executeRecaptcha } = useGoogleReCaptcha();
-
-  useEffect(() => {
-    document.title = "Contact";
-  }, []);
 
   const submitContact = async (e: any) => {
     e.preventDefault();
