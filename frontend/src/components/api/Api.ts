@@ -22,8 +22,9 @@ api.interceptors.request.use(
 );
 
 
-export const getArticles = async (getPublicOnly: boolean) => {
-  return api.get(getPublicOnly ? '/articles/' : '/articles/?public_only=false')
+export const getArticles = async (getPublicOnly: boolean, limit?: number) => {
+  return api.get(getPublicOnly ? '/articles/' : 
+    `/articles/?public_only=false${limit? "&limit=" + limit : ""}`)
     .then(response => {
       return response.data;
     })

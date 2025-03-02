@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Article } from "../components/types/Content.type";
 import api from "../components/api/Api";
 import Loading from "../components/frontend_util/Loading";
@@ -12,6 +12,8 @@ import ArticleShare from "../components/frontend_util/ArticleShare";
 
 const ArticleDisplay = () => {
   const { articleId } = useParams();
+  const navigate = useNavigate();
+
   const [articleContent, setArticleContent] = useState<Article>();
 
   useEffect(() => {
@@ -31,14 +33,14 @@ const ArticleDisplay = () => {
         <div className="article-display-container">
           <div className="article-display-content">
             <div className="article-display-control-bar">
-              <Link to={"/"} className="back-button">
+              <div onClick={() => navigate(-1)} className="back-button">
                 <img
                   style={{ width: "20px", marginRight: "1em" }}
                   src="/images/back-arrow.svg"
                   alt="Back"
                 />
                 <span>Back</span>
-              </Link>
+              </div>
               <ArticleShare />
             </div>
             {articleContent ? (

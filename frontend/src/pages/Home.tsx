@@ -225,7 +225,7 @@ const Home = () => {
             <img src="/images/eu-map.svg" style={{ width: "60%", margin: "1em", maxWidth: "700px"}}/>
             <div style={{ margin: "1em" }}>
               <p style={{ fontWeight: "bold", fontSize: "16pt", marginTop: "1em"}}>Country by country</p>
-              <p style={{ marginTop: "1em"}}>This section is currently under construction, and so is not yet accessible to all users. Future goals including creating an interactive European map where users 
+              <p style={{ marginTop: "1em"}}>This section is currently under construction, and so is not yet accessible to all users. Future goals include creating an interactive European map where users 
                 can access EU data by country, such as important elections, news, and events! 
                 Keep a look out, as we will be releasing this feature as soon as possible.</p>
             </div>

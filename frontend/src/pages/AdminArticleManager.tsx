@@ -13,7 +13,7 @@ const AdminArticleManager = () => {
 
   const fetchArticles = async () => {
     try {
-      const fetchedArticles = await getArticles(false);
+      const fetchedArticles = await getArticles(false, 100);
       setArticles(fetchedArticles);
     } catch (error) {
       console.error("Error fetching articles:", error);
