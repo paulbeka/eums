@@ -13,7 +13,7 @@ import { formatArticleContent } from "../components/util_tools/Util";
 
 const Home = () => {
 
-  const N_VIDEOS = 10;
+  const N_VIDEOS = 4;
 
   const [videos, setVideos] = useState<Video[]>([]);
   const [interviews, setInterviews] = useState<Video[]>([]);
@@ -33,56 +33,6 @@ const Home = () => {
     { icon: "/images/social_media_icons/linkedin", link: "https://www.linkedin.com/company/eumadesimple/" },
     { icon: "/images/social_media_icons/spotify", link: "https://open.spotify.com/show/0Nb6smcVnEtmRI2IkRqP56" }  
   ]
-
-  function waitForElements(selector1: string, selector2: string): Promise<[HTMLElement, HTMLElement]> {
-    return new Promise((resolve) => {
-      const checkElements = () => {
-        const left = document.querySelector<HTMLElement>(selector1);
-        const right = document.querySelector<HTMLElement>(selector2);
-        if (left && right) {
-          resolve([left, right]);
-          return true;
-        }
-        return false;
-      };
-  
-      if (checkElements()) return;
-  
-      const observer = new MutationObserver(() => {
-        if (checkElements()) observer.disconnect(); 
-      });
-  
-      observer.observe(document.body, { childList: true, subtree: true });
-    });
-  }
-  
-  useEffect(() => {
-    const adjustHeight = async () => {
-      const [left, right] = await waitForElements(".video-container", ".article-container");
-  
-      const updateHeight = () => {
-        const minHeight = Math.min(left.scrollHeight, right.scrollHeight);
-        left.style.height = `${minHeight}px`;
-        right.style.height = `${minHeight}px`;
-      };
-  
-      updateHeight();
-  
-      const resizeObserver = new ResizeObserver(() => {
-        requestAnimationFrame(updateHeight); // Prevent rapid-fire updates
-      });
-  
-      resizeObserver.observe(left);
-      resizeObserver.observe(right);
-  
-      return () => resizeObserver.disconnect(); // Cleanup on unmount
-    };
-  
-    adjustHeight();
-  
-    window.addEventListener("resize", adjustHeight);
-    return () => window.removeEventListener("resize", adjustHeight); // Cleanup
-  }, [videos, articles]);
 
   useEffect(() => {
     getArticles(true).then(res => {
@@ -260,30 +210,26 @@ const Home = () => {
       </div>
 
       <div className="bottom-home-content">
-        <div className="media-links-container eums-box-shadow">
-          <div style={{display: "flex"}}>
-            <p className="map-title" style={{color: "black"}}>Join the Community</p>
-          </div>
-          <div className="media-links-content">
-            <p>Get involved, connect with others and <b>make a difference.</b></p>
-            <br />
-            <div className="media-icons">
-              {mediaIcons.map(icon => (
-                <Link to={icon.link} target="_blank" className="media-icon">
-                  <img
-                    src={`${icon.icon}.svg`}
-                    onMouseOver={(event) => {
-                      const img = event.currentTarget as HTMLImageElement;
-                      img.src = `${icon.icon}-shadow.svg`;
-                    }}
-                    onMouseOut={(event) => {
-                      const img = event.currentTarget as HTMLImageElement;
-                      img.src = `${icon.icon}.svg`;
-                    }}
-                  />              
-                </Link>)
-              )}
-            </div>
+        <div className="media-links-container">
+          <p className="map-title" style={{color: "black"}}>Join the Community</p>
+          <p>Get involved, connect with others and <b>make a difference.</b></p>
+          <br />
+          <div className="media-icons">
+            {mediaIcons.map(icon => (
+              <Link to={icon.link} target="_blank" className="media-icon">
+                <img
+                  src={`${icon.icon}.svg`}
+                  onMouseOver={(event) => {
+                    const img = event.currentTarget as HTMLImageElement;
+                    img.src = `${icon.icon}-shadow.svg`;
+                  }}
+                  onMouseOut={(event) => {
+                    const img = event.currentTarget as HTMLImageElement;
+                    img.src = `${icon.icon}.svg`;
+                  }}
+                />              
+              </Link>)
+            )}
           </div>
         </div>
         <div className="support-container eums-box-shadow">
@@ -299,7 +245,7 @@ const Home = () => {
                   <Link to="https://www.patreon.com/eumadesimple" className="color-button">Join!</Link>
                 </div>
               </div>
-              <div className="split-content">
+              <div style={{ paddingLeft: "2em" }} className="split-content">
                 <p style={{ textAlign: "justify" }}><b>Create content</b> for us by writing your own <b>articles</b> that could be published on our site, or do a coverage on our <b>YouTube content</b> in your local language to engage with a wider audience and help us create more social media content!</p>
                 <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", marginTop: "1em" }}>
                   <button className="color-button">Start Creating!</button>

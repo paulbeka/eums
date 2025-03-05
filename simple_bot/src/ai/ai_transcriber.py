@@ -84,9 +84,9 @@ def ai_generate_list(transcripts):
 			print(f"Transcribing: {transcript['title']}")
 			articles.append({
 				"title": transcript['title'],
-				"content": create_news_article(transcript["content"])
+				"content": create_news_article(transcript['content'])
 			})
 
 		except Exception as e:
-			print(f"ERROR: {transcript["title"]} failed.")
+			print(f"ERROR: {transcript['title']} failed.")
 	return articles
