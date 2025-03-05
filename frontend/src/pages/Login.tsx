@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../Config";
 import axios from "axios";
 import "./CSS/Login.css";
+import { Helmet } from 'react-helmet-async';
 
 
 const Login = () => {
@@ -39,7 +40,11 @@ const Login = () => {
     }
   };
 
-  return (
+  return (<>
+    <Helmet>
+      <title>EUMS - Login</title>
+      <meta name="description" content="Login to EU Made Simple to post, interact with, and share EU news and content!" />
+    </Helmet>
     <div className="login-page">
       <form onSubmit={submitLogin} className="login-container">
         <div className="login-component-div">
@@ -54,7 +59,7 @@ const Login = () => {
         <button type="submit" className="submit-btn">Submit</button>
       </form>
     </div>
-  );
+  </>);
 }
 
 export default Login;

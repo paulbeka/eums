@@ -19,7 +19,7 @@ const BasePage = () => {
         isOpenMobile={navbarOpenMobile}
         setIsOpenMobile={setNavbarOpenMobile}
       />
-      <div>
+      <div style={{ maxWidth: "1800px", margin: "0 auto"}}>
         {isMobile ? 
           <div style={{"position":"fixed", "margin":"1em", "zIndex":"99"}}>
             <Hamburger toggled={navbarOpenMobile} toggle={setNavbarOpenMobile} aria-label="sidebar open button" />

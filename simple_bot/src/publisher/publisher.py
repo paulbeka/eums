@@ -44,7 +44,6 @@ def publish_ai_content():
 def publish_ai_content_pipeline(articles):
 	access_token = login_and_get_token()
 	api_endpoint = f"{BACKEND_URL}/articles/"
-	print(api_endpoint)
 
 	for article in articles:
 
@@ -65,7 +64,6 @@ def publish_ai_content_pipeline(articles):
 		try:
 			response = requests.post(api_endpoint, json=payload, headers=headers)
 			if response.status_code != 200:
-				print(response)
 				print(f"Failed to upload video '{article['title']}': {response}")
 		except Exception as e:
 			print(f"An error occurred while posting video '{article['title']}': {e}")

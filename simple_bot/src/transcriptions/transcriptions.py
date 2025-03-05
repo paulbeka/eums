@@ -32,7 +32,7 @@ def get_transcriptions_pipeline():
 	for video in videos[0:20]: # TODO: MAKE THIS A VARIABLE
 		try:
 			print(f"Fetching video transcript for: {video['title']}")
-			transcript = YouTubeTranscriptApi.get_transcript(video["video_id"])
+			transcript = YouTubeTranscriptApi.get_transcript(video['video_id'])
 			transcripts.append({
 				"title": video["title"],
 				"content": " ".join([entry['text'] for entry in transcript])

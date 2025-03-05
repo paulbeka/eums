@@ -6,6 +6,7 @@ import "./CSS/AllVideos.css";
 import ErrorLoading from "../components/frontend_util/ErrorLoading";
 import Loading from "../components/frontend_util/Loading";
 import { BrowserView, MobileView } from "react-device-detect";
+import { Helmet } from 'react-helmet-async';
 
 
 const AllVideos = ({ livestreams } : { livestreams: boolean }) => {
@@ -42,6 +43,10 @@ const AllVideos = ({ livestreams } : { livestreams: boolean }) => {
   }
 
   return (<>
+    <Helmet>
+      <title>EUMS - {livestreams? "Livestreams" : "Videos"}</title>
+      <meta name="description" content="Find all the EUMS Videos that have been posted!" />
+    </Helmet>
     <BrowserView>
       <div className="all-videos-container">
         <div className="all-videos-content">
