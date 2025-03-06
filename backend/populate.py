@@ -31,12 +31,16 @@ def populate_db():
         for user_data in admin_users:
             hashed_password = generate_password_hash(user_data["password"])
 
-            existing_user = db.query(User).filter(User.username == user_data["username"]).first()
+            existing_user = db.query(User).filter(User.email == user_data["username"]).first()
 
             if not existing_user:
                 new_user = User(
+                    full_name="Admin User",
                     username=user_data["username"],
+                    email=f"{user_data['username']}@email.com",
                     hashed_password=hashed_password,
+                    date_of_birth="01/01/2000",
+                    is_admin=True,
                 )
                 db.add(new_user)
 

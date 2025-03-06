@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from typing import Optional, Dict, Callable, Any, List
 from email.message import EmailMessage
 from .auth import authenticate_user, create_access_token
-from .schemas import Token, ArticleResponse, ContactForm
+from .schemas import *
 from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM, SMTP_SETTINGS, CAPTCHA_KEY
 from .models import Base, User, Article
 from .db import engine, get_db
@@ -93,6 +93,16 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
 @app.get("/verify-token")
 async def verify_token_endpoint(token: str = Depends(oauth2_scheme)):
     return verify_token(token)
+
+
+@app.post("/register-user")
+async def register_user_endpoint(payload: RegisterUserPayload, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.email == payload.email).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered.")
+    
+    user = create_user(db, payload)
+    return {"message": "User registered successfully", "user": user}
 
 
 #### ARTICLES ####

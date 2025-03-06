@@ -6,6 +6,7 @@ import json
 
 from .models import User, Article, Video, TopicTag
 from .util import save_thumbnail
+from .schemas import RegisterUserPayload
 
 
 ### AUTH / LOGIN ###
@@ -14,11 +15,22 @@ def get_user_by_username(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
 
 
-def create_user(db: Session, username: str, hashed_password: str):
-    db_user = User(username=username, hashed_password=hashed_password)
+def create_user(db: Session, payload: RegisterUserPayload):
+    db_user = User(
+        full_name=payload.full_name,
+        email=payload.email,
+        hashed_password=payload.password,
+        date_of_birth=payload.date_of_birth,
+        country=payload.country,
+        gender=payload.gender,
+        profile_picture=payload.profile_picture,
+        is_admin=False
+    )
+    
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+    
     return db_user
 
 

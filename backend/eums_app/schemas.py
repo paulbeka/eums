@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
+from datetime import date
 
 
 class Token(BaseModel):
@@ -23,3 +24,17 @@ class ContactForm(BaseModel):
     subject: str
     message: str
     captcha: str
+
+
+class RegisterUserPayload(BaseModel):
+    username: str
+    full_name: str
+    email: str
+    date_of_birth: date
+    password: str
+    country: Optional[str] = None
+    gender: Optional[str] = None
+    profile_picture: Optional[str] = None
+
+    class Config:
+        alias_generator = lambda string: string.lower() if string == 'full_name' else string
