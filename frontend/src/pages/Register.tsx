@@ -1,41 +1,63 @@
 import { useState } from "react";
 import "./CSS/Register.css";
-import  { useNavigate } from 'react-router-dom'
-import { registerUser } from '../components/api/Api';
+import { useNavigate } from "react-router-dom";
+import { registerUser } from "../components/api/Api";
 
+interface FormData {
+  full_name: string;
+  email: string;
+  date_of_birth: string;
+  password: string;
+  country: string;
+  gender: string;
+  profilePicture: File | null;
+}
 
 export const Register = () => {
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    fullName: "",
+  const defaultProfilePic = "https://via.placeholder.com/100"; // Preset profile picture
+
+  const [formData, setFormData] = useState<FormData>({
+    full_name: "",
     email: "",
-    dateOfBirth: "",
+    date_of_birth: "",
     password: "",
     country: "",
     gender: "",
+    profilePicture: null,
   });
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string>("");
+  const [preview, setPreview] = useState<string>(defaultProfilePic);
 
-  const euCountries = [
+  const euCountries: string[] = [
     "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Republic", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Slovakia", "Slovenia", "Spain", "Sweden",
     "Switzerland", "Norway", "United Kingdom", "Non-EU"
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    if (file) {
+      setFormData((prevData) => ({ ...prevData, profilePicture: file }));
+      setPreview(URL.createObjectURL(file));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     registerUser(formData)
-    .then(success => {
-      navigate("/");
-    })
-    .catch(err => {
-      setError(err);
-    });
+      .then(() => {
+        navigate("/");
+      })
+      .catch((err) => {
+        setError(err);
+      });
   };
 
   return (
@@ -43,7 +65,7 @@ export const Register = () => {
       <form onSubmit={handleSubmit} className="register-form">
         <label>
           Full Name:
-          <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} required />
+          <input type="text" name="full_name" value={formData.full_name} onChange={handleChange} required />
         </label>
         
         <label>
@@ -53,7 +75,7 @@ export const Register = () => {
 
         <label>
           Date of Birth:
-          <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />
+          <input type="date" name="date_of_birth" value={formData.date_of_birth} onChange={handleChange} required />
         </label>
 
         <label>
@@ -71,7 +93,14 @@ export const Register = () => {
           </select>
         </label>
 
-        {error? <p style={{ color: "red" }}>{error}</p> : <></>}
+        <label>
+          Profile Picture (Optional):
+          <input type="file" accept="image/*" onChange={handleFileChange} />
+        </label>
+
+        <img src={preview} alt="Profile Preview" className="profile-preview" />
+
+        {error ? <p style={{ color: "red" }}>{error}</p> : null}
         <button type="submit">Register</button>
       </form>
     </div>

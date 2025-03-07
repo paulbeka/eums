@@ -21,6 +21,19 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+export const verifyToken = async () => {
+  const token = localStorage.getItem("access_token");
+  try {
+    const response = await axios.get(`${BASE_URL}/verify-token`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.status === "valid";
+  } catch {
+    return false;
+  }
+}
 
 export const getArticles = async (getPublicOnly: boolean, limit?: number) => {
   return api.get(getPublicOnly ? '/articles/' : 
@@ -137,7 +150,7 @@ export const sendEmail = async (payload: any) => {
 }
 
 export const registerUser = async (payload: any) => {
-  return api.post("/register", payload)
+  return api.post("/register-user", payload)
   .then(response => {
     if (response.status !== 200) {
       throw new Error(`Error: ${response.status}`);

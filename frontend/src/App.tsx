@@ -51,7 +51,7 @@ function App() {
 
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
-        <Route path="profile/:userId" element={<Profile />} />
+        <Route path="profile/:username" element={<Profile />} />
         
         <Route path="*" element={<PageNotFound />} />
 

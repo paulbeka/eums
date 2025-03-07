@@ -3,6 +3,8 @@ import "./NavBar.css";
 import { Link } from "react-router-dom";
 import { FaBagShopping } from "react-icons/fa6";
 import { BrowserView, MobileView } from "react-device-detect";
+import { verifyToken } from "../api/Api";
+import { jwtDecode } from 'jwt-decode' // import dependency
 
 
 const NavBar: React.FC<{ 
@@ -14,23 +16,30 @@ const NavBar: React.FC<{
   
   const [navItems, setNavItems] = useState([
     { path: '/about', text: 'About Us'},
-    { path: '/contact', text: 'Contact'}
+    { path: '/contact', text: 'Contact'},
+    { path: '/register', text: 'Register' },
+    { path: '/login', text: 'Login' }
   ]);
 
+  const getProfileName = () => {
+    if (localStorage.getItem("access_token")) {
+      return jwtDecode(localStorage.getItem("access_token")!)["sub"];
+    }
+    return false;
+  }
+
   useEffect(() => {
-    if (localStorage.getItem("access_token")?.length) {
-      setNavItems(prevItems => {
-        const newItems = [
+    // TODO: check valid token (use auth wrapper of some kind?)
+    verifyToken().then(tokenValid => {
+      if (tokenValid) {
+        setNavItems([
+          { path: '/about', text: 'About Us'},
+          { path: '/contact', text: 'Contact'},
           { path: '/article-manager', text: "Manage Articles" },
           { path: '/article-poster', text: 'Post Article' }
-        ];
-        
-        const paths = prevItems.map(item => item.path);
-        const filteredNewItems = newItems.filter(item => !paths.includes(item.path));
-  
-        return [...prevItems, ...filteredNewItems];
-      });
-    }
+        ]);
+      };
+    }).catch(err => console.log(err));
   }, []);
 
   const mobileHandleClick = (item: {path: string, text: string}) => {
@@ -53,6 +62,15 @@ const NavBar: React.FC<{
           ))}
         </div>
         <div className="right-content">
+          {localStorage.getItem("access_token") &&
+            <Link to={`/profile/${getProfileName()}`} className="navbar-profile-icon-container">
+              <img 
+                className="navbar-profile-icon"
+                height="30"
+                src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" 
+              />
+            </Link>
+          }
           <Link to="https://www.youtube.com/@EUMadeSimple/store" target="_blank" style={{ marginRight: "1em" }}>
             <FaBagShopping color="white" size={25} />
           </Link>

@@ -58,6 +58,16 @@
   width: auto;
 }
 
+.navbar-profile-icon-container {
+  cursor: pointer;
+}
+
+.navbar-profile-icon {
+  margin-right: 1em;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
 /* #### MOBILE VIEW #### */
 
 .navbar-logo-mobile {
