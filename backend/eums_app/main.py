@@ -8,7 +8,7 @@ from typing import Optional, Dict, Callable, Any, List
 from email.message import EmailMessage
 from .auth import authenticate_user, create_access_token
 from .schemas import *
-from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM, SMTP_SETTINGS, CAPTCHA_KEY
+from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM, SMTP_SETTINGS, CAPTCHA_KEY, EUMS_BEEHIIV_KEY, PUBLICATION_ID
 from .models import Base, User, Article
 from .db import engine, get_db
 from .crud import *
@@ -198,6 +198,27 @@ def get_videos_endpoint(livestreams: bool, db: Session = Depends(get_db)):
 
 
 #### EMAIL ####
+
+@app.post("/newsletter-subscribe/")
+async def subscribe_to_newsletter(payload: Dict[str, str]):
+    email = payload["email"]
+    url = "https://api.beehiiv.com/v2/publications/{}/subscriptions".format(PUBLICATION_ID)
+    
+    headers = {
+        "Authorization": f"Bearer {EUMS_BEEHIIV_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {"email": email, "reactivation_email": True}
+
+    response = requests.post(url, json=payload, headers=headers)
+
+    if response.status_code != 201 or response.status_code != 200:
+        print(response.reason)
+        raise HTTPException(status_code=response.status_code, detail=response.json())
+
+    return {"message": "Subscription successful"}
+
 
 @app.post("/contact")
 async def send_email(contact: ContactForm):

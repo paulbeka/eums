@@ -159,5 +159,4 @@ export const registerUser = async (payload: any) => {
   })
 }
 
-
 export default api;

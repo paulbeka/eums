@@ -17,7 +17,9 @@ def fetch_articles():
 
 
 def create_newsletter_from_articles(articles):
+	# TODO: some kind of GPT integration for differenrt parts
 	pass
+
 
 if __name__ == "__main__":
 
