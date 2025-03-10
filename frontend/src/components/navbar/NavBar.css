@@ -1,11 +1,9 @@
 .navbar {
-  width: 100vw;
-  min-width: 100vw;
   display: flex;
   height: 80px;
   align-items: center;
   flex-direction: column;
-  background-size: 100% auto; /* Ensures the image zooms and cuts itself */
+  background-size: 105% auto; /* Ensures the image zooms and cuts itself */
   background-position: center calc(max(120%, -80px)); /* Keeps it fixed */
   background-repeat: no-repeat;
   overflow: hidden;

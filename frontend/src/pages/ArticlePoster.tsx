@@ -105,7 +105,7 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
         <div className="article-content-metadata">
           <h3>Article Content</h3>
           <p style={{
-            color: `${numberOfWords > 3 ? "red" : ""}`
+            color: `${numberOfWords > 3000 ? "red" : ""}`
           }}>{numberOfWords}/3000 words</p>
         </div>
         <textarea 

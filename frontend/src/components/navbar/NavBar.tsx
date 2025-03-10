@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import { FaBagShopping } from "react-icons/fa6";
 import { BrowserView, MobileView } from "react-device-detect";
 import { verifyToken } from "../api/Api";
-import { jwtDecode } from 'jwt-decode' // import dependency
+import { jwtDecode } from 'jwt-decode';
+import { useAuth } from "../auth/AuthContext";
 
 
 const NavBar: React.FC<{ 
@@ -16,10 +17,12 @@ const NavBar: React.FC<{
   
   const [navItems, setNavItems] = useState([
     { path: '/about', text: 'About Us'},
+    { path: '/newsletter-signup', text: 'Newsletter' },
     { path: '/contact', text: 'Contact'},
     { path: '/register', text: 'Register' },
     { path: '/login', text: 'Login' }
   ]);
+  const { isAuthenticated } = useAuth();
 
   const getProfileName = () => {
     if (localStorage.getItem("access_token")) {
@@ -29,18 +32,16 @@ const NavBar: React.FC<{
   }
 
   useEffect(() => {
-    // TODO: check valid token (use auth wrapper of some kind?)
-    verifyToken().then(tokenValid => {
-      if (tokenValid) {
-        setNavItems([
-          { path: '/about', text: 'About Us'},
-          { path: '/contact', text: 'Contact'},
-          { path: '/article-manager', text: "Manage Articles" },
-          { path: '/article-poster', text: 'Post Article' }
-        ]);
-      };
-    }).catch(err => console.log(err));
-  }, []);
+    if (isAuthenticated) {
+      setNavItems([
+        { path: '/about', text: 'About Us'},
+        { path: '/newsletter-signup', text: 'Newsletter' },
+        { path: '/contact', text: 'Contact'},
+        { path: '/article-manager', text: "Manage Articles" },
+        { path: '/article-poster', text: 'Post Article' }
+      ]);
+    }
+  }, [isAuthenticated]);
 
   const mobileHandleClick = (item: {path: string, text: string}) => {
     setCurrentPage(item.text);
@@ -62,7 +63,7 @@ const NavBar: React.FC<{
           ))}
         </div>
         <div className="right-content">
-          {localStorage.getItem("access_token") &&
+          {isAuthenticated &&
             <Link to={`/profile/${getProfileName()}`} className="navbar-profile-icon-container">
               <img 
                 className="navbar-profile-icon"

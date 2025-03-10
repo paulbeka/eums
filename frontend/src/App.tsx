@@ -20,6 +20,8 @@ import ReactGA from 'react-ga4';
 import { useLocation } from 'react-router-dom';
 import { Register } from './pages/Register';
 import { Profile } from './pages/Profile';
+import { AuthProvider } from './components/auth/AuthContext';
+import { NewsletterSignup } from './pages/NewsletterSignup';
 
 
 ReactGA.initialize("G-D8JV5H8HE7");
@@ -33,40 +35,43 @@ function App() {
   }, [location]);
   
   return (
-    <Routes>
-      <Route path="/" element={<BasePage />} >
-        <Route index element={<Home />} />
-        <Route path="about" element={<About />} />
-        
-        <Route path="contact" element={
-          <GoogleReCaptchaProvider reCaptchaKey={CAPTCHA_SITE_KEY}>
-            <Contact />
-          </GoogleReCaptchaProvider>  
-        } />
-        
-        <Route path="article/:articleId" element={<ArticleDisplay />} />
-        <Route path="all-articles" element={<AllArticles />} /> 
-        <Route path="all-videos" element={<AllVideos livestreams={false} />} />     
-        <Route path="all-interviews" element={<AllVideos livestreams={true} />} />     
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<BasePage />} >
+          <Route index element={<Home />} />
+          <Route path="about" element={<About />} />
+          
+          <Route path="contact" element={
+            <GoogleReCaptchaProvider reCaptchaKey={CAPTCHA_SITE_KEY}>
+              <Contact />
+            </GoogleReCaptchaProvider>  
+          } />
+          
+          <Route path="article/:articleId" element={<ArticleDisplay />} />
+          <Route path="all-articles" element={<AllArticles />} /> 
+          <Route path="all-videos" element={<AllVideos livestreams={false} />} />     
+          <Route path="all-interviews" element={<AllVideos livestreams={true} />} />     
+          <Route path="newsletter-signup" element={<NewsletterSignup />} />
 
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
-        <Route path="profile/:username" element={<Profile />} />
-        
-        <Route path="*" element={<PageNotFound />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="profile/:username" element={<Profile />} />
+          
+          <Route path="*" element={<PageNotFound />} />
 
-        {/* Anything here needs auth access */}
-        <Route path="article-manager" element={
-          <ProtectedRoute element={<AdminArticleManager />} />
-        } />
-        <Route path="article-poster" element={
-          <ProtectedRoute element={<ArticlePoster edit={false} />} />
-        } />
-        <Route path="article-manager/edit/:articleId" element={
-          <ProtectedRoute element={<ArticlePoster edit={true} />} />
-        } />
-      </Route>
-    </Routes>
+          {/* Anything here needs auth access */}
+          <Route path="article-manager" element={
+            <ProtectedRoute element={<AdminArticleManager />} />
+          } />
+          <Route path="article-poster" element={
+            <ProtectedRoute element={<ArticlePoster edit={false} />} />
+          } />
+          <Route path="article-manager/edit/:articleId" element={
+            <ProtectedRoute element={<ArticlePoster edit={true} />} />
+          } />
+        </Route>
+      </Routes>
+    </AuthProvider>
   );
 }
 
