@@ -7,23 +7,21 @@ import os
 
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-print(DATABASE_URL)
+ADMIN_USERS = [user.strip() for user in os.getenv("ADMIN_USERS", "").split(",")]
+ADMIN_PASSWORDS = [pwd.strip() for pwd in os.getenv("ADMIN_PASSWORDS", "").split(",")]
 
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL environment variable is not set")
+
+if len(ADMIN_USERS) != len(ADMIN_PASSWORDS):
+    raise ValueError("There are not enough ADMIN_PASSWORDS for ADMIN_USERS")
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base.metadata.create_all(bind=engine)
 
-# TODO: Load this from env lists or something
-admin_users = [
-    {"username": "paul", "password": "admin"},
-    {"username": "pablo", "password": "admin"},
-    {"username": "lambertus", "password": "admin"},
-    {"username": "bot_admin", "password": "admin"}
-]
+admin_users = [{"username": admin, "password": password} for admin, password in zip(ADMIN_USERS, ADMIN_PASSWORDS)]
 
 def populate_db():
     db = SessionLocal()

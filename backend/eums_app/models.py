@@ -20,6 +20,9 @@ class User(Base):
     profile_picture = Column(String, nullable=True)
     is_admin = Column(Boolean, default=False)
 
+    # Relationship to Article: One user can have many articles
+    articles = relationship("Article", back_populates="author")
+
 
 class Video(Base):
     __tablename__ = "videos"
@@ -48,6 +51,13 @@ class Article(Base):
     content = Column(Text, nullable=False)
     public = Column(Boolean, nullable=False)
     thumbnail = Column(String)
+
+    # Foreign key to the User table
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+
+    # Relationship to User: One article belongs to one user
+    author = relationship("User", back_populates="articles")
+
     tags = relationship('TopicTag', secondary=article_tags, back_populates='articles')
 
 

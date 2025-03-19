@@ -5,11 +5,14 @@ import { Article } from "../components/types/Content.type";
 import { FaRegPenToSquare, FaRegTrashCan } from "react-icons/fa6";
 import "./CSS/ArticleManager.css";
 import ArticleVisibility from "../components/frontend_util/ArticleVisibility";
+import { useAuth } from "../components/auth/AuthContext";
+import { fetchArticlesPostedByUser } from "../components/api/Api";
+
 
 const AdminArticleManager = () => {
+  const { isAdmin, userId } = useAuth();
   const [articles, setArticles] = useState<Article[]>([]);
   const [changedArticles, setChangedArticles] = useState<Record<number, boolean>>({});
-
 
   const fetchArticles = async () => {
     try {
@@ -58,11 +61,17 @@ const AdminArticleManager = () => {
     }
   };
 
-
   useEffect(() => {
-    fetchArticles();
-  }, []);
-
+    if (isAdmin) {
+      fetchArticles();
+    } else {
+      if (userId && !articles.length) {
+        fetchArticlesPostedByUser(userId).then(res => {
+          setArticles(res);
+        })
+      }
+    }
+  }, [isAdmin, userId]);
 
   return (
     <div className="article-manager">

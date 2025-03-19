@@ -54,19 +54,27 @@ app.add_middleware(
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-def verify_token(token):
+def verify_admin_token(token: str, db: Session):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
             raise HTTPException(status_code=401, detail="Invalid token")
-        return {"status": "valid"}
+
+        user = db.query(User).filter(User.username == username).first()
+        if user is None:
+            raise HTTPException(status_code=401, detail="User not found")
+
+        if not user.is_admin:
+            raise HTTPException(status_code=403, detail="Admin access required")
+
+        return {"status": "valid", "admin": True}
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
-def run_if_authenticated(token: str, method: Callable[..., Any], *args, **kwargs) -> dict:
-    isAuthenticated = verify_token(token)
+def run_if_admin(token: str, method: Callable[..., Any], *args, **kwargs) -> dict:
+    isAuthenticated = verify_admin_token(token)
     if isAuthenticated.get("status") == "valid":
         return method(*args, **kwargs)
     else:
@@ -91,8 +99,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
 
 
 @app.get("/verify-token")
-async def verify_token_endpoint(token: str = Depends(oauth2_scheme)):
-    return verify_token(token)
+async def verify_token_endpoint(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    return verify_admin_token(token, db)
 
 
 @app.post("/register-user")
@@ -107,9 +115,18 @@ async def register_user_endpoint(payload: RegisterUserPayload, db: Session = Dep
 
 #### ARTICLES ####
 
+def run_if_valid_user(token: str, user: str, db: Session = Depends(get_db)):
+    # basically, check if the token is associated to the requested user
+    # cases where it applies: 
+    # 1. When publishing/editing an article, only post if user id matches the user (and its not public yet)
+    # 2. When accessing the management page, only show if user token is the same
+    # 3. 
+    pass
+
+
 @app.post("/articles/")
 async def create_article_endpoint(article: ArticleResponse, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    article = run_if_authenticated(token, create_article, db, 
+    article = run_if_admin(token, create_article, db, 
         article.title, article.content, False, article.thumbnail, article.selectedTags)
     await send_article_uploaded_to_admins(article)
     return article
@@ -118,7 +135,7 @@ async def create_article_endpoint(article: ArticleResponse, db: Session = Depend
 @app.post("/articles/edit/{articleId}")
 def edit_article_endpoint(articleId: str, article: ArticleResponse, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     print(article)
-    return run_if_authenticated(token, edit_article, db, articleId, 
+    return run_if_admin(token, edit_article, db, articleId, 
         article.title, article.content, False)
 
 
@@ -137,7 +154,7 @@ def get_articles_endpoint(
             if not token:
                 raise HTTPException(status_code=401, detail="Token required for non-public access")
 
-            isAuthenticated = verify_token(token)
+            isAuthenticated = verify_admin_token(token)
             if not isAuthenticated.get("status") == "valid":
                 raise HTTPException(status_code=401, detail="Invalid token")
 
@@ -154,7 +171,7 @@ def get_article_endpoint(articleId: str, db: Session = Depends(get_db)):
 
 @app.delete("/article/{articleId}")
 def delete_article_endpoint(articleId: str, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    return run_if_authenticated(token, delete_article, db, articleId)
+    return run_if_admin(token, delete_article, db, articleId)
 
 
 @app.post("/articles/change-visibility")
@@ -163,7 +180,7 @@ def change_article_visibility_endpoint(
         db: Session = Depends(get_db), 
         token: str = Depends(oauth2_scheme)):
     for article in payload.keys():
-        return run_if_authenticated(token, change_article_visibility, db, article, payload[article])
+        return run_if_admin(token, change_article_visibility, db, article, payload[article])
 
 
 #### TAGS ####
@@ -175,7 +192,7 @@ def get_all_tags(db: Session = Depends(get_db)):
 
 @app.post("/tags")
 def post_new_tag(tagName: str, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    return run_if_authenticated(token, create_tag, db, tagName)
+    return run_if_admin(token, create_tag, db, tagName)
 
 
 #### YOUTUBE / INTERVIEW VIDEOS ####
@@ -183,13 +200,13 @@ def post_new_tag(tagName: str, db: Session = Depends(get_db), token: str = Depen
 
 @app.post("/videos/")
 def post_video_endpoint(payload: Dict[str, str], db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    return run_if_authenticated(token, create_video, db, 
+    return run_if_admin(token, create_video, db, 
         payload["title"], payload["thumbnail"], payload["url"], payload["livestream"] == "true", payload["upload_date"])
 
 
 @app.delete("/videos/{videoId}")
 def delete_video_endpoint(videoId: str, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    return run_if_authenticated(token, delete_video, db, videoId)
+    return run_if_admin(token, delete_video, db, videoId)
 
 
 @app.get("/videos/")
