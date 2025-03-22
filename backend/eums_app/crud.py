@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import List
 import json
 
-from .models import User, Article, Video, TopicTag
+from .models import User, Article, Video, TopicTag, Like
 from .util import save_thumbnail
 from .schemas import RegisterUserPayload
 
@@ -55,9 +55,27 @@ def get_articles(db: Session, skip: int = 0, limit: int = 10, public_only: bool 
         for article in articles
     ]
 
-def get_article(articleId: str, db: Session, public_only: bool = True):
-    query = db.query(Article).options(joinedload(Article.tags)).filter(Article.id == articleId)
+
+def get_article(articleId: str, db: Session, user_id: int = None, public_only: bool = True):
+    query = db.query(Article).options(
+        joinedload(Article.tags), 
+        joinedload(Article.author)
+    ).filter(Article.id == articleId)
+
     article = query.first()
+
+    if not article.public and user_id != None:
+        user = db.query(User).filter(User.id == user_id).first()
+        if user == None or (not user.is_admin):
+            return None
+
+    if article is None:
+        return None
+
+    user_has_liked = False
+    if user_id is not None:
+        user_has_liked = db.query(Like).filter_by(user_id=user_id, article_id=article.id).first() is not None
+
     return {
         "id": article.id,
         "title": article.title,
@@ -65,11 +83,25 @@ def get_article(articleId: str, db: Session, public_only: bool = True):
         "public": article.public,
         "thumbnail": article.thumbnail,
         "tags": [{"id": tag.id, "tag": tag.tag} for tag in article.tags],
+        "author": {
+            "id": article.author.id,
+            "username": article.author.username,
+            "full_name": article.author.full_name
+        },
+        "posting_date": article.upload_date,
+        **({"user_has_liked": user_has_liked} if user_id is not None else {})
     }
 
 
-
-def create_article(db: Session, title: str, content: dict, public: bool, thumbnail_base64: str, tags: List[str]):
+def create_article(
+    db: Session, 
+    title: str, 
+    content: dict, 
+    public: bool, 
+    thumbnail_base64: str, 
+    tags: List[str], 
+    user_id: int
+):
     thumbnail_filename = None
     if thumbnail_base64:
         thumbnail_filename = f"{title.replace(' ', '_')}_thumbnail.png"
@@ -78,18 +110,19 @@ def create_article(db: Session, title: str, content: dict, public: bool, thumbna
     existing_tags = db.query(TopicTag).filter(TopicTag.tag.in_(tags)).all()
     existing_tag_names = {tag.tag for tag in existing_tags}
 
-    new_tags = [tag for tag in tags if tag not in existing_tag_names]
-    for tag_name in new_tags:
-        new_tag = TopicTag(tag=tag_name)
-        db.add(new_tag)
-        existing_tags.append(new_tag) 
+    new_tags = [TopicTag(tag=tag_name) for tag_name in tags if tag_name not in existing_tag_names]
+    db.add_all(new_tags)
+    db.commit()  
+
+    all_tags = existing_tags + new_tags
 
     db_article = Article(
         title=title,
         content=json.dumps(content),
         public=public,
         thumbnail=thumbnail_filename,
-        tags=existing_tags  
+        user_id=user_id,
+        tags=all_tags  
     )
 
     db.add(db_article)
@@ -170,3 +203,20 @@ def create_tag(db: Session, tag: str):
 
 def get_tags(db: Session):
     return db.query(TopicTag).all()
+
+
+### Likes ###
+
+def toggle_like(db: Session, user_id: int, article_id: int):
+    like = db.query(Like).filter_by(user_id=user_id, article_id=article_id).first()
+    
+    if like:
+        db.delete(like)
+        db.commit()
+        return {"like": False}
+    else:
+        new_like = Like(user_id=user_id, article_id=article_id)
+        db.add(new_like)
+        db.commit()
+        db.refresh(new_like)
+        return {"like": True}

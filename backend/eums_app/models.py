@@ -1,10 +1,9 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Date, Table
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Date, Table, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-
+from datetime import datetime
 
 Base = declarative_base()
-
 
 class User(Base):
     __tablename__ = "users"
@@ -20,8 +19,8 @@ class User(Base):
     profile_picture = Column(String, nullable=True)
     is_admin = Column(Boolean, default=False)
 
-    # Relationship to Article: One user can have many articles
     articles = relationship("Article", back_populates="author")
+    likes = relationship("Like", back_populates="user")
 
 
 class Video(Base):
@@ -51,14 +50,13 @@ class Article(Base):
     content = Column(Text, nullable=False)
     public = Column(Boolean, nullable=False)
     thumbnail = Column(String)
+    upload_date = Column(DateTime, default=datetime.utcnow, nullable=False)
 
-    # Foreign key to the User table
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-
-    # Relationship to User: One article belongs to one user
     author = relationship("User", back_populates="articles")
 
     tags = relationship('TopicTag', secondary=article_tags, back_populates='articles')
+    likes = relationship("Like", back_populates="article")
 
 
 class TopicTag(Base):
@@ -68,3 +66,17 @@ class TopicTag(Base):
     tag = Column(String, nullable=False)
 
     articles = relationship('Article', secondary=article_tags, back_populates='tags')
+
+
+class Like(Base):
+    __tablename__ = "likes"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    article_id = Column(Integer, ForeignKey('articles.id'), nullable=False)
+    timestamp = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    user = relationship("User", back_populates="likes")
+    article = relationship("Article", back_populates="likes")
+
+    __table_args__ = (UniqueConstraint('user_id', 'article_id', name='unique_like'),)
