@@ -4,6 +4,8 @@ export type Article = {
   content: string;
   public: boolean;
   thumbnail: string;
+  user_has_liked: boolean;
+  total_likes: number;
   tags: { id: string, tag: string }[];
 };
 

@@ -64,13 +64,15 @@ def get_article(articleId: str, db: Session, user_id: int = None, public_only: b
 
     article = query.first()
 
-    if not article.public and user_id != None:
+    if not article.public and user_id is not None:
         user = db.query(User).filter(User.id == user_id).first()
-        if user == None or (not user.is_admin):
+        if user is None or (not user.is_admin):
             return None
 
     if article is None:
         return None
+
+    total_likes = db.query(Like).filter(Like.article_id == article.id).count()
 
     user_has_liked = False
     if user_id is not None:
@@ -89,6 +91,7 @@ def get_article(articleId: str, db: Session, user_id: int = None, public_only: b
             "full_name": article.author.full_name
         },
         "posting_date": article.upload_date,
+        "total_likes": total_likes,
         **({"user_has_liked": user_has_liked} if user_id is not None else {})
     }
 
@@ -207,16 +210,16 @@ def get_tags(db: Session):
 
 ### Likes ###
 
-def toggle_like(db: Session, user_id: int, article_id: int):
+def toggle_like(db: Session, article_id: int, user_id: int):
     like = db.query(Like).filter_by(user_id=user_id, article_id=article_id).first()
     
     if like:
         db.delete(like)
         db.commit()
-        return {"like": False}
+        return { "like": False }
     else:
         new_like = Like(user_id=user_id, article_id=article_id)
         db.add(new_like)
         db.commit()
         db.refresh(new_like)
-        return {"like": True}
+        return { "like": True }

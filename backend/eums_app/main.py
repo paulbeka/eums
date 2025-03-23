@@ -19,6 +19,10 @@ from jose import JWTError, jwt
 import aiosmtplib, requests, os
 
 
+
+# TODO: Make admin and user auth DIFFERENT (via the roles stuff)
+
+
 app = FastAPI()
 os.makedirs("thumbnails", exist_ok=True)
 
@@ -55,6 +59,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
 
 def get_user_from_token(token: str, db: Session):
+    if token is None:
+        return None
     payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     username = payload.get("sub")
     return db.query(User).filter(User.username == username).first()
@@ -62,6 +68,9 @@ def get_user_from_token(token: str, db: Session):
 
 def verify_admin_token(token: str, db: Session):
     try:
+        if token is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+
         user: User = get_user_from_token(token, db)
         if user is None:
             raise HTTPException(status_code=401, detail="Invalid token")
@@ -196,6 +205,12 @@ def change_article_visibility_endpoint(
         token: str = Depends(oauth2_scheme)):
     for article in payload.keys():
         return run_if_admin(token, db, change_article_visibility, article, payload[article])
+
+
+#### LIKES ####
+@app.post("/like/{articleId}")
+def like_post_endpoint(articleId: str, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    return run_if_admin(token, db, toggle_like, articleId, get_user_from_token(token, db).id)
 
 
 #### TAGS ####

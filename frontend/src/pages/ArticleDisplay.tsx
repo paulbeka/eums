@@ -9,10 +9,13 @@ import { BrowserView, MobileView } from "react-device-detect";
 import { formatArticleContent } from "../components/util_tools/Util";
 import ArticleShare from "../components/frontend_util/ArticleShare"; 
 import { Helmet } from 'react-helmet-async';
+import { AiFillLike, AiOutlineLike } from "react-icons/ai";
+import { useAuth } from "../components/auth/AuthContext";
 
 
 const ArticleDisplay = () => {
   const { articleId } = useParams();
+  const { userId } = useAuth();
   const navigate = useNavigate();
 
   const [articleContent, setArticleContent] = useState<Article>();
@@ -27,6 +30,28 @@ const ArticleDisplay = () => {
         throw error;
       });
   }, [articleId]);
+
+  const likeArticle = () => {
+    api
+      .post(`/like/${articleId}`)
+      .then((response) => {
+        if (response.status === 200) {
+          const data = response.data;
+          setArticleContent((prev) => {
+            if (!prev) return prev; 
+          
+            return { 
+              ...prev, 
+              total_likes: prev.total_likes + (data.like ? 1 : -1),
+              user_has_liked: data.like
+            };
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error liking article:", error);
+      });
+  }
 
   return (
     <>
@@ -46,7 +71,25 @@ const ArticleDisplay = () => {
                 />
                 <span>Back</span>
               </div>
-              <ArticleShare />
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <div style={{ display: "flex", alignItems: "center", marginRight: "1em" }}>
+                  {articleContent?.user_has_liked ? (
+                    <AiFillLike 
+                      size={35} 
+                      style={{ marginRight: "0.5em", cursor: "pointer" }}
+                      onClick={likeArticle} 
+                    />
+                  ) : (
+                    <AiOutlineLike 
+                      size={35} 
+                      style={{ marginRight: "0.5em", cursor: "pointer" }}
+                      onClick={likeArticle} 
+                    />
+                  )}
+                  <p>{articleContent?.total_likes}</p>
+                </div>
+                <ArticleShare />
+              </div>
             </div>
             {articleContent ? (
               <div className="post-content-container">
