@@ -8,6 +8,7 @@ interface AuthContextType {
   isAdmin: boolean;
   userId: string | null;
   setAuthStatus: (status: boolean) => void;
+  login: (token: string) => void;
   logout: () => void;
 }
 
@@ -18,6 +19,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [userId, setUserId] = useState<string | null>(null);
   const token = localStorage.getItem("access_token");
+
+  const login = (token: string) => {
+    localStorage.setItem("access_token", token);
+    const decoded: { roles?: string[], sub?: string } = jwtDecode(token);
+    
+    setIsAuthenticated(true);
+    setIsAdmin(decoded.roles?.includes("admin") ?? false);
+    setUserId(decoded.sub ?? null);
+  };
 
   // Function to check if token is about to expire (within 2 minutes)
   const isTokenExpiringSoon = (token: string): boolean => {
@@ -33,13 +43,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const refreshAuthToken = async () => {
     try {
       const response = await axios.post(`${BASE_URL}/refresh-token`, {}, { withCredentials: true });
-
+  
       if (response.data.access_token) {
         localStorage.setItem("access_token", response.data.access_token);
         return response.data.access_token;
-      } else {
-        logout();
-      }
+      } 
     } catch (error) {
       console.error("Failed to refresh token:", error);
       logout();
@@ -56,6 +64,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Function to check token and refresh if needed
   const verifyToken = async () => {
+    const token = localStorage.getItem("access_token");
+
     if (!token) {
       logout();
       return;
@@ -105,7 +115,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isAdmin, userId, setAuthStatus: setIsAuthenticated, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, isAdmin, userId, setAuthStatus: setIsAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

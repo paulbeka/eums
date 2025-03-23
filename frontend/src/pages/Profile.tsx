@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { getUserData } from "../components/api/Api";
+import { Helmet } from 'react-helmet-async';
+import { useAuth } from "../components/auth/AuthContext";
+import { jwtDecode } from "jwt-decode";
 import "./CSS/Profile.css";
 
 interface UserProfile {
@@ -15,44 +19,60 @@ interface UserProfile {
 
 export const Profile = () => {
   const { username } = useParams();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  
   const [userData, setUserData] = useState<UserProfile | null>(null);
+  const [isMyProfile, setIsMyProfile] = useState(false);
+
+  const signOut = () => {
+    logout();
+    navigate("/");
+  }
 
   useEffect(() => {
-    // Mock fetch user data
-    setUserData({
-      full_name: "John Doe",
-      email: "johndoe@example.com",
-      date_of_birth: "1995-05-20",
-      country: "France",
-      gender: "Male",
-      profilePicture: null,
-      posts: 42,
-      likes: 1280,
-    });
-  }, []);
+    if (username) {
+      getUserData(username).then((data: UserProfile) => {
+        setUserData(data);
+      });
+    }
+    if (localStorage.getItem("access_token")) {
+      setIsMyProfile(jwtDecode(localStorage.getItem("access_token")!)["sub"] === username);
+    }
+  }, [username]);
 
-  return (
+  return (<>
+    <Helmet>
+      <title>{userData?.full_name || "Profile"} - EU Made Simple</title>
+      <meta name="description" content={`Profile for ${userData?.full_name || "User"}`} />
+    </Helmet>
     <div className="profile-container">
       <div className="profile-card">
+        {isMyProfile && <p>Hello world!</p>}
         <img
-          src={userData?.profilePicture ? userData.profilePicture : "https://avatars.githubusercontent.com/u/14959?v=4"}
+          src={userData?.profilePicture || "https://avatars.githubusercontent.com/u/14959?v=4"}
           alt="Profile"
           className="profile-picture"
         />
         <h2 className="profile-name">{userData?.full_name || "Loading..."}</h2>
-        <p className="profile-info">{userData?.gender}, {userData?.date_of_birth}</p>
-        <p className="profile-location">📍 {userData?.country}</p>
+        <p className="profile-info">
+          {userData?.gender || "Not specified"}, {userData?.date_of_birth || "Not provided"}
+        </p>
+        <p className="profile-location">📍 {userData?.country || "Unknown"}</p>
         <div className="profile-stats">
           <div className="profile-stat">
-            <p className="stat-value">{userData?.posts}</p>
+            <p className="stat-value">{userData?.posts || 0}</p>
             <p className="stat-label">Posts</p>
           </div>
           <div className="profile-stat">
-            <p className="stat-value">{userData?.likes}</p>
+            <p className="stat-value">{userData?.likes || 0}</p>
             <p className="stat-label">Likes</p>
           </div>
         </div>
+        {isMyProfile && <div className="profile-edit">
+          <button onClick={signOut}>Logout</button>
+        </div>}
       </div>
     </div>
-  );
+  </>);
 };

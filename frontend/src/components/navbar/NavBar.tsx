@@ -14,15 +14,23 @@ const NavBar: React.FC<{
   isOpenMobile: boolean,
   setIsOpenMobile: React.Dispatch<React.SetStateAction<boolean>>
 }> = ({ currentPage, setCurrentPage, isOpenMobile, setIsOpenMobile }) => {
-  
-  const [navItems, setNavItems] = useState([
-    { path: '/about', text: 'About Us'},
-    { path: '/newsletter-signup', text: 'Newsletter' },
-    { path: '/contact', text: 'Contact'},
-    { path: '/register', text: 'Register' },
-    { path: '/login', text: 'Login' }
-  ]);
   const { isAuthenticated } = useAuth();
+  
+  const navItems = isAuthenticated
+  ? [
+      { path: '/about', text: 'About Us' },
+      { path: '/newsletter-signup', text: 'Newsletter' },
+      { path: '/contact', text: 'Contact' },
+      { path: '/article-manager', text: "Manage Articles" },
+      { path: '/article-poster', text: 'Post Article' }
+    ]
+  : [
+      { path: '/about', text: 'About Us' },
+      { path: '/newsletter-signup', text: 'Newsletter' },
+      { path: '/contact', text: 'Contact' },
+      { path: '/register', text: 'Register' },
+      { path: '/login', text: 'Login' }
+    ];
 
   const getProfileName = () => {
     if (localStorage.getItem("access_token")) {
@@ -30,18 +38,6 @@ const NavBar: React.FC<{
     }
     return false;
   }
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      setNavItems([
-        { path: '/about', text: 'About Us'},
-        { path: '/newsletter-signup', text: 'Newsletter' },
-        { path: '/contact', text: 'Contact'},
-        { path: '/article-manager', text: "Manage Articles" },
-        { path: '/article-poster', text: 'Post Article' }
-      ]);
-    }
-  }, [isAuthenticated]);
 
   const mobileHandleClick = (item: {path: string, text: string}) => {
     setCurrentPage(item.text);

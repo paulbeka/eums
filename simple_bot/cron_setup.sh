@@ -1,3 +1,4 @@
+cd eums/simple_bot
 python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip

@@ -15,7 +15,7 @@ import { useAuth } from "../components/auth/AuthContext";
 
 const ArticleDisplay = () => {
   const { articleId } = useParams();
-  const { userId } = useAuth();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const [articleContent, setArticleContent] = useState<Article>();
@@ -32,6 +32,10 @@ const ArticleDisplay = () => {
   }, [articleId]);
 
   const likeArticle = () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
     api
       .post(`/like/${articleId}`)
       .then((response) => {

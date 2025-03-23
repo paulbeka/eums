@@ -2,19 +2,18 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../Config";
 import axios from "axios";
-import "./CSS/Login.css";
 import { Helmet } from 'react-helmet-async';
+import { useAuth } from "../components/auth/AuthContext";
+import "./CSS/Login.css";
 
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    document.title = 'EUMS - Login';
-  }, []);
 
   const submitLogin = async (e: any) => {
     e.preventDefault();
@@ -29,7 +28,7 @@ const Login = () => {
       });
 
       if (response.status === 200) {
-        localStorage.setItem("access_token", response.data.access_token);
+        login(response.data.access_token);
         navigate("/");
       } else {
         setError("Login failed. Contact an admin or try inputting your password again.");

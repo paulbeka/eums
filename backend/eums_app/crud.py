@@ -223,3 +223,29 @@ def toggle_like(db: Session, article_id: int, user_id: int):
         db.commit()
         db.refresh(new_like)
         return { "like": True }
+
+
+
+#### USER MANAGEMENT AND PROFILE ####
+
+def get_user_profile_data(username: str, db: Session):
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        return None
+
+    posts_count = db.query(Article).filter(Article.author.has(id=user.id)).filter(Article.public == True).count()
+    likes_count = db.query(Like).join(Article).filter(Article.author.has(id=user.id)).count()
+
+    return {
+        "id": user.id,
+        "username": user.username,
+        "full_name": user.full_name,
+        "email": user.email,
+        "date_of_birth": user.date_of_birth,
+        "country": user.country,
+        "gender": user.gender,
+        "profile_picture": user.profile_picture,
+        "is_admin": user.is_admin,
+        "posts": posts_count,
+        "likes": likes_count,
+    }

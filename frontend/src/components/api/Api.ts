@@ -170,3 +170,14 @@ export const registerUser = async (payload: any) => {
 }
 
 export default api;
+
+export const getUserData = async (username: string) => {
+  return api.get(`/profile/${username}`)
+    .then(response => {
+      if (response.status !== 200) {
+        throw "Request failed! Contact an admin.";
+      }
+      return response.data;
+    }
+  );
+}

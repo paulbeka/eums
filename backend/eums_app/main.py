@@ -350,3 +350,13 @@ async def send_email(contact: ContactForm):
     except Exception as e:
         print(f"Error occurred: {e}")
         raise HTTPException(status_code=500, detail="Failed to send email.")
+
+
+#### USER MANAGEMENT AND PROFILE ####
+
+@app.get("/profile/{username}")
+def get_user_profile_data_endpoint(username: str, db: Session = Depends(get_db)):
+    user = get_user_profile_data(username, db)
+    if user is None:
+        raise HTTPException(status_code=404, detail="Unknown user")
+    return user
