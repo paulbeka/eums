@@ -39,7 +39,6 @@ const ArticleDisplay = () => {
           const data = response.data;
           setArticleContent((prev) => {
             if (!prev) return prev; 
-          
             return { 
               ...prev, 
               total_likes: prev.total_likes + (data.like ? 1 : -1),
@@ -86,7 +85,7 @@ const ArticleDisplay = () => {
                       onClick={likeArticle} 
                     />
                   )}
-                  <p>{articleContent?.total_likes}</p>
+                  <p style={{ minWidth: "10px"}}>{articleContent?.total_likes}</p>
                 </div>
                 <ArticleShare />
               </div>
@@ -100,6 +99,14 @@ const ArticleDisplay = () => {
                   />
                   <div className="article-display-main-article-title">
                     <p>{articleContent["title"]}</p>
+                  </div>
+                </div>
+                <div className="article-display-metadata">
+                  <div className="article-display-date">
+                    <p>{new Date(articleContent.posting_date).toDateString().toUpperCase()}</p>
+                  </div>
+                  <div className="article-display-author">
+                    <p>BY {articleContent.author.full_name.toUpperCase()}</p>
                   </div>
                 </div>
                 <div

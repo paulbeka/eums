@@ -19,15 +19,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [userId, setUserId] = useState<string | null>(null);
   const token = localStorage.getItem("access_token");
 
-  const isTokenExpired = (token: string): boolean => {
+  // Function to check if token is about to expire (within 2 minutes)
+  const isTokenExpiringSoon = (token: string): boolean => {
     try {
       const decoded: { exp: number } = jwtDecode(token);
-      return decoded.exp * 1000 < Date.now();
-    } catch (error) {
-      return true; 
+      return decoded.exp * 1000 - Date.now() < 2 * 60 * 1000; // Less than 2 mins remaining
+    } catch {
+      return true; // Treat invalid tokens as expired
     }
   };
 
+  // Function to refresh the token
+  const refreshAuthToken = async () => {
+    try {
+      const response = await axios.post(`${BASE_URL}/refresh-token`, {}, { withCredentials: true });
+
+      if (response.data.access_token) {
+        localStorage.setItem("access_token", response.data.access_token);
+        return response.data.access_token;
+      } else {
+        logout();
+      }
+    } catch (error) {
+      console.error("Failed to refresh token:", error);
+      logout();
+    }
+  };
+
+  // Logout function
   const logout = () => {
     localStorage.removeItem("access_token");
     setIsAuthenticated(false);
@@ -35,41 +54,55 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUserId(null);
   };
 
-  useEffect(() => {
-    const verifyToken = async () => {
-      if (!token || isTokenExpired(token)) {
+  // Function to check token and refresh if needed
+  const verifyToken = async () => {
+    if (!token) {
+      logout();
+      return;
+    }
+
+    if (isTokenExpiringSoon(token)) {
+      const newToken = await refreshAuthToken();
+      if (!newToken) return;
+    }
+
+    try {
+      const response = await axios.get(`${BASE_URL}/verify-token`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("access_token")}` },
+      });
+
+      if (response.data.status === "valid") {
+        const decoded: { roles?: string[]; sub?: string } = jwtDecode(localStorage.getItem("access_token")!);
+        setIsAuthenticated(true);
+        setIsAdmin(decoded.roles?.includes("admin") ?? false);
+        setUserId(decoded.sub ?? null);
+      } else {
         logout();
-        return;
       }
+    } catch (error) {
+      console.error("Token verification failed:", error);
+      logout();
+    }
+  };
 
-      try {
-        const response = await axios.get(`${BASE_URL}/verify-token`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  // Effect to check and refresh token periodically
+  useEffect(() => {
+    verifyToken();
+    const interval = setInterval(verifyToken, 60 * 1000); // Check every minute
+    return () => clearInterval(interval);
+  }, []);
 
-        if (response.data.status === "valid") {
-          setIsAuthenticated(true);
-          try {
-            const decoded: { roles?: string[]; sub?: string } = jwtDecode(token);
-            setIsAdmin(decoded.roles?.includes("admin") ?? false);
-            setUserId(decoded.sub ?? null); // Assuming `sub` is the user ID claim
-          } catch {
-            setIsAdmin(false);
-            setUserId(null);
-          }
-        } else {
-          logout();
-        }
-      } catch (error) {
-        console.error("Token verification failed:", error);
-        logout();
+  // Effect to refresh token when user refocuses the page
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        verifyToken();
       }
     };
-
-    verifyToken();
-  }, [token]);
+    
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, isAdmin, userId, setAuthStatus: setIsAuthenticated, logout }}>

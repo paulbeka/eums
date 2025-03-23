@@ -6,6 +6,12 @@ export type Article = {
   thumbnail: string;
   user_has_liked: boolean;
   total_likes: number;
+  author: {
+    id: number;
+    username: string;
+    full_name: string;
+  };
+  posting_date: string;
   tags: { id: string, tag: string }[];
 };
 

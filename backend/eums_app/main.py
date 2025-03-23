@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status, Query, Header, Security, Request
+from fastapi import FastAPI, Depends, HTTPException, status, Query, Header, Security, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
@@ -8,7 +8,7 @@ from typing import Optional, Dict, Callable, Any, List
 from email.message import EmailMessage
 from .auth import authenticate_user, create_access_token
 from .schemas import *
-from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM, SMTP_SETTINGS, CAPTCHA_KEY, EUMS_BEEHIIV_KEY, PUBLICATION_ID
+from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM, SMTP_SETTINGS, CAPTCHA_KEY, EUMS_BEEHIIV_KEY, PUBLICATION_ID, REFRESH_TOKEN_EXPIRE_DAYS
 from .models import Base, User, Article
 from .db import engine, get_db
 from .crud import *
@@ -93,8 +93,18 @@ def run_if_admin(token: str, db: Session, method: Callable[..., Any], *args, **k
 
 #### LOGIN/AUTH ####
 
-@app.post("/token", response_model=Token)
-async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+
+def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta if expires_delta else timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS))
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+@app.post("/token", response_model=dict)
+async def login(
+    response: Response, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+):
     user = authenticate_user(form_data.username, form_data.password, db)
     if not user:
         raise HTTPException(
@@ -102,18 +112,53 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
             detail="Invalid credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
     access_token = create_access_token(
-        data={
-            "sub": user.username,
-            "roles": ["admin"]
-        }, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        data={"sub": user.username, "roles": ["admin"]},
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
     )
+    refresh_token = create_refresh_token(data={"sub": user.username})
+
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=True,
+        samesite="Lax",
+        max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60
+    )
+
     return {"access_token": access_token, "token_type": "bearer"}
 
 
 @app.get("/verify-token")
 async def verify_token_endpoint(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     return verify_admin_token(token, db)
+
+
+@app.post("/refresh-token")
+async def refresh_token(request: Request, response: Response):
+    refresh_token = request.cookies.get("refresh_token")
+    
+    if not refresh_token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No refresh token found")
+
+    try:
+        payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+
+        if not username:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+
+        new_access_token = create_access_token(
+            data={"sub": username, "roles": ["admin"]},
+            expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
+        )
+
+        return {"access_token": new_access_token, "token_type": "bearer"}
+
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired refresh token")
 
 
 @app.post("/register-user")

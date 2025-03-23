@@ -208,7 +208,7 @@ def get_tags(db: Session):
     return db.query(TopicTag).all()
 
 
-### Likes ###
+#### Likes ####
 
 def toggle_like(db: Session, article_id: int, user_id: int):
     like = db.query(Like).filter_by(user_id=user_id, article_id=article_id).first()
