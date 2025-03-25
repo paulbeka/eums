@@ -4,12 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { registerUser } from "../components/api/Api";
 
 interface FormData {
+  username: string
   full_name: string;
   email: string;
   date_of_birth: string;
   password: string;
+  confirm_password: string;
   country: string;
-  gender: string;
   profilePicture: File | null;
 }
 
@@ -19,12 +20,13 @@ export const Register = () => {
   const defaultProfilePic = "https://via.placeholder.com/100"; // Preset profile picture
 
   const [formData, setFormData] = useState<FormData>({
+    username: "",
     full_name: "",
     email: "",
     date_of_birth: "",
     password: "",
+    confirm_password: "",
     country: "",
-    gender: "",
     profilePicture: null,
   });
   const [error, setError] = useState<string>("");
@@ -51,7 +53,20 @@ export const Register = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    registerUser(formData)
+    if (formData.password !== formData.confirm_password) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    const formDataToSend = new FormData();
+
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key !== "confirm_password" && value !== "" && value !== null) {
+        formDataToSend.append(key, value);
+      }
+    });
+
+    registerUser(formDataToSend)
       .then(() => {
         navigate("/");
       })
@@ -63,6 +78,11 @@ export const Register = () => {
   return (
     <div className="register-page-container">
       <form onSubmit={handleSubmit} className="register-form">
+        <label>
+          Username:
+          <input type="text" name="username" value={formData.username} onChange={handleChange} required />
+        </label>
+        
         <label>
           Full Name:
           <input type="text" name="full_name" value={formData.full_name} onChange={handleChange} required />
@@ -81,6 +101,11 @@ export const Register = () => {
         <label>
           Password:
           <input type="password" name="password" value={formData.password} onChange={handleChange} required />
+        </label>
+
+        <label>
+          Confirm Password:
+          <input type="password" name="confirm_password" value={formData.confirm_password} onChange={handleChange} required />
         </label>
 
         <label>

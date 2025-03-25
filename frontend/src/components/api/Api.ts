@@ -111,11 +111,11 @@ export const deleteArticle = async (articleId: number) => {
 }
 
 
-export const changeVisibility = async (changedArticles: Record<number, boolean>) => {
+export const changeVisibility = async (changedArticles: Record<number, string>) => {
   api.post("/articles/change-visibility", changedArticles)
   .then(response => {
     if (response.status !== 200) {
-      throw "Request failed! Contact an admin.";
+      throw new Error("Request failed! Contact an admin.");
     }
   })
   .catch(err => {

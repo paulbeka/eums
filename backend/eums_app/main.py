@@ -9,7 +9,7 @@ from email.message import EmailMessage
 from .auth import authenticate_user, create_access_token
 from .schemas import *
 from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM, SMTP_SETTINGS, CAPTCHA_KEY, EUMS_BEEHIIV_KEY, PUBLICATION_ID, REFRESH_TOKEN_EXPIRE_DAYS
-from .models import Base, User, Article
+from .models import Base, User, Article, ArticleStatus
 from .db import engine, get_db
 from .crud import *
 from .email.email_util import send_article_uploaded_to_admins
@@ -89,6 +89,15 @@ def run_if_admin(token: str, db: Session, method: Callable[..., Any], *args, **k
         return method(db, *args, **kwargs)
     else:
         raise HTTPException(status_code=401, detail="Unauthorized")
+
+
+def run_if_logged_in(token: str, db: Session, method: Callable[..., Any], *args, **kwargs) -> dict:
+    user = get_user_from_token(token, db)
+    if user:
+        return method(db, *args, **kwargs)
+    else:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
 
 
 #### LOGIN/AUTH ####
@@ -184,10 +193,10 @@ def run_if_valid_user(token: str, user: str, db: Session = Depends(get_db)):
 
 @app.post("/articles/")
 async def create_article_endpoint(article: ArticleResponse, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    article = run_if_admin(token, db, create_article, 
-        article.title, article.content, False, article.thumbnail, 
+    article = run_if_logged_in(token, db, create_article, 
+        article.title, article.content, article.thumbnail, 
         article.selectedTags, get_user_from_token(token, db).id)
-    # TODO: FIX THE GMAIL ACCOUNT TO SEND ARTICLES AGAIN
+    # TODO: FIX THE GMAIL ACCOUNT TO SEND ARTICLES AGAIN --- BUT ACTUALLY ONLY DO THIS ON "REVIEW" PUBLISH
     # await send_article_uploaded_to_admins(article)
     return article
 
@@ -245,11 +254,15 @@ def delete_article_endpoint(articleId: str, db: Session = Depends(get_db), token
 
 @app.post("/articles/change-visibility")
 def change_article_visibility_endpoint(
-        payload: Dict[int, bool], 
+        payload: Dict[int, str], 
         db: Session = Depends(get_db), 
         token: str = Depends(oauth2_scheme)):
-    for article in payload.keys():
-        return run_if_admin(token, db, change_article_visibility, article, payload[article])
+    for article_id, status in payload.items():
+        print(status)
+        print(ArticleStatus.__members__.values())
+        if status not in ArticleStatus.__members__:
+            raise HTTPException(status_code=422, detail="Invalid status")
+        return run_if_admin(token, db, change_article_visibility, article_id, ArticleStatus[status])
 
 
 #### LIKES ####

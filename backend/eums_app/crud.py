@@ -4,12 +4,15 @@ from datetime import datetime
 from typing import List
 import json
 
-from .models import User, Article, Video, TopicTag, Like
+from .models import User, Article, Video, TopicTag, Like, ArticleStatus
 from .util import save_thumbnail
 from .schemas import RegisterUserPayload
 
 
 ### AUTH / LOGIN ###
+
+def get_user_by_id(db: Session, userId: str):
+    return db.query(User).filter(User.id == userId).first()
 
 def get_user_by_username(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
@@ -17,6 +20,7 @@ def get_user_by_username(db: Session, username: str):
 
 def create_user(db: Session, payload: RegisterUserPayload):
     db_user = User(
+        username=payload.username,
         full_name=payload.full_name,
         email=payload.email,
         hashed_password=payload.password,
@@ -40,7 +44,7 @@ def create_user(db: Session, payload: RegisterUserPayload):
 def get_articles(db: Session, skip: int = 0, limit: int = 10, public_only: bool = True):
     query = db.query(Article).options(joinedload(Article.tags))
     if public_only:
-        query = query.filter(Article.public == True)
+        query = query.filter(Article.editing_status == ArticleStatus.public)
     articles = query.offset(skip).limit(limit).all()
 
     return [
@@ -48,7 +52,7 @@ def get_articles(db: Session, skip: int = 0, limit: int = 10, public_only: bool 
             "id": article.id,
             "title": article.title,
             "content": article.content,
-            "public": article.public,
+            "public": article.editing_status,
             "thumbnail": article.thumbnail,
             "tags": [{"id": tag.id, "tag": tag.tag} for tag in article.tags],
         }
@@ -64,7 +68,7 @@ def get_article(articleId: str, db: Session, user_id: int = None, public_only: b
 
     article = query.first()
 
-    if not article.public and user_id is not None:
+    if not article.editing_status == ArticleStatus.public and user_id is not None:
         user = db.query(User).filter(User.id == user_id).first()
         if user is None or (not user.is_admin):
             return None
@@ -82,7 +86,7 @@ def get_article(articleId: str, db: Session, user_id: int = None, public_only: b
         "id": article.id,
         "title": article.title,
         "content": article.content,
-        "public": article.public,
+        "public": article.editing_status,
         "thumbnail": article.thumbnail,
         "tags": [{"id": tag.id, "tag": tag.tag} for tag in article.tags],
         "author": {
@@ -100,7 +104,6 @@ def create_article(
     db: Session, 
     title: str, 
     content: dict, 
-    public: bool, 
     thumbnail_base64: str, 
     tags: List[str], 
     user_id: int
@@ -119,10 +122,14 @@ def create_article(
 
     all_tags = existing_tags + new_tags
 
+    editing_status = ArticleStatus.private
+    if get_user_by_id(db, user_id):
+        editing_status = ArticleStatus.admin_available
+
     db_article = Article(
         title=title,
         content=json.dumps(content),
-        public=public,
+        editing_status=editing_status,
         thumbnail=thumbnail_filename,
         user_id=user_id,
         tags=all_tags  
@@ -134,6 +141,7 @@ def create_article(
     return db_article.id
 
 
+### TODO: FIX THIS FOR THE DIFFERENT EDITING STATES
 def edit_article(db: Session, id: int, title: str, content: str, public: bool):
     # TODO: Add edit tags functionality
     db_article = db.query(Article).filter(Article.id == id).first()
@@ -141,7 +149,7 @@ def edit_article(db: Session, id: int, title: str, content: str, public: bool):
         raise Exception("Article not found")
     db_article.title = title
     db_article.content = json.dumps(content)
-    db_article.public = public
+    db_article.editing_status = public
     db.commit()
     db.refresh(db_article)
     return db_article
@@ -157,11 +165,11 @@ def delete_article(db: Session, articleId: str):
         raise Exception("Article not found")
 
 
-def change_article_visibility(db: Session, articleId: int, public: bool):
+def change_article_visibility(db: Session, articleId: int, editing_status: ArticleStatus):
     article = db.query(Article).filter(Article.id == articleId).first()
     if not article:
         raise Exception("Article not found")
-    article.public = public
+    article.editing_status = editing_status
     db.commit()
     db.refresh(article)
     return article
@@ -233,7 +241,7 @@ def get_user_profile_data(username: str, db: Session):
     if not user:
         return None
 
-    posts_count = db.query(Article).filter(Article.author.has(id=user.id)).filter(Article.public == True).count()
+    posts_count = db.query(Article).filter(Article.author.has(id=user.id)).filter(Article.editing_status == ArticleStatus.public).count()
     likes_count = db.query(Like).join(Article).filter(Article.author.has(id=user.id)).count()
 
     return {

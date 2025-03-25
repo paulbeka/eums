@@ -3,16 +3,16 @@ import { getArticles, deleteArticle, changeVisibility } from "../components/api/
 import { Link } from "react-router-dom";
 import { Article } from "../components/types/Content.type";
 import { FaRegPenToSquare, FaRegTrashCan } from "react-icons/fa6";
-import "./CSS/ArticleManager.css";
 import ArticleVisibility from "../components/frontend_util/ArticleVisibility";
 import { useAuth } from "../components/auth/AuthContext";
 import { fetchArticlesPostedByUser } from "../components/api/Api";
+import "./CSS/ArticleManager.css";
 
 
 const AdminArticleManager = () => {
   const { isAdmin, userId } = useAuth();
   const [articles, setArticles] = useState<Article[]>([]);
-  const [changedArticles, setChangedArticles] = useState<Record<number, boolean>>({});
+  const [changedArticles, setChangedArticles] = useState<Record<number, string>>({});
 
   const fetchArticles = async () => {
     try {
@@ -42,7 +42,7 @@ const AdminArticleManager = () => {
 
 
   const handleVisibilityChange = (articleId: number, visibility: string) => {
-    setChangedArticles((prev) => ({ ...prev, [articleId]: visibility === "public" }));
+    setChangedArticles((prev) => ({ ...prev, [articleId]: visibility }));
   };
 
 
@@ -50,8 +50,8 @@ const AdminArticleManager = () => {
     try {
       changeVisibility(changedArticles)
       .then(res => {
-        alert("Changes saved successfully!");
         setChangedArticles({});
+        alert("Changes saved successfully!");
         fetchArticles();
       })
       .catch(err => alert(err));
