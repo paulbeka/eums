@@ -16,7 +16,15 @@ const AdminArticleManager = () => {
 
   const fetchArticles = async () => {
     try {
-      const fetchedArticles = await getArticles(false, 100);
+      let fetchedArticles;
+      if (isAdmin && userId !== null) {
+        fetchedArticles = await getArticles(false, 100);
+      } else {
+        fetchedArticles = await fetchArticlesPostedByUser(userId!);
+      }
+      if (fetchedArticles === null) {
+        throw new Error("Failed to fetch articles");
+      }
       setArticles(fetchedArticles);
     } catch (error) {
       console.error("Error fetching articles:", error);
@@ -62,15 +70,7 @@ const AdminArticleManager = () => {
   };
 
   useEffect(() => {
-    if (isAdmin) {
-      fetchArticles();
-    } else {
-      if (userId && !articles.length) {
-        fetchArticlesPostedByUser(userId).then(res => {
-          setArticles(res);
-        })
-      }
-    }
+    fetchArticles();
   }, [isAdmin, userId]);
 
   return (

@@ -66,7 +66,7 @@ def get_user_from_token(token: str, db: Session):
     return db.query(User).filter(User.username == username).first()
 
 
-def verify_admin_token(token: str, db: Session):
+def verify_token(token: str, db: Session, admin: bool = False):
     try:
         if token is None:
             raise HTTPException(status_code=401, detail="Invalid token")
@@ -75,17 +75,17 @@ def verify_admin_token(token: str, db: Session):
         if user is None:
             raise HTTPException(status_code=401, detail="Invalid token")
 
-        if not user.is_admin:
+        if admin and (not user.is_admin):
             raise HTTPException(status_code=403, detail="Admin access required")
 
-        return {"status": "valid", "admin": True}
+        return {"status": "valid", "admin": admin}
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
 def run_if_admin(token: str, db: Session, method: Callable[..., Any], *args, **kwargs) -> dict:
-    isAuthenticated = verify_admin_token(token, db)
-    if isAuthenticated.get("status") == "valid":
+    isAuthenticated = verify_token(token, db, admin = True)
+    if isAuthenticated.get("admin"):
         return method(db, *args, **kwargs)
     else:
         raise HTTPException(status_code=401, detail="Unauthorized")
@@ -97,7 +97,6 @@ def run_if_logged_in(token: str, db: Session, method: Callable[..., Any], *args,
         return method(db, *args, **kwargs)
     else:
         raise HTTPException(status_code=401, detail="Unauthorized")
-
 
 
 #### LOGIN/AUTH ####
@@ -122,8 +121,12 @@ async def login(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+    roles = []
+    if user.is_admin:
+        roles.append("admin")
+
     access_token = create_access_token(
-        data={"sub": user.username, "roles": ["admin"]},
+        data={"sub": user.username, "roles": roles},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
     )
     refresh_token = create_refresh_token(data={"sub": user.username})
@@ -142,7 +145,7 @@ async def login(
 
 @app.get("/verify-token")
 async def verify_token_endpoint(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    return verify_admin_token(token, db)
+    return verify_token(token, db)
 
 
 @app.post("/refresh-token")
@@ -182,15 +185,6 @@ async def register_user_endpoint(payload: RegisterUserPayload, db: Session = Dep
 
 #### ARTICLES ####
 
-def run_if_valid_user(token: str, user: str, db: Session = Depends(get_db)):
-    # basically, check if the token is associated to the requested user
-    # cases where it applies: 
-    # 1. When publishing/editing an article, only post if user id matches the user (and its not public yet)
-    # 2. When accessing the management page, only show if user token is the same
-    # 3. ???
-    pass
-
-
 @app.post("/articles/")
 async def create_article_endpoint(article: ArticleResponse, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     article = run_if_logged_in(token, db, create_article, 
@@ -201,9 +195,10 @@ async def create_article_endpoint(article: ArticleResponse, db: Session = Depend
     return article
 
 
+# TODO:: ADD CHECKS ON IF THIS IS THE SAME USER AS THE POSTER
 @app.post("/articles/edit/{articleId}")
 def edit_article_endpoint(articleId: str, article: ArticleResponse, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    return run_if_admin(token, db, edit_article, articleId, 
+    return run_if_logged_in(token, db, edit_article, articleId, 
         article.title, article.content, False)
 
 
@@ -217,19 +212,23 @@ def get_articles_endpoint(
         ):
     
     if not public_only:
-        try:
-            token = Authorization.split(" ")[1]
-            if not token:
-                raise HTTPException(status_code=401, detail="Token required for non-public access")
-
-            isAuthenticated = verify_admin_token(token, db)
-            if not isAuthenticated.get("status") == "valid":
-                raise HTTPException(status_code=401, detail="Invalid token")
-
-        except:
-            raise HTTPException(status_code=401, detail="Invalid token")
+        token = Authorization.split(" ")[1]
+        run_if_admin(token, db, get_articles)
 
     return get_articles(db, skip, limit, public_only)
+
+
+@app.get("/articles/{username}")
+def get_articles_from_user_endpoint(username: str, public_only: bool = Query(True), 
+            db: Session = Depends(get_db), Authorization: Optional[str] = Header(None)
+        ):
+    if not public_only:
+        token = Authorization.split(" ")[1]
+        if get_user_from_token(token, db).username == username:
+            return get_articles_from_user(db, username, False)
+        else:
+            raise HTTPException(status_code=401, detail="Invalid token")
+    return get_articles_from_user(db, username, True)
 
 
 @app.get("/article/{articleId}")
@@ -258,8 +257,6 @@ def change_article_visibility_endpoint(
         db: Session = Depends(get_db), 
         token: str = Depends(oauth2_scheme)):
     for article_id, status in payload.items():
-        print(status)
-        print(ArticleStatus.__members__.values())
         if status not in ArticleStatus.__members__:
             raise HTTPException(status_code=422, detail="Invalid status")
         return run_if_admin(token, db, change_article_visibility, article_id, ArticleStatus[status])

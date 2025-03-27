@@ -47,7 +47,7 @@ export const getArticles = async (getPublicOnly: boolean, limit?: number) => {
 }
 
 export const fetchArticlesPostedByUser = async (userId: string) => {
-  return api.get(`/articles/user/${userId}`)
+  return api.get(`/articles/${userId}`)
     .then(response => {
       return response.data;
     })

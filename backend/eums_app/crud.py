@@ -60,6 +60,19 @@ def get_articles(db: Session, skip: int = 0, limit: int = 10, public_only: bool 
     ]
 
 
+def get_articles_from_user(db: Session, username: str, public_only: bool):
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        return []
+
+    query = db.query(Article).options(joinedload(Article.tags)).filter(Article.user_id == user.id)
+    
+    if public_only:
+        query = query.filter(Article.editing_status == ArticleStatus.public)
+    
+    return query.all()
+
+
 def get_article(articleId: str, db: Session, user_id: int = None, public_only: bool = True):
     query = db.query(Article).options(
         joinedload(Article.tags), 
@@ -123,7 +136,7 @@ def create_article(
     all_tags = existing_tags + new_tags
 
     editing_status = ArticleStatus.private
-    if get_user_by_id(db, user_id):
+    if get_user_by_id(db, user_id).is_admin:
         editing_status = ArticleStatus.admin_available
 
     db_article = Article(
