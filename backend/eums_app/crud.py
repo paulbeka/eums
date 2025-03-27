@@ -45,6 +45,8 @@ def get_articles(db: Session, skip: int = 0, limit: int = 10, public_only: bool 
     query = db.query(Article).options(joinedload(Article.tags))
     if public_only:
         query = query.filter(Article.editing_status == ArticleStatus.public)
+    query = query.filter(Article.editing_status != ArticleStatus.private)
+    
     articles = query.offset(skip).limit(limit).all()
 
     return [
@@ -52,7 +54,7 @@ def get_articles(db: Session, skip: int = 0, limit: int = 10, public_only: bool 
             "id": article.id,
             "title": article.title,
             "content": article.content,
-            "public": article.editing_status,
+            "editing_status": article.editing_status,
             "thumbnail": article.thumbnail,
             "tags": [{"id": tag.id, "tag": tag.tag} for tag in article.tags],
         }

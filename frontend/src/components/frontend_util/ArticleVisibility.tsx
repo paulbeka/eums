@@ -12,11 +12,15 @@ function ArticleVisibility({ article, onVisibilityChange } :
   const { isAdmin } = useAuth();
   const [visibility, setVisibility] = useState<string>(article.editing_status);
 
+  console.log(visibility, article);
   const handleVisibilityChange = (e: any) => {
     const newVisibility = e.target.value;
     setVisibility(newVisibility);
     onVisibilityChange(article.id, newVisibility);
   };
+
+  let articleStatus = visibility === "public" ? "Public" : (visibility === "admin_available" ? "In Review" : "Private");
+  let articleColor = visibility === "public" ? "lightgreen" : (visibility === "private" ? "#FF7F7F" : "yellow");
 
   if (isAdmin) {
     return (
@@ -25,15 +29,13 @@ function ArticleVisibility({ article, onVisibilityChange } :
         className="visibility-selector"
         value={visibility}
         onChange={handleVisibilityChange}
-        style={{background: visibility === "public" ? "red" : (visibility === "admin_available" ? "yellow" : "green")}}
+        style={{background: articleColor}}
       >
         <option style={{background: "red"}} value="public">Public</option>
         <option style={{background: "yellow"}} value="admin_available">Admin Only</option>
       </select>
     );
   } else {
-    let articleStatus = visibility === "public" ? "Public" : visibility === "admin_available" ? "In Review" : "Private";
-    let articleColor = visibility === "public" ? "green" : visibility === "private"? "lightgreen" : "yellow";
     return (
       <div className="visibility-status-indicator" style={{ background: articleColor }}>
         <p>{articleStatus}</p>
