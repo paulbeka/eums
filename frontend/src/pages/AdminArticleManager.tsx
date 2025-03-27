@@ -20,7 +20,7 @@ const AdminArticleManager = () => {
       if (isAdmin && userId !== null) {
         fetchedArticles = await getArticles(false, 100);
       } else {
-        fetchedArticles = await fetchArticlesPostedByUser(userId!);
+        fetchedArticles = await fetchArticlesPostedByUser(userId!, false);
       }
       if (fetchedArticles === null) {
         throw new Error("Failed to fetch articles");

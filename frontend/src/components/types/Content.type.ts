@@ -2,7 +2,7 @@ export type Article = {
   id: number;
   title: string;
   content: string;
-  public: boolean;
+  editing_status: string;
   thumbnail: string;
   user_has_liked: boolean;
   total_likes: number;

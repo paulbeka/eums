@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Article } from '../types/Content.type';
 import { useAuth } from '../auth/AuthContext';
+import "./CSS/ArticleVisibility.css";
 
 
 function ArticleVisibility({ article, onVisibilityChange } : 
@@ -9,7 +10,7 @@ function ArticleVisibility({ article, onVisibilityChange } :
     onVisibilityChange: any
   }) {
   const { isAdmin } = useAuth();
-  const [visibility, setVisibility] = useState<string>(article.public.toString());
+  const [visibility, setVisibility] = useState<string>(article.editing_status);
 
   const handleVisibilityChange = (e: any) => {
     const newVisibility = e.target.value;
@@ -31,9 +32,11 @@ function ArticleVisibility({ article, onVisibilityChange } :
       </select>
     );
   } else {
+    let articleStatus = visibility === "public" ? "Public" : visibility === "admin_available" ? "In Review" : "Private";
+    let articleColor = visibility === "public" ? "green" : visibility === "private"? "lightgreen" : "yellow";
     return (
-      <div className="status-indicator">
-        {visibility === "public" ? "Public" : "In Review"}
+      <div className="visibility-status-indicator" style={{ background: articleColor }}>
+        <p>{articleStatus}</p>
       </div>
     )
   }

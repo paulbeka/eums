@@ -46,8 +46,8 @@ export const getArticles = async (getPublicOnly: boolean, limit?: number) => {
     });
 }
 
-export const fetchArticlesPostedByUser = async (userId: string) => {
-  return api.get(`/articles/${userId}`)
+export const fetchArticlesPostedByUser = async (userId: string, public_only: boolean = true) => {
+  return api.get(`/articles/${userId}?public_only=${public_only}`)
     .then(response => {
       return response.data;
     })
