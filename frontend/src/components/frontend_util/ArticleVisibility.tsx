@@ -38,7 +38,7 @@ function ArticleVisibility({ article, onVisibilityChange } :
   } else {
     return (
       <div className="visibility-status-indicator" style={{ background: articleColor }}>
-        <p>{articleStatus}</p>
+        <p>Status: {articleStatus}</p>
       </div>
     )
   }

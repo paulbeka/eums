@@ -124,6 +124,16 @@ export const changeVisibility = async (changedArticles: Record<number, string>) 
 }
 
 
+export const postArticleToAdminsApi = async (articleId: string) => {
+  return api.post(`/articles/post-to-admins/${articleId}`)
+  .then(response => {
+    if (response.status !== 200) {
+      throw new Error("Request failed! Contact an admin.");
+    }
+  })
+}
+
+
 export const getVideos = async (livestreams: boolean) => {
   return api.get(`/videos/?livestreams=${livestreams}`)
   .then(response => {
@@ -169,8 +179,6 @@ export const registerUser = async (payload: any) => {
   })
 }
 
-export default api;
-
 export const getUserData = async (username: string) => {
   return api.get(`/profile/${username}`)
     .then(response => {
@@ -181,3 +189,5 @@ export const getUserData = async (username: string) => {
     }
   );
 }
+
+export default api;

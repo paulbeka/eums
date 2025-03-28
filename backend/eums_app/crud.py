@@ -190,6 +190,12 @@ def change_article_visibility(db: Session, articleId: int, editing_status: Artic
     return article
 
 
+def post_article_to_admins(article: Article, db: Session):
+    article.editing_status = ArticleStatus.admin_available
+    db.commit()
+    return {"detail": "Article submitted for admin review"}
+
+
 ### VIDEOS ###
 
 def create_video(db: Session, title: str, thumbnail: str, url: str, livestream: str, upload_date: str):

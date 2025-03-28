@@ -248,7 +248,16 @@ def get_article_endpoint(
 
 @app.delete("/article/{articleId}")
 def delete_article_endpoint(articleId: str, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    return run_if_admin(token, db, delete_article, articleId)
+    user = get_user_from_token(token, db) 
+    article = db.query(Article).filter(Article.id == articleId).first()
+    
+    if not article:
+        raise HTTPException(status_code=404, detail="Article not found")
+    
+    if user.is_admin or (article.user_id == user.id and article.editing_status == ArticleStatus.private):
+        return delete_article(db, articleId)
+    
+    raise HTTPException(status_code=403, detail="Not authorized to delete this article")
 
 
 @app.post("/articles/change-visibility")
@@ -260,6 +269,21 @@ def change_article_visibility_endpoint(
         if status not in ArticleStatus.__members__:
             raise HTTPException(status_code=422, detail="Invalid status")
         return run_if_admin(token, db, change_article_visibility, article_id, ArticleStatus[status])
+
+
+@app.post("/articles/post-to-admins/{articleId}")
+def post_article_to_admins_endpoint(articleId: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    user = get_user_from_token(token, db)
+    article = db.query(Article).filter(Article.id == articleId).first()
+    
+    if not article:
+        raise HTTPException(status_code=404, detail="Article not found")
+    
+    print(article.user_id, user.id)
+    if article.user_id == user.id and article.editing_status == ArticleStatus.private:
+        post_article_to_admins(article, db)
+    
+    raise HTTPException(status_code=403, detail="Not authorized to submit this article")
 
 
 #### LIKES ####

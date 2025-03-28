@@ -6,6 +6,7 @@ import { FaRegPenToSquare, FaRegTrashCan } from "react-icons/fa6";
 import ArticleVisibility from "../components/frontend_util/ArticleVisibility";
 import { useAuth } from "../components/auth/AuthContext";
 import { fetchArticlesPostedByUser } from "../components/api/Api";
+import { postArticleToAdminsApi } from "../components/api/Api";
 import "./CSS/ArticleManager.css";
 
 
@@ -69,6 +70,15 @@ const AdminArticleManager = () => {
     }
   };
 
+  const postArticleToAdmins = (article: Article) => {
+    postArticleToAdminsApi(article.id.toString()).then(res => {
+      setChangedArticles({});
+      alert("Article posted to admins successfully!");
+      fetchArticles();
+    })
+    .catch(err => alert(err));
+  }
+
   useEffect(() => {
     fetchArticles();
   }, [isAdmin, userId]);
@@ -82,6 +92,10 @@ const AdminArticleManager = () => {
             <div className="article-div" key={article.id}>
               <Link to={`/article/${article.id}`}>{article.title}</Link>
               <div className="article-button-container">
+                {!isAdmin && article.editing_status === "private" &&
+                <div className="post-to-admin-button" onClick={() => postArticleToAdmins(article)}>
+                  <p>Click here to post to Admins</p>
+                </div>}
                 <ArticleVisibility
                   article={article}
                   onVisibilityChange={handleVisibilityChange}
