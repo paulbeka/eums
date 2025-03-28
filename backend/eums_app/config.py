@@ -21,7 +21,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 SMTP_SETTINGS = {
     "host": "smtp.gmail.com",
-    "port": 587,
+    "port": 465,
     "username": EMAIL_USERNAME,
     "password": EMAIL_PASSWORD,
     "destination_email": DESTINATION_EMAIL

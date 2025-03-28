@@ -34,4 +34,5 @@ async def send_article_uploaded_to_admins(articleId):
 		except Exception as e:
 			print(f"Error occurred: {e}")
 			print(f"Failed to send to: {admin}")
+			return {"message": f"Email failed to end to {admin}"}
 

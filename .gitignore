@@ -1,0 +1,12 @@
+backend/thumbnails
+simple_bot/bin/
+simple_bot/lib/
+simple_bot/lib64
+simple_bot/pyvenv.cfg
+simple_bot/src/__pycache__/__init__.cpython-312.pyc
+simple_bot/src/__pycache__/util.cpython-312.pyc
+simple_bot/src/ai/__pycache__/ai_transcriber.cpython-312.pyc
+simple_bot/src/publisher/__pycache__/publisher.cpython-312.pyc
+simple_bot/src/transcriptions/__pycache__/transcriptions.cpython-312.pyc
+simple_bot/src/video_updater/__pycache__/video_updater.cpython-312.pyc
+simple_bot/venv/
