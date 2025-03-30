@@ -1,21 +1,7 @@
-.eums-shadow-box {
-  border: 3px solid black;
-  box-shadow: 4px 4px;
-  border-radius: 25px;
-}
-
-.about-text-explainers {
+.quote-container {
+  width: 90%;
   margin: 1em auto;
-  margin-top: 0;
-  display: flex;
-  width: 80%;
-  justify-content: center;
-}
-
-.about-text-explainer {
-  margin: 1em;
-  padding: 2em;
-  text-align: justify;
+  padding: 1em;
 }
 
 .team-container {
@@ -27,21 +13,34 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  color: #bdbdbd4e 26% / 0.537;
 }
 
 .member-container {
-  width: 40%;
-  margin: 2em;
+  width: 100%;
+  margin: 1em;
   padding: 1em;
   display: flex;
   gap: 1em;
+  align-items: center;
+}
+
+.align-left {
+  flex-direction: row;
+  text-align: left;
+}
+
+.align-right {
+  flex-direction: row-reverse;
+  text-align: right;
 }
 
 .about-person-image {
-  max-width: 200px;
+  max-width: 300px;
   height: auto;
   border-radius: 20px;
   overflow: hidden;
+  margin-inline: 1em;
 }
 
 .about-person-details-container {
