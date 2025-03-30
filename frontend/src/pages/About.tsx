@@ -74,6 +74,8 @@ const About = () => {
                   <br />
                   <p>{person.description}</p>
                   <br />
+                  <p style={{ color: "gray" }}>Email: {person.email}</p>
+                  <br />
                 </div>
               </div>
             )}
