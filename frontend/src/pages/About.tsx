@@ -43,7 +43,7 @@ const About = () => {
                   <p style={{ color: "gray" }}>Email: {person.email}</p>
                 </div>
               </div>
-              <hr style={{width: "40%", border: "1px solid #bdbdbd4e 26% / 0.537"}}/>
+              {index !== listOfMembers.length - 1 && <hr style={{width: "40%", border: "1px solid #bdbdbd4e 26% / 0.537"}}/>}
             </>))}
           </div>
         </div>
