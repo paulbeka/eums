@@ -13,87 +13,58 @@ const About = () => {
     </Helmet>
     <BrowserView>
       <div className="about-container">
-        <div className="about-text-explainers">
-          <div className="about-text-explainer eums-shadow-box">
-            <h2>Who are we?</h2>
-            <br />
-            <p>Welcome to EU Made Simple! We're a team of passionate individuals dedicated to making 
-              EU news and politics accessible to everyone.</p>
-          </div>
-
-          <div className="about-text-explainer eums-shadow-box">
-            <h2>What is our Mission?</h2>
-            <br />
-            <p>Our goal is to simplify EU politics through clear, engaging content. From YouTube to 
-              this website, we bring you reliable, easy-to-understand news.</p>
-          </div>
-
-          <div className="about-text-explainer eums-shadow-box">
-            <h2>Why this Website?</h2>
-            <br />
-            <p>This website is our latest step in expanding EU Made Simple. Here, we publish concise, 
-              well-researched articles to keep you informed.</p>
-          </div>
+        <div className="quote-container">
+          <h1 style={{ textAlign: "center", fontSize: "30pt", marginBottom: "1em" }}>
+            Welcome to EU Made Simple!
+          </h1>
+          <p style={{ textAlign: "center", fontSize: "16pt" }}>
+            Our purpose? Delivering easy-to-digest, comprehensive, and easy-to-understand information about EU news and politics.
+          </p>
         </div>
 
-        <hr style={{ width: "90%", margin: "3em auto" }} />
+        <hr style={{ width: "70%", margin: "3em auto" }} />
 
         <div className="team-container">
           <h1 style={{ textAlign: "center", fontSize: "30pt", marginBottom: "1em" }}>The EUMS Team</h1>
           <div className="team-members-container">
-            {listOfMembers.map(person => 
-              <div className="member-container eums-shadow-box">
+            {listOfMembers.map((person, index) => (<>
+              <div key={index} className={`member-container ${((index+1) % 2) === 0 ? 'align-right' : 'align-left'}`}>
                 <div className="about-person-image">
                   <img style={{ width: "100%", height: "auto" }} src={person.image} />
                 </div>
                 <div className="about-person-details-container">
                   <h3>{person.name}</h3>
-                  <p>{person.role}</p>
+                  <p style={{ fontSize: "14pt"}}>{person.role}</p>
                   <br />
-                  <p>{person.description}</p>
+                  <div style={{ width: "70%", marginLeft: `${(index + 1) % 2 === 0 ? 'auto' : '0'}`, marginRight: `${(index + 1) % 2 === 0 ? '0' : 'auto'}`,}}>
+                    {person.description.split("\n").map((line, index) => <><p key={index}>{line}</p><br /></>)}
+                  </div>
+                  <br />
+                  <p style={{ color: "gray" }}>Email: {person.email}</p>
                 </div>
               </div>
-            )}
+              {index !== listOfMembers.length - 1 && <hr style={{width: "40%", border: "1px solid #bdbdbd4e 26% / 0.537"}}/>}
+            </>))}
           </div>
         </div>
-
       </div>
+
     </BrowserView>
 
     <MobileView>
       <div className="mobile-about-container">
-        <div className="about-text-explainers">
-          <div className="about-text-explainer eums-shadow-box">
-            <h2>Who are we?</h2>
-            <br />
-            <p>Welcome to EU Made Simple! Our purpose? Delivering easy to digest, comprehensive, and easy to understand information about EU news and politics.
-              Originally starting with English youtube videos, we now have over 7 channels in different European languages! This website is the newest addition
-              to our media presence, where we share with you custom written news articles!
-            </p>
-          </div>
-          <div className="about-text-explainer eums-shadow-box">
-            <h2>What is our Mission?</h2>
-            <br />
-            <p>Welcome to EU Made Simple! Our purpose? Delivering easy to digest, comprehensive, and easy to understand information about EU news and politics.
-              Originally starting with English youtube videos, we now have over 7 channels in different European languages! This website is the newest addition
-              to our media presence, where we share with you custom written news articles!
-            </p>
-          </div>
-          <div className="about-text-explainer eums-shadow-box">
-            <h2>Who are we?</h2>
-            <br />
-            <p>Welcome to EU Made Simple! Our purpose? Delivering easy to digest, comprehensive, and easy to understand information about EU news and politics.
-              Originally starting with English youtube videos, we now have over 7 channels in different European languages! This website is the newest addition
-              to our media presence, where we share with you custom written news articles!
-            </p>
-          </div>
+        <div className="quote-container">
+          <h1 style={{ textAlign: "center", fontSize: "30pt", marginBottom: "1em" }}>Welcome to EU Made Simple!</h1>
+          <p style={{ textAlign: "center", fontSize: "16pt" }}>
+            Our purpose? Delivering easy to digest, comprehensive, and easy to understand information about EU news and politics.
+          </p>  
         </div>
 
         <hr style={{ width: "80%", margin: "auto", marginBottom: "3em" }} />
 
         <div className="team-members-container">
             {listOfMembers.map(person => 
-              <div className="member-container eums-shadow-box">
+              <div className="member-container">
                 <div className="about-person-image">
                   <img style={{ width: "100%", height: "auto" }} src={person.image} />
                 </div>

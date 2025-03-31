@@ -2,37 +2,43 @@
   {
     "name": "Lambertus Robben", 
     "role": "Founder & CEO", 
-    "description": "Lambertus first came up with the idea of a youtube channel explaining Europe when he lived in London, during the Brexit campain.", 
-    "image": "images/profile_pictures/lambertus.png"
+    "description": "I’m 36, from the Netherlands, living in Germany, and I started the EUMS brand to help people understand the EU better after Brexit showed me how little most of us really know about it.", 
+    "image": "images/profile_pictures/lambertus_ball.png",
+    "email": "lrobben@eumadesimple.eu"
   },
   {
-    "name": "Miguel", 
-    "role": "Social Media Manager", 
-    "description": "Miguel manages the social media of EUMS", 
-    "image": "images/profile_pictures/miguel.jpg"
-  },
-  {
-    "name": "Pablo", 
+    "name": "Pablo Reverdy Gómez", 
     "role": "Graphic Designer", 
-    "description": "Pablo is our designer", 
-    "image": "images/profile_pictures/pablo.jpg"
+    "description": "I'm Pablo, from Barcelona. I'm both a Spanish and French national with a multicultural background which has fueled my passion for European politics and design research. \n I specialize in design research and brand identity, and what truly excites me is merging design techniques with politics. I love making complex political concepts easier to grasp through clear, engaging, and visiually appealing designs. \n By simplifying political education about Europe, I hope to make it more accessible and help people engage with it and understand the political landscape.", 
+    "image": "images/profile_pictures/pablo_ball.png",
+    "email": "preverdy@eumadesimple.eu"
+  },
+  {
+    "name": "Elliot Baudeweyns", 
+    "role": "Head of Livestreams", 
+    "description": "Hey! I'm Elliot, passionate about politics, international relations, and online ecosystems. With a Bachelor's degree in Public Administration and a Master's in International Security and Development, I strive to strengthen informed democracies across the EU. \n EU Made Simple is the perfect place to do so - I interview experts, connect like-minded organizations, and represent the platform beyond its great videos. \n I'm always open to questions, feedback, or proposals, so don't hesitate to reach out!", 
+    "image": "images/profile_pictures/elliot_ball.png",
+    "email": "ebaudeweyns@eumadesimple.eu"
+  },
+  {
+    "name": "Miguel David", 
+    "role": "Social Media Manager", 
+    "description": "I run the social media channels at EU Made Simple because Europe isn't just where I live - it's who I am. Based in Lisbon and pursuing a master's in International Studies, I'm passionate about making EU politics engaging and accessible, bringing its stories, challenges, and debates to life for everyone.", 
+    "image": "images/profile_pictures/miguel_ball.png",
+    "email": "mdavid@eumadesimple.eu"
   },
   {
     "name": "Paul Bekaert", 
     "role": "Head of French Channel", 
-    "description": "Paul manages both the French channel, l'UE Simplifiée, the EUMS website.", 
-    "image": "images/profile_pictures/paul.jpg"
+    "description": "I’m 22, from France, and I am European. I really got into EU politics after the Russian invasion of Ukraine, and since then, I’ve been dedicated to making European politics more accessible.", 
+    "image": "images/profile_pictures/paul.jpg",
+    "email": "pbekaert@eumadesimple.eu"
   },
   {
-    "name": "Elliot", 
-    "role": "Head of Livestreams", 
-    "description": "Elliot is passionate about EU politics and handles the EUMS livestreams with our CEO Lambertus.", 
-    "image": "images/profile_pictures/elliot.jpg"
-  },
-  {
-    "name": "Johnny", 
+    "name": "Jonathan Reinders", 
     "role": "Head of German Channel", 
-    "description": "Johnny is head of the German channel.", 
-    "image": "https://avatars.githubusercontent.com/u/14959?v=4"
+    "description": "Hi everyone! I'm Jonathan, from Munich. I am a Spanish-socialized German, living in the northernmost city of Italy, with Austrian humor, looking like a Swede, and loving to travel the Balkans. Let's say: I am European. \n I love languages. I'm an absolute sports fan. When it comes to football, my heart doesn't beat red but black and yellow. \n I am a journalist, passionate about video editing and storytelling. And I am curious: about 450 million faces and stories. From 27 countries. That's why I work at EUMS.", 
+    "image": "images/profile_pictures/jonathan.jpg",
+    "email": "jreinders@eumadesimple.eu"
   }
 ]
