@@ -42,7 +42,10 @@ def create_user(db: Session, payload: RegisterUserPayload):
 
 
 def get_articles(db: Session, skip: int = 0, limit: int = 10, public_only: bool = True):
-    query = db.query(Article).options(joinedload(Article.tags))
+    query = db.query(Article).options(
+        joinedload(Article.tags),
+        joinedload(Article.author)
+    )
     if public_only:
         query = query.filter(Article.editing_status == ArticleStatus.public)
     query = query.filter(Article.editing_status != ArticleStatus.private)
@@ -57,6 +60,10 @@ def get_articles(db: Session, skip: int = 0, limit: int = 10, public_only: bool 
             "editing_status": article.editing_status,
             "thumbnail": article.thumbnail,
             "tags": [{"id": tag.id, "tag": tag.tag} for tag in article.tags],
+            "author": {
+                "id": article.author.id,
+                "username": article.author.username
+            } if article.author else None
         }
         for article in articles
     ]

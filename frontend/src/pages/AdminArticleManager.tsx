@@ -83,6 +83,8 @@ const AdminArticleManager = () => {
     fetchArticles();
   }, [isAdmin, userId]);
 
+  console.log(articles);
+
   return (
     <div className="article-manager">
       <div className="article-manager-content">
@@ -96,10 +98,16 @@ const AdminArticleManager = () => {
                 <div className="post-to-admin-button" onClick={() => postArticleToAdmins(article)}>
                   <p>Click here to post to Admins</p>
                 </div>}
+                {isAdmin && 
+                  <div style={{ marginRight: "1em"}}>
+                    <Link to={`/profile/${article.author?.username}`}>Posted by: <u>{article.author?.username}</u></Link>
+                  </div>
+                }
                 <ArticleVisibility
                   article={article}
                   onVisibilityChange={handleVisibilityChange}
                 />
+                {(isAdmin || article.editing_status === "private") && <>
                 <Link to={`edit/${article.id}`}>
                   <FaRegPenToSquare />
                 </Link>
@@ -108,7 +116,7 @@ const AdminArticleManager = () => {
                   onClick={() => handleDelete(article.id)}
                 >
                   <FaRegTrashCan />
-                </div>
+                </div></>}
               </div>
             </div>
           ))}

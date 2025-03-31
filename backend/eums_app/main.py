@@ -280,7 +280,7 @@ def post_article_to_admins_endpoint(articleId: int, db: Session = Depends(get_db
         raise HTTPException(status_code=404, detail="Article not found")
     
     if article.user_id == user.id and article.editing_status == ArticleStatus.private:
-        post_article_to_admins(article, db)
+        return post_article_to_admins(article, db)
     
     raise HTTPException(status_code=403, detail="Not authorized to submit this article")
 
