@@ -25,6 +25,18 @@ export const Profile = () => {
   const [userData, setUserData] = useState<UserProfile | null>(null);
   const [isMyProfile, setIsMyProfile] = useState(false);
 
+  const getAllData = () => {
+    // Download all user data
+  }
+
+  const deleteAccount = () => {
+    // Delete user account
+  }
+
+  const goToSettings = () => {
+    navigate("/settings");
+  }
+
   const signOut = () => {
     logout();
     navigate("/");
@@ -48,9 +60,8 @@ export const Profile = () => {
     </Helmet>
     <div className="profile-container">
       <div className="profile-card">
-        {isMyProfile && <p>Hello world!</p>}
         <img
-          src={userData?.profilePicture || "https://avatars.githubusercontent.com/u/14959?v=4"}
+          src={userData?.profilePicture || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}
           alt="Profile"
           className="profile-picture"
         />
@@ -70,6 +81,9 @@ export const Profile = () => {
           </div>
         </div>
         {isMyProfile && <div className="profile-edit">
+          <button onClick={getAllData}>Download my Data</button>
+          <button onClick={deleteAccount}>Delete Account</button>
+          <button onClick={goToSettings}>Edit Profile</button>
           <button onClick={signOut}>Logout</button>
         </div>}
       </div>

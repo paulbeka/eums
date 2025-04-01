@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./NavBar.css";
 import { Link } from "react-router-dom";
 import { FaBagShopping } from "react-icons/fa6";
 import { BrowserView, MobileView } from "react-device-detect";
-import { verifyToken } from "../api/Api";
 import { jwtDecode } from 'jwt-decode';
 import { useAuth } from "../auth/AuthContext";
 
