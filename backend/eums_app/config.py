@@ -19,6 +19,7 @@ else:
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
+### TODO: REMOVE THIS
 SMTP_SETTINGS = {
     "host": "smtp.gmail.com",
     "port": 465,
@@ -26,3 +27,5 @@ SMTP_SETTINGS = {
     "password": EMAIL_PASSWORD,
     "destination_email": DESTINATION_EMAIL
 }
+
+AWS_EMAIL_API_KEY = os.getenv("AWS_EMAIL_API_KEY")

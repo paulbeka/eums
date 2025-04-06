@@ -8,7 +8,7 @@ from typing import Optional, Dict, Callable, Any, List
 from email.message import EmailMessage
 from .auth import authenticate_user, create_access_token
 from .schemas import Token, ArticleResponse, ContactForm
-from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM, SMTP_SETTINGS, CAPTCHA_KEY
+from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM, SMTP_SETTINGS, CAPTCHA_KEY, AWS_EMAIL_API_KEY
 from .models import Base, User, Article
 from .db import engine, get_db
 from .crud import *
@@ -201,29 +201,27 @@ async def send_email(contact: ContactForm):
         raise HTTPException(status_code=400, detail="Captcha verification failed")
 
     try:
-        # Create the email message
-        email_message = EmailMessage()
-        email_message["From"] = SMTP_SETTINGS["username"]
-        email_message["To"] = SMTP_SETTINGS["destination_email"]
-        email_message["Subject"] = contact.subject
-        email_message.set_content(
-            f"Name: {contact.name}\n"
-            f"Email: {contact.email}\n\n"
-            f"Message:\n{contact.message}"
-        )
+        headers = {
+            'Content-Type': 'application/json',
+            'x-api-key': AWS_EMAIL_API_KEY
+        }
 
-        # Send the email using aiosmtplib
-        await aiosmtplib.send(
-            email_message,
-            hostname=SMTP_SETTINGS["host"],
-            port=SMTP_SETTINGS["port"],
-            username=SMTP_SETTINGS["username"],
-            password=SMTP_SETTINGS["password"],
-            use_tls=False,
-            start_tls=True,  # Use STARTTLS for secure connection
-        )
+        payload = {
+            "name": contact.name,
+            "email": contact.email,
+            "subject": contact.subject,
+            "content": contact.message
+        }
 
-        return {"message": "Email sent successfully"}
+        lambda_url = "https://zo3cgn15w1.execute-api.us-east-1.amazonaws.com/prod/eums_contact"
+        response = requests.post(lambda_url, headers=headers, json=payload)
+
+        if response.status_code == 200:
+            return {"message": "Email sent successfully"}
+
+        else:
+            raise HTTPException(status_code=500)
+
     except Exception as e:
         print(f"Error occurred: {e}")
         raise HTTPException(status_code=500, detail="Failed to send email.")
