@@ -15,9 +15,17 @@
   color: #333;
 }
 
-label {
+.login-container input {
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid black;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+.login-container span {
+  font-weight: bold;
   display: block;
-  margin-bottom: 0.5em;
   font-size: 0.9em;
   color: #555;
 }
@@ -25,3 +33,4 @@ label {
 .login-component-div {
   margin-bottom: 2em;
 }
+

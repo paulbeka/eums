@@ -47,11 +47,11 @@ const Login = () => {
     <div className="login-page">
       <form onSubmit={submitLogin} className="login-container">
         <div className="login-component-div">
-          <label>Username:</label>
+          <span>Username:</span>
           <input className="input-box" value={username} onChange={(e) => setUsername(e.target.value)} type="text" />
         </div>
         <div className="login-component-div">
-          <label>Password:</label>
+          <span>Password:</span>
           <input className="input-box" value={password} onChange={(e) => setPassword(e.target.value)} type="password" />
         </div>
         {error && <p style={{ color: "red", marginBottom: "1em" }}>{error}</p>}

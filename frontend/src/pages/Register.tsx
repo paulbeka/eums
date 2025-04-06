@@ -31,9 +31,10 @@ export const Register = () => {
     country: "",
     profilePicture: null,
   });
-  const [error, setError] = useState<string>("");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [preview, setPreview] = useState<string>(defaultProfilePic);
   const [newsletterTicked, setNewsletterTicked] = useState<boolean>(false);
+  const [termsAndConditionsChecked, setTermsAndConditionsChecked] = useState<boolean>(false);
 
   const euCountries: string[] = [
     "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Republic", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Slovakia", "Slovenia", "Spain", "Sweden",
@@ -84,19 +85,54 @@ export const Register = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({}); 
 
-    if (formData.password !== formData.confirm_password) {
-      setError("Passwords do not match.");
-      return;
+    const newErrors: { [key: string]: string } = {};
+
+    if (!termsAndConditionsChecked) {
+      newErrors.terms = "You must agree to the Terms & Services to register.";
+    }
+
+    if (formData.username.length < 3) {
+      newErrors.username = "Username must be at least 3 characters long.";
+    }
+
+    if (!formData.email.includes("@")) {
+      newErrors.email = "Invalid email format.";
+    }
+
+    const dob = new Date(formData.date_of_birth);
+    const today = new Date();
+    const age = today.getFullYear() - dob.getFullYear();
+    if (age < 13) {
+      newErrors.date_of_birth = "You must be at least 13 years old to register.";
     }
 
     if (formData.password.length < 8) {
-      setError("Password must be at least 8 characters long."); 
+      newErrors.password = "Password must be at least 8 characters long.";
+    }
+
+    if (formData.password !== formData.confirm_password) {
+      newErrors.confirm_password = "Passwords do not match.";
+    }
+
+    if (formData.country && !euCountries.includes(formData.country)) {
+      newErrors.country = "Country must be an EU member state.";
+    }
+
+    if (formData.profilePicture) {
+        const fileSize = formData.profilePicture.size / 1024 / 1024; // Convert bytes to MB
+        if (fileSize > 2) {
+            newErrors.profilePicture = "Profile picture must be less than 2MB.";
+        }
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
     const formDataToSend = new FormData();
-
     Object.entries(formData).forEach(([key, value]) => {
       if (key !== "confirm_password" && value !== "" && value !== null) {
         formDataToSend.append(key, value);
@@ -106,89 +142,165 @@ export const Register = () => {
     registerUser(formDataToSend)
       .then(() => {
         if (newsletterTicked) {
-          api.post("/newsletter-subscribe", { "email": formData.email })
-            .then(() => {
-              console.log("Subscribed to newsletter.");
-            })
-            .catch((err) => {
-              console.error("Failed to subscribe to newsletter:", err);
-            });
+          api.post("/newsletter-subscribe", { email: formData.email })
+            .then(() => console.log("Subscribed to newsletter."))
+            .catch((err) => console.error("Failed to subscribe:", err));
         }
-
         navigate("/");
       })
-      .catch((err) => {
-        setError(err);
-      });
+      .catch((err) => setErrors({ general: err.message || "Registration failed." }));
   };
-
-  console.log(preview);
 
   return (
     <div className="register-page-container">
       <form onSubmit={handleSubmit} className="register-form">
+        {/* Username Field */}
         <label>
           <span>Username:</span>
-          <input type="text" name="username" value={formData.username} onChange={handleChange} required />
+          <input
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            className={errors.username ? "error-input" : ""}
+            required
+          />
+          {errors.username && <p className="error-text">{errors.username}</p>}
         </label>
-        
+
+        {/* Full Name Field */}
         <label>
           <span>Full Name:</span>
-          <input type="text" name="full_name" value={formData.full_name} onChange={handleChange} required />
+          <input
+            type="text"
+            name="full_name"
+            value={formData.full_name}
+            onChange={handleChange}
+            required
+          />
         </label>
-        
+
+        {/* Email Field */}
         <label>
           <span>Email:</span>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className={errors.email ? "error-input" : ""}
+            required
+          />
+          {errors.email && <p className="error-text">{errors.email}</p>}
         </label>
 
+        {/* Date of Birth Field */}
         <label>
           <span>Date of Birth:</span>
-          <input type="date" name="date_of_birth" value={formData.date_of_birth} onChange={handleChange} required />
+          <input
+            type="date"
+            name="date_of_birth"
+            value={formData.date_of_birth}
+            onChange={handleChange}
+            className={errors.date_of_birth ? "error-input" : ""}
+            required
+          />
+          {errors.date_of_birth && <p className="error-text">{errors.date_of_birth}</p>}
         </label>
 
+        {/* Password Field */}
         <label>
           <span>Password:</span>
-          <input type="password" name="password" value={formData.password} onChange={handleChange} required />
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            className={errors.password ? "error-input" : ""}
+            required
+          />
+          {errors.password && <p className="error-text">{errors.password}</p>}
         </label>
 
+        {/* Confirm Password Field */}
         <label>
           <span>Confirm Password:</span>
-          <input type="password" name="confirm_password" value={formData.confirm_password} onChange={handleChange} required />
+          <input
+            type="password"
+            name="confirm_password"
+            value={formData.confirm_password}
+            onChange={handleChange}
+            className={errors.confirm_password ? "error-input" : ""}
+            required
+          />
+          {errors.confirm_password && <p className="error-text">{errors.confirm_password}</p>}
         </label>
 
+        {/* Country Dropdown */}
         <label>
           <span>Country of Origin (Optional):</span>
-          <select name="country" value={formData.country} onChange={handleChange}>
+          <select
+            name="country"
+            value={formData.country}
+            onChange={handleChange}
+            className={errors.country ? "error-input" : ""}
+          >
             <option value="">Select a country</option>
             {euCountries.map((country) => (
               <option key={country} value={country}>{country}</option>
             ))}
           </select>
+          {errors.country && <p className="error-text">{errors.country}</p>}
         </label>
 
+        {/* Profile Picture Upload */}
         <label>
           <span>Profile Picture (Optional):</span>
-          <input type="file" accept="image/*" onChange={handleFileChange} />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className={errors.profilePicture ? "error-input" : ""}
+          />
+          {errors.profilePicture && <p className="error-text">{errors.profilePicture}</p>}
         </label>
 
-        <img src={preview} alt="Profile Preview" className="profile-preview" />
+        {/* Profile Picture Preview */}
+        {preview && <img src={preview} alt="Profile Preview" className="profile-preview" />}
 
+        {/* Newsletter Checkbox */}
         <label>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5em", marginTop: "1em" }}> 
-            <input type="checkbox" className="input-checkbox" checked={newsletterTicked} onChange={() => setNewsletterTicked(!newsletterTicked)}/>
-            <span>Subscibe to the EUMS newsletter, where we send you the latest news and updates! (Optional)</span>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5em", marginTop: "1em" }}>
+            <input
+              type="checkbox"
+              className="input-checkbox"
+              checked={newsletterTicked}
+              onChange={() => setNewsletterTicked(!newsletterTicked)}
+            />
+            <span>Subscribe to the EUMS newsletter, where we send you the latest news and updates! (Optional)</span>
           </div>
         </label>
 
+        {/* Terms and Conditions Checkbox */}
         <label>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5em", marginTop: "1em" }}> 
-            <input type="checkbox" className="input-checkbox" checked={newsletterTicked} onChange={() => setNewsletterTicked(!newsletterTicked)}/>
-            <span>I agree to the Terms & Services.</span>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5em", marginTop: "1em" }}>
+            <input
+              type="checkbox"
+              className={`input-checkbox ${errors.terms ? "error-input" : ""}`}
+              checked={termsAndConditionsChecked}
+              onChange={() => setTermsAndConditionsChecked(!termsAndConditionsChecked)}
+            />
+            <span>I agree to the <u onClick={() => {
+              console.log("Display the terms and conditions.");
+            }} style={{ color: "blue", cursor: "pointer" }}>Terms & Services.</u></span>
           </div>
+          {errors.terms && <p className="error-text">{errors.terms}</p>}
         </label>
-        
-        {error ? <p style={{ color: "red" }}>{error}</p> : null}
+
+        {/* General Error Message */}
+        {Object.keys(errors).length && <p style={{ color: "red" }}>Please fill out all the required fields.</p>}
+
+        {/* Submit Button */}
         <button type="submit">Register</button>
       </form>
     </div>
