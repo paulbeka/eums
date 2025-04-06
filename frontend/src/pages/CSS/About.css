@@ -2,11 +2,13 @@
   width: 90%;
   margin: 1em auto;
   padding: 1em;
+  max-width: 1300px;
 }
 
 .team-container {
   margin: 1em auto;
   width: 90%;
+  max-width: 1300px;
 }
 
 .team-members-container {
@@ -45,6 +47,7 @@
 
 .about-person-details-container {
   margin-top: 1em;
+  max-width: 750px;
 }
 
 
