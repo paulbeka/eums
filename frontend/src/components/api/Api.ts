@@ -190,4 +190,15 @@ export const getUserData = async (username: string) => {
   );
 }
 
+export const getAllUsersApi = async (username?: string) => {
+  return api.get(`/users${username ? "?username="+ username : ""}`)
+    .then(response => {
+      if (response.status !== 200) {
+        throw "Request failed! Contact an admin.";
+      }
+      return response.data;
+    }
+  );
+}
+
 export default api;

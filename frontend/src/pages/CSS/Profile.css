@@ -51,3 +51,25 @@
   font-size: 0.9rem;
   color: #666;
 }
+
+.profile-edit {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2em;
+}
+
+.setting-button {
+  margin: 0.7em;
+  padding: 10px;
+  cursor: pointer;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 30px;
+  font-size: 12pt;
+  transition: 0.1s ease;
+}
+
+.setting-button:hover {
+  box-shadow: 2px 3px;
+  transform: translate(-2px, -2px);  
+}

@@ -13,16 +13,23 @@ const NavBar: React.FC<{
   isOpenMobile: boolean,
   setIsOpenMobile: React.Dispatch<React.SetStateAction<boolean>>
 }> = ({ currentPage, setCurrentPage, isOpenMobile, setIsOpenMobile }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
   
   const navItems = isAuthenticated
-  ? [
+  ? (isAdmin ? [
+      { path: '/about', text: 'About Us' },
+      { path: '/newsletter-signup', text: 'Newsletter' },
+      { path: '/contact', text: 'Contact' },
+      { path: '/article-manager', text: "Manage Articles" },
+      { path: '/article-poster', text: 'Post Article' },
+      { path: '/admin-user-management', text: 'User Management' }
+    ] : [
       { path: '/about', text: 'About Us' },
       { path: '/newsletter-signup', text: 'Newsletter' },
       { path: '/contact', text: 'Contact' },
       { path: '/article-manager', text: "Manage Articles" },
       { path: '/article-poster', text: 'Post Article' }
-    ]
+    ])
   : [
       { path: '/about', text: 'About Us' },
       { path: '/newsletter-signup', text: 'Newsletter' },
@@ -72,9 +79,7 @@ const NavBar: React.FC<{
           </Link>
         </div>
       </div>
-      <div className="navlogo-container">
-        {/* <img src="/images/eumadesimplelogo.svg" style={{ width: "100%" }}/> */}
-      </div>
+    
     </div>
     </BrowserView>
     <MobileView>

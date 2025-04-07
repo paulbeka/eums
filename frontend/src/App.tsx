@@ -22,9 +22,12 @@ import { Register } from './pages/Register';
 import { Profile } from './pages/Profile';
 import { AuthProvider } from './components/auth/AuthContext';
 import { NewsletterSignup } from './pages/NewsletterSignup';
+import { TermsAndConditions } from './pages/TermsAndConditions';
+import { AdminUserManagmentPage } from './pages/admin/AdminUserManagmentPage';
 
 
 ReactGA.initialize("G-D8JV5H8HE7");
+
 
 function App() {
 
@@ -56,6 +59,7 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="profile/:username" element={<Profile />} />
+          <Route path="terms-and-conditions" element={<TermsAndConditions />} />
           
           <Route path="*" element={<PageNotFound />} />
 
@@ -68,6 +72,11 @@ function App() {
           } />
           <Route path="article-manager/edit/:articleId" element={
             <ProtectedRoute element={<ArticlePoster edit={true} />} />
+          } />
+
+          {/* ADMIN ONLY */}
+          <Route path="admin-user-management" element={
+            <ProtectedRoute element={<AdminUserManagmentPage />} adminOnly={true}/>
           } />
         </Route>
       </Routes>

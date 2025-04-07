@@ -281,24 +281,33 @@ export const Register = () => {
           </div>
         </label>
 
-        {/* Terms and Conditions Checkbox */}
-        <label>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5em", marginTop: "1em" }}>
-            <input
-              type="checkbox"
-              className={`input-checkbox ${errors.terms ? "error-input" : ""}`}
-              checked={termsAndConditionsChecked}
-              onChange={() => setTermsAndConditionsChecked(!termsAndConditionsChecked)}
-            />
-            <span>I agree to the <u onClick={() => {
-              console.log("Display the terms and conditions.");
-            }} style={{ color: "blue", cursor: "pointer" }}>Terms & Services.</u></span>
-          </div>
-          {errors.terms && <p className="error-text">{errors.terms}</p>}
-        </label>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5em", marginTop: "0.5em" }}>
+          <input
+            id="terms"
+            type="checkbox"
+            className={`input-checkbox ${errors.terms ? "error-input" : ""}`}
+            checked={termsAndConditionsChecked}
+            onChange={() => setTermsAndConditionsChecked(!termsAndConditionsChecked)}
+          />
+          <label htmlFor="terms">
+            <div>
+            <span>I agree to the {" "}</span>
+            <u
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                navigate("/terms-and-conditions");
+              }}
+              style={{ color: "blue", cursor: "pointer" }}
+            >
+              <span>Terms & Conditions</span>
+            </u></div>
+          </label>
+        </div>
+        {errors.terms && <p className="error-text">{errors.terms}</p>}
 
         {/* General Error Message */}
-        {Object.keys(errors).length && <p style={{ color: "red" }}>Please fill out all the required fields.</p>}
+        {Object.keys(errors).length !== 0 && <p style={{ color: "red" }}>Please fill out all the required fields.</p>}
 
         {/* Submit Button */}
         <button type="submit">Register</button>

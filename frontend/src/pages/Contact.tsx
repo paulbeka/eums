@@ -3,6 +3,7 @@ import { useGoogleReCaptcha, GoogleReCaptchaProvider } from "react-google-recapt
 import { sendEmail } from "../components/api/Api";
 import { Helmet } from 'react-helmet-async';
 import "./CSS/Contact.css";
+import Loading from "../components/frontend_util/Loading";
 
 
 const Contact = () => {
@@ -12,12 +13,15 @@ const Contact = () => {
   const [message, setMessage] = useState("");
 
   const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   const submitContact = async (e: any) => {
     e.preventDefault();
+
+    setIsLoading(true);
 
     if (!executeRecaptcha) {
       console.error("ReCAPTCHA has not been loaded.");
@@ -29,6 +33,7 @@ const Contact = () => {
       const captchaToken = await executeRecaptcha("contactFormSubmit");
       if (!captchaToken) {
         setError(true);
+        setIsLoading(false);
         return;
       }
 
@@ -41,15 +46,24 @@ const Contact = () => {
       });
 
       if (response) {
+        setIsLoading(false);
         setIsSubmitted(true);
       } else {
+        setIsLoading(false);
         setError(true);
       }
     } catch (err) {
+      setIsLoading(false);
       console.error("Error submitting form:", err);
       setError(true);
     }
   };
+
+  if (isLoading && !isSubmitted) {
+    return (
+      <Loading />
+    )
+  }
 
   return (<>
     <Helmet>

@@ -17,6 +17,16 @@ def get_user_by_id(db: Session, userId: str):
 def get_user_by_username(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
 
+def get_user_list(db: Session, username: str, skip: int = 0, limit: int = 10):
+    query = db.query(User)
+    if len(username) > 0:
+        query = query.filter(User.username.ilike(f"%{username}%"))
+    users = query.offset(skip).limit(limit).all()
+    return [
+        {key: value for key, value in user.__dict__.items() if key != "hashed_password" and not key.startswith("_")}
+        for user in users
+    ]
+
 
 def create_user(db: Session, payload: RegisterUserPayload):
     db_user = User(

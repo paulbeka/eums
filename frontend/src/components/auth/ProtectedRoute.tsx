@@ -5,13 +5,18 @@ import { useAuth } from "./AuthContext";
 
 interface ProtectedRouteProps {
   element: ReactElement;
+  adminOnly?: boolean;
 }
 
-function ProtectedRoute({ element: Component }: ProtectedRouteProps): ReactElement {
-  const { isAuthenticated } = useAuth();
+function ProtectedRoute({ element: Component, adminOnly }: ProtectedRouteProps): ReactElement {
+  const { isAuthenticated, isAdmin } = useAuth();
 
   if (isAuthenticated === null) {
     return <Loading />;
+  }
+
+  if (adminOnly && !isAdmin) {
+    return <Navigate to="/login" replace />;
   }
 
   return isAuthenticated ? Component : <Navigate to="/login" replace />;

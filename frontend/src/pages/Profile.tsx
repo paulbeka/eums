@@ -80,12 +80,16 @@ export const Profile = () => {
             <p className="stat-label">Likes</p>
           </div>
         </div>
-        {isMyProfile && <div className="profile-edit">
-          <button onClick={getAllData}>Download my Data</button>
-          <button onClick={deleteAccount}>Delete Account</button>
-          <button onClick={goToSettings}>Edit Profile</button>
-          <button onClick={signOut}>Logout</button>
-        </div>}
+        {isMyProfile && 
+          <div className="profile-edit">
+            <button className="setting-button" onClick={goToSettings}><span>Edit Profile</span></button>
+            <button className="setting-button" onClick={signOut}><span>Logout</span></button>
+            <button className="setting-button" onClick={getAllData}><span>Download my Data</span></button>
+            <button style={{ background: "red" }} className="setting-button" onClick={deleteAccount}>
+              <span>Delete Account</span>
+            </button>
+          </div>
+        }
       </div>
     </div>
   </>);
