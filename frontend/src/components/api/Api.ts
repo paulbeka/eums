@@ -201,4 +201,15 @@ export const getAllUsersApi = async (username?: string) => {
   );
 }
 
+export const deleteUser = async (username: string) => {
+  return api.delete(`/users${username ? "?username="+ username : ""}`)
+    .then(response => {
+      if (response.status !== 200) {
+        throw "Request failed! Contact an admin.";
+      }
+      return response.data;
+    }
+  );
+}
+
 export default api;

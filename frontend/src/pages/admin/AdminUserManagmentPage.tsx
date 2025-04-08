@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Loading from "../../components/frontend_util/Loading";
-import { getAllUsersApi } from "../../components/api/Api";
+import { getAllUsersApi, deleteUser } from "../../components/api/Api";
 import { Link } from "react-router-dom";
 
 
@@ -26,6 +26,16 @@ export const AdminUserManagmentPage = () => {
     });
   };
 
+  const handleDelete = (username: string) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      deleteUser(username).then(() => {
+        setShownUsers((prevUsers) => prevUsers.filter((user) => user.username !== username));
+      }).catch((error) => {
+        console.error("Error deleting user:", error);
+      });
+    }
+  }
+
   useEffect(() => {
     setShownUsersLoading(true);
     getAllUsers();
@@ -50,7 +60,7 @@ export const AdminUserManagmentPage = () => {
             <div key={user.id} className="user-card">
               <Link to={`/profile/${user.username}`}><h3>{user.username}</h3></Link>
               <p>Email: {user.email}</p>
-              <button onClick={() => { /* Add delete functionality here */ }}>Delete</button>
+              <button onClick={() => handleDelete(user.username)}>Delete</button>
             </div>
           ))
         ) : (

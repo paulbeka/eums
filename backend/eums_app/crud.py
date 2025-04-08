@@ -27,6 +27,12 @@ def get_user_list(db: Session, username: str, skip: int = 0, limit: int = 10):
         for user in users
     ]
 
+def delete_user(db: Session, username: str):
+    user = db.query(User).filter(User.username == username).first()
+    db.delete(user)
+    db.commit()
+    return {"detail": "User deleted successfully"}
+
 
 def create_user(db: Session, payload: RegisterUserPayload):
     db_user = User(

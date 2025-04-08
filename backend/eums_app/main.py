@@ -339,7 +339,6 @@ async def subscribe_to_newsletter(payload: Dict[str, str]):
     response = requests.post(url, json=payload, headers=headers)
 
     if response.status_code != 201 or response.status_code != 200:
-        print(response.reason)
         raise HTTPException(status_code=response.status_code, detail=response.json())
 
     return {"message": "Subscription successful"}
@@ -397,3 +396,8 @@ def get_user_profile_data_endpoint(username: str, db: Session = Depends(get_db))
 @app.get("/users")
 def get_user_list_endpoint(username: str = Query(""), skip: int = 0, limit: int = 10, db: Session =  Depends(get_db)):
     return get_user_list(db, username, skip, limit)
+
+
+@app.delete("/users")
+def delete_user_endpoint(username: str = Query(""), db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    return run_if_admin(token, db, delete_user, username)
