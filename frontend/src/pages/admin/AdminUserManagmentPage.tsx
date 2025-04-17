@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Loading from "../../components/frontend_util/Loading";
 import { getAllUsersApi, deleteUser } from "../../components/api/Api";
 import { Link } from "react-router-dom";
+import "./CSS/AdminUserManagementPage.css";
 
 
 type User = {
@@ -42,7 +43,7 @@ export const AdminUserManagmentPage = () => {
   }, [username]);
 
   return (
-    <div>
+    <div className="admin-user-management-page-container">
       <h1>Admin User Management Page</h1>
       <p>This is the admin user management page. You can delete/remove accounts and access all profiles.</p>
       <h2>All Users</h2>
@@ -60,7 +61,9 @@ export const AdminUserManagmentPage = () => {
             <div key={user.id} className="user-card">
               <Link to={`/profile/${user.username}`}><h3>{user.username}</h3></Link>
               <p>Email: {user.email}</p>
-              <button onClick={() => handleDelete(user.username)}>Delete</button>
+              <div className="user-actions">
+                <button className="delete-button" onClick={() => handleDelete(user.username)}>Delete</button>
+              </div>
             </div>
           ))
         ) : (
