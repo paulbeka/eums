@@ -14,16 +14,19 @@ from .models import Base, User, Article, ArticleStatus
 from .db import engine, get_db
 from .email.email_util import send_article_uploaded_to_admins
 
+from .home_page_api.home_page_api import homePageRouter
+
 from datetime import timedelta
 from jose import JWTError, jwt
 import aiosmtplib, requests, os
-
 
 
 # TODO: Make admin and user auth DIFFERENT (via the roles stuff)
 
 
 app = FastAPI()
+app.include_router(homePageRouter)
+
 os.makedirs("thumbnails", exist_ok=True)
 
 app.mount("/thumbnails", StaticFiles(directory="thumbnails"), name="thumbnails")
@@ -320,6 +323,20 @@ def delete_video_endpoint(videoId: str, db: Session = Depends(get_db), token: st
 @app.get("/videos/")
 def get_videos_endpoint(livestreams: bool, db: Session = Depends(get_db)):
     return get_videos(livestreams, db)
+
+
+#### SOCIAL MEDIA POSTS ####
+
+@app.post("/social-media/")
+def post_social_media_endpoint(payload: Dict[str, str], db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    print(payload)
+    return run_if_admin(token, db, create_social_media_post,
+        payload["url"], payload["upload_date"], payload["thumbnail"])
+
+
+@app.get("/social-media/")
+def get_social_media_endpoint(db: Session = Depends(get_db)):
+    return get_social_media_posts(db)
 
 
 #### EMAIL ####

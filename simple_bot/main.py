@@ -5,6 +5,7 @@ from src.ai.ai_transcriber import ai_generator, ai_generate_list
 from src.transcriptions.transcriptions import get_transcriptions, get_transcriptions_pipeline
 from src.publisher.publisher import publish_ai_content, publish_ai_content_pipeline
 from src.video_updater.video_updater import get_videos_and_thumbnails
+from src.video_updater.social_media_updater import social_media_updater
 
 
 def main():
@@ -17,6 +18,7 @@ def main():
     subparsers.add_parser("populate", help="Get videos + interviews and their thumbnails, and populate the website")
     subparsers.add_parser("publish_missing_videos", help="Fetch all latest videos, feed them to AI, and publish them")
     subparsers.add_parser("publish", help="Publish the generated AI articles (and send an email to owners)")
+    subparsers.add_parser("social_media_publish", help="Publish the social media posts to the site")
 
     ### TODO (in the future): Populate some kind of newsletter to email to subscribers
 
@@ -28,6 +30,8 @@ def main():
         ai_generator()
     elif args.command == "publish":
         publish_ai_content()
+    elif args.command == "social_media_publish":
+        social_media_updater()
     elif args.command == "publish_missing_videos":
         transcripts = get_transcriptions_pipeline()
         articles = ai_generate_list(transcripts)

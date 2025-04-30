@@ -1,5 +1,6 @@
 export type Article = {
   id: number;
+  type: string;
   title: string;
   content: string;
   editing_status: string;
@@ -18,6 +19,7 @@ export type Article = {
 
 export type Video = {
   title: string;
+  type: string;
   thumbnail: string;
   url: string;
   upload_date: string;

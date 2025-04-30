@@ -4,3 +4,4 @@ python-dotenv==1.0.1
 requests==2.25.1
 youtube-transcript-api==0.6.3
 transformers==4.49.0
+tweepy==4.15.0

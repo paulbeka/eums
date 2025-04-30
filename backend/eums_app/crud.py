@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import List
 import json
 
-from .models import User, Article, Video, TopicTag, Like, ArticleStatus
+from .models import User, Article, Video, TopicTag, Like, ArticleStatus, SocialMediaPost
 from .util import save_thumbnail
 from .schemas import RegisterUserPayload
 
@@ -244,6 +244,26 @@ def delete_video(db: Session, videoId: str):
 def get_videos(livestreams: bool, db: Session, skip: int = 0, limit: int = 10):
     query = db.query(Video).filter(Video.livestream == livestreams).order_by(Video.upload_date.desc())
     return query.offset(skip).limit(limit).all()
+
+
+### SOCIAL MEDIA POSTS ###
+
+def get_social_media_posts(db: Session, skip: int = 0, limit: int = 10):
+    query = db.query(SocialMediaPost).order_by(SocialMediaPost.upload_date.desc())
+    return query.offset(skip).limit(limit).all()
+
+
+def create_social_media_post(db: Session, url: str, upload_date: str, thumbnail: str):
+    parsed_date = datetime.strptime(upload_date, "%Y-%m-%dT%H:%M:%SZ")
+    db_post = SocialMediaPost(
+        url=url,
+        upload_date=parsed_date,
+        thumbnail=thumbnail
+    )
+    db.add(db_post)
+    db.commit()
+    db.refresh(db_post)
+    return db_post
 
 
 ### CATEGORY TAGS ###

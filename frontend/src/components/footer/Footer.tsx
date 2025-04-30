@@ -25,7 +25,7 @@ const Footer = () => {
         <div className="footer">
           <div className="bottom-home-content">
             <div className="media-links-container">
-              <p className="map-title" style={{color: "black"}}>Join the Community</p>
+              <p className="sub-title" style={{color: "black"}}>Join the Community</p>
               <p>Get involved, connect with others and <b>make a difference.</b></p>
               <br />
               <div className="media-icons">
@@ -48,7 +48,7 @@ const Footer = () => {
             </div>
             <div className="support-container eums-box-shadow">
               <div style={{display: "flex"}}>
-                <p className="map-title" style={{color: "black"}}>Support Us</p>
+                <p className="sub-title" style={{color: "black"}}>Support Us</p>
               </div>
               <div className="support-content">
                 <p>You can <b>support EU Made Simple </b> by many different means, here's how:</p>

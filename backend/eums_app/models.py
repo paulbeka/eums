@@ -53,6 +53,15 @@ article_tags = Table(
 )
 
 
+class SocialMediaPost(Base):
+    __tablename__ = "social_media"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    url = Column(String, index=True, nullable=False)
+    upload_date = Column(DateTime, nullable=False)
+    thumbnail = Column(String, nullable=True)
+
+
 class Article(Base):
     __tablename__ = "articles"
 
