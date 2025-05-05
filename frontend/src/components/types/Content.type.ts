@@ -12,7 +12,7 @@ export type Article = {
     username: string;
     full_name: string;
   };
-  posting_date: string;
+  upload_date: string;
   tags: { id: string, tag: string }[];
 };
 

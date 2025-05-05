@@ -28,19 +28,20 @@ def post_to_backend(url, thumbnail, upload_date, token):
     except requests.exceptions.RequestException as e:
         print(f"Request failed: {e}")
 
-def get_latest_tweets(username, limit=5):
+
+def get_latest_tweets(username, limit=1):
     token = login_and_get_token()
     if not token:
         return
 
     user_id = get_user_id(username)
-    tweets = client.get_users_tweets(id=user_id, max_results=limit)
+    tweets = client.get_users_tweets(id=user_id, max_results=limit, tweet_fields=["created_at"])
 
     for tweet in tweets.data:
         tweet_id = tweet.id
         tweet_url = f"https://twitter.com/{username}/status/{tweet_id}"
         thumbnail_url = "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"  # Placeholder
-        upload_date = datetime.utcnow().isoformat()
+        upload_date = tweet.created_at.strftime("%Y-%m-%dT%H:%M:%SZ")
 
         print(tweet_url)
         post_to_backend(tweet_url, thumbnail_url, upload_date, token)

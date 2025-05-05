@@ -107,7 +107,7 @@ const ArticleDisplay = () => {
                 </div>
                 <div className="article-display-metadata">
                   <div className="article-display-date">
-                    <p>{new Date(articleContent.posting_date).toDateString().toUpperCase()}</p>
+                    <p>{new Date(articleContent.upload_date).toDateString().toUpperCase()}</p>
                   </div>
                   <div className="article-display-author">
                     <p>BY {articleContent.author.full_name.toUpperCase()}</p>

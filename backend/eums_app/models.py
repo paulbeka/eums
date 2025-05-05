@@ -92,8 +92,8 @@ class Like(Base):
     __tablename__ = "likes"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    article_id = Column(Integer, ForeignKey('articles.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"), nullable=False)
+    article_id = Column(Integer, ForeignKey('articles.id', ondelete="CASCADE"), nullable=False)
     timestamp = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     user = relationship("User", back_populates="likes")
