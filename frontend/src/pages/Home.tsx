@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import "./CSS/Home.css";
 import { Video, Article } from '../components/types/Content.type';
 import { Link } from 'react-router-dom';
-import { getArticles, getFrontpageContent, getVideos } from '../components/api/Api';
+import { getFrontpageContent } from '../components/api/Api';
 import { BASE_URL } from "../Config";
 import { BrowserView, MobileView } from "react-device-detect";
 import Loading from '../components/frontend_util/Loading';
@@ -21,6 +21,9 @@ const Home = () => {
   const [sortType, setSortType] = useState<Set<string>>(new Set([]));
   const [rankBy, setRankBy] = useState<string>("");
 
+  const optionsRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<HTMLDivElement>(null);
+  
   const adsPresent = true;
 
   const rankByCallback = (newRank: string) => {
@@ -67,6 +70,35 @@ const Home = () => {
       return newSortType;
     });
   }
+
+  useEffect(() => {
+    const optionsEl = optionsRef.current;
+    const observerTarget = document.getElementById("stop-observer");
+  
+    if (!optionsEl || !observerTarget) return;
+  
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // Near footer — stop being fixed
+          optionsEl.style.position = "absolute";
+          optionsEl.style.top = `${entry.target.getBoundingClientRect().top + window.scrollY - optionsEl.offsetHeight}px`;
+        } else {
+          // Not near footer — stay fixed
+          optionsEl.style.position = "fixed";
+          optionsEl.style.top = "20px";
+        }
+      },
+      {
+        root: null, // viewport
+        threshold: 0,
+      }
+    );
+  
+    observer.observe(observerTarget);
+  
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (sortType.size) {
@@ -146,6 +178,7 @@ const Home = () => {
             );
           }
         })}
+        <div id="stop-observer" style={{ height: "1px" }}></div>
       </div>
       {adsPresent && <div className="ad-slot">
 

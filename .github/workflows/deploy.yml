@@ -95,7 +95,7 @@ jobs:
                 server_name eumadesimple.eu www.eumadesimple.eu;
 
                 location /.well-known/acme-challenge/ {
-                    root /var/www/certbot;  # Certbot will place challenge files here
+                    root /usr/share/nginx/html;  # Certbot will place challenge files here
                 }
 
                 # Redirect all other HTTP requests to HTTPS
