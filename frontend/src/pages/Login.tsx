@@ -5,6 +5,7 @@ import axios from "axios";
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from "../components/auth/AuthContext";
 import "./CSS/Login.css";
+import { Link } from "react-router-dom";
 
 
 const Login = () => {
@@ -56,6 +57,7 @@ const Login = () => {
         </div>
         {error && <p style={{ color: "red", marginBottom: "1em" }}>{error}</p>}
         <button type="submit" className="submit-btn">Submit</button>
+        <p className="click-to-register">No account? <u style={{ fontWeight: "bold" }}><Link to={"/register"}>Register</Link></u></p>
       </form>
     </div>
   </>);

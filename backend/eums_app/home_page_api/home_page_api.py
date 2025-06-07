@@ -1,16 +1,19 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Security
 
 from datetime import datetime
 from sqlalchemy import desc, union_all
 from sqlalchemy.orm import Session
-from typing import List, Union
+from typing import List, Union, Optional
 
-from ..models import Article, Video, SocialMediaPost
+from ..util import get_user_from_token
+from ..models import Article, Video, SocialMediaPost, Like
 from ..db import get_db
 
 from datetime import date, datetime as dt
+from fastapi.security import OAuth2PasswordBearer
 
 homePageRouter = APIRouter()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
 
 @homePageRouter.get("/content")
@@ -18,7 +21,8 @@ def get_all_content_endpoint(
 	skip: int = 0,
 	limit: int = 20,
 	db: Session = Depends(get_db),
-	public_only: bool = Query(True)
+	public_only: bool = Query(True),
+	token: Optional[str] = Security(oauth2_scheme)
 ):
 	# Fetch posts/articles
 	articles_query = db.query(Article).filter(Article.editing_status == "public") if public_only else db.query(Article)
@@ -31,6 +35,12 @@ def get_all_content_endpoint(
 	# Fetch social media posts
 	social_media_query = db.query(SocialMediaPost)
 	social_media_posts = social_media_query.order_by(desc(SocialMediaPost.upload_date)).offset(skip).limit(limit).all()
+
+	user_id = None
+	if token:
+		user = get_user_from_token(token, db)
+		if user:
+			user_id = user.id
 	
 	# Combine them
 	combined_content = []
@@ -40,7 +50,9 @@ def get_all_content_endpoint(
 			"type": "article",
 			"title": article.title,
 			"upload_date": article.upload_date,
-			"thumbnail": article.thumbnail
+			"thumbnail": article.thumbnail,
+			"total_likes": db.query(Like).filter(Like.article_id == article.id).count(),
+			"user_has_liked": db.query(Like).filter_by(user_id=user_id, article_id=article.id).first() is not None if user_id else None
 		})
 	
 	for video in videos:

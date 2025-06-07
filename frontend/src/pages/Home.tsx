@@ -1,16 +1,21 @@
 import { useState, useEffect, useRef } from 'react';
 import "./CSS/Home.css";
 import { Video, Article } from '../components/types/Content.type';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getFrontpageContent } from '../components/api/Api';
 import { BASE_URL } from "../Config";
 import { BrowserView, MobileView } from "react-device-detect";
 import Loading from '../components/frontend_util/Loading';
 import ErrorLoading from '../components/frontend_util/ErrorLoading';
 import { Helmet } from 'react-helmet-async';
+import { likeArticle } from '../components/util_tools/UserActions';
+import { AiFillLike, AiOutlineLike } from "react-icons/ai";
+import { useAuth } from '../components/auth/AuthContext';
 
 
 const Home = () => {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const [content, setContent] = useState<(Article | Video)[]>([]);
   const [visibleContent, setVisibleContent] = useState<(Article | Video)[]>([]);
@@ -70,6 +75,32 @@ const Home = () => {
       return newSortType;
     });
   }
+
+  const clickLike = (articleId: number) => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    likeArticle(articleId).then((data) => {
+      setVisibleContent(prev => 
+        prev.map(item => {
+          if (item.type !== "article") return item;
+          item = item as Article;
+          if (item.id === articleId) {
+            return {
+              ...item,
+              total_likes: item.total_likes + (data.like ? 1 : -1),
+              user_has_liked: data.like
+            } as Article;
+          }
+          return item;
+        })
+      );
+    }).catch((err) => {
+      console.error("Error liking article:", err);
+    });
+  }
+    
 
   useEffect(() => {
     const optionsEl = optionsRef.current;
@@ -158,10 +189,29 @@ const Home = () => {
             item = item as Article;
             return (
               <div key={index} className="home-post">
-                <Link to={`/articles/${item.id}`}>
+                <Link to={`/article/${item.id}`}>
                   <img src={`${BASE_URL}/thumbnails/${item.thumbnail}`} alt={item.title} className="home-article-thumbnail" />
-                  <h3>{item.title}</h3>
                 </Link>
+                  
+                <div className="home-article-title">
+                  <Link to={`/article/${item.id}`}><h3>{item.title}</h3></Link>
+                  <div style={{ display: "flex", alignItems: "center", zIndex: 10000 }}>
+                    {item.type === "article" && item?.user_has_liked ? (
+                      <AiFillLike 
+                      size={35} 
+                      style={{ marginRight: "0.5em", cursor: "pointer" }}
+                      onClick={() => clickLike((item as Article).id)} 
+                      />
+                    ) : item.type === "article" ? (
+                      <AiOutlineLike 
+                      size={35} 
+                      style={{ marginRight: "0.5em", cursor: "pointer" }}
+                      onClick={() => clickLike((item as Article).id)} 
+                      />
+                    ) : null}
+                    <span style={{ marginTop: "5px" }}>{item.total_likes}</span>
+                  </div>
+                </div>
               </div>
             );
           } else if (item.type === "video") {

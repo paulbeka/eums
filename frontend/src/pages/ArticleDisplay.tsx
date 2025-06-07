@@ -10,6 +10,7 @@ import { formatArticleContent } from "../components/util_tools/Util";
 import ArticleShare from "../components/frontend_util/ArticleShare"; 
 import { Helmet } from 'react-helmet-async';
 import { AiFillLike, AiOutlineLike } from "react-icons/ai";
+import { likeArticle } from "../components/util_tools/UserActions";
 import { useAuth } from "../components/auth/AuthContext";
 
 
@@ -31,29 +32,22 @@ const ArticleDisplay = () => {
       });
   }, [articleId]);
 
-  const likeArticle = () => {
+  const clickLike = () => {
     if (!isAuthenticated) {
       navigate("/login");
       return;
     }
-    api
-      .post(`/like/${articleId}`)
-      .then((response) => {
-        if (response.status === 200) {
-          const data = response.data;
-          setArticleContent((prev) => {
-            if (!prev) return prev; 
-            return { 
-              ...prev, 
-              total_likes: prev.total_likes + (data.like ? 1 : -1),
-              user_has_liked: data.like
-            };
-          });
+    if (articleContent === undefined) return;
+    likeArticle(articleContent.id).then((data) => {
+      setArticleContent((prev) => {
+        if (!prev) return prev; 
+        return { 
+          ...prev, 
+          total_likes: prev.total_likes + (data.like ? 1 : -1),
+          user_has_liked: data.like
         }
-      })
-      .catch((error) => {
-        console.error("Error liking article:", error);
       });
+    });
   }
 
   return (
@@ -80,13 +74,13 @@ const ArticleDisplay = () => {
                     <AiFillLike 
                       size={35} 
                       style={{ marginRight: "0.5em", cursor: "pointer" }}
-                      onClick={likeArticle} 
+                      onClick={clickLike} 
                     />
                   ) : (
                     <AiOutlineLike 
                       size={35} 
                       style={{ marginRight: "0.5em", cursor: "pointer" }}
-                      onClick={likeArticle} 
+                      onClick={clickLike} 
                     />
                   )}
                   <p style={{ minWidth: "10px"}}>{articleContent?.total_likes}</p>

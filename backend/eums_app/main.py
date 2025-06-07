@@ -12,8 +12,9 @@ from .crud import *
 from .config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM, SMTP_SETTINGS, CAPTCHA_KEY, EUMS_BEEHIIV_KEY, PUBLICATION_ID, REFRESH_TOKEN_EXPIRE_DAYS, AWS_EMAIL_API_KEY
 from .models import Base, User, Article, ArticleStatus
 from .db import engine, get_db
-from .email.email_util import send_article_uploaded_to_admins
+from .util import get_user_from_token, verify_token, run_if_admin, run_if_logged_in
 
+from .email.email_util import send_article_uploaded_to_admins
 from .home_page_api.home_page_api import homePageRouter
 
 from datetime import timedelta
@@ -59,47 +60,6 @@ app.add_middleware(
 )
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
-
-
-def get_user_from_token(token: str, db: Session):
-    if token is None:
-        return None
-    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-    username = payload.get("sub")
-    return db.query(User).filter(User.username == username).first()
-
-
-def verify_token(token: str, db: Session, admin: bool = False):
-    try:
-        if token is None:
-            raise HTTPException(status_code=401, detail="Invalid token")
-
-        user: User = get_user_from_token(token, db)
-        if user is None:
-            raise HTTPException(status_code=401, detail="Invalid token")
-
-        if admin and (not user.is_admin):
-            raise HTTPException(status_code=403, detail="Admin access required")
-
-        return {"status": "valid", "admin": admin}
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
-
-
-def run_if_admin(token: str, db: Session, method: Callable[..., Any], *args, **kwargs) -> dict:
-    isAuthenticated = verify_token(token, db, admin = True)
-    if isAuthenticated.get("admin"):
-        return method(db, *args, **kwargs)
-    else:
-        raise HTTPException(status_code=401, detail="Unauthorized")
-
-
-def run_if_logged_in(token: str, db: Session, method: Callable[..., Any], *args, **kwargs) -> dict:
-    user = get_user_from_token(token, db)
-    if user:
-        return method(db, *args, **kwargs)
-    else:
-        raise HTTPException(status_code=401, detail="Unauthorized")
 
 
 #### LOGIN/AUTH ####
@@ -291,6 +251,8 @@ def post_article_to_admins_endpoint(articleId: int, db: Session = Depends(get_db
 #### LIKES ####
 @app.post("/like/{articleId}")
 def like_post_endpoint(articleId: str, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    if token == None:
+        raise HTTPException(status_code=401, detail="User not logged in and cannot like a post")
     return run_if_admin(token, db, toggle_like, articleId, get_user_from_token(token, db).id)
 
 

@@ -1,6 +1,8 @@
 .home {
   display: flex;
   justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
 
   .home-options-container {
     width: 100%;
@@ -16,8 +18,8 @@
     margin: 1em 1em;
     padding: 1em;
     background-color: #f0f0f0;
-    max-width: 400px;
-    min-width: 400px;
+    max-width: 300px;
+    min-width: 300px;
     border-radius: 20px;
     z-index: 1000;
     height: 80vh;
@@ -59,7 +61,7 @@
   
   .home-post {
     width: 100%;
-    max-width: 700px;
+    max-width: 600px;
     border-radius: 20px;
     margin-bottom: 2em;
     overflow: hidden;
@@ -69,6 +71,13 @@
 
   .home-post:hover {
     background-color: #f0f0f0;
+  }
+
+  .home-article-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0.5em 1em;
   }
   
   .video-cropper {

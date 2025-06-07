@@ -3,6 +3,7 @@ import "./CSS/Register.css";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../components/api/Api";
 import api from "../components/api/Api";
+import { Link } from "react-router-dom";
 
 
 interface FormData {
@@ -311,6 +312,7 @@ export const Register = () => {
 
         {/* Submit Button */}
         <button type="submit">Register</button>
+        <span className="click-to-login">Already have an account? <u style={{ fontWeight: "bold"}}><Link to={"/login"}>Login</Link></u></span>
       </form>
     </div>
   );
