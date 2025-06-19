@@ -13,6 +13,7 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   
   const [success, setSuccess] = useState(true);
+  const [error, setError] = useState("");
   const [availableTags, setAvailableTags] = useState<string[]>([]);
 
   useEffect(() => {
@@ -44,7 +45,41 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
     }
   };
 
+  const validateArticle = () => {
+    if (title.trim() === "") {
+      setSuccess(false);
+      setError("Title cannot be empty.");
+    }
+    if (editorState.trim() === "") {
+      setSuccess(false);
+      setError("Content cannot be empty.");
+    }
+    if (thumbnail === null) {
+      setSuccess(false);
+      setError("Thumbnail cannot be empty.");
+    }
+    if (getNumberOfWords(editorState) > 3000) {
+      setSuccess(false);
+      setError("Content exceeds the maximum word limit of 3000.");
+    }
+    if (getNumberOfWords(title) > 10) {
+      setSuccess(false);
+      setError("Title exceeds the maximum word limit of 10.");
+    }
+    if (selectedTags.length === 0) {
+      setSuccess(false);
+      setError("At least one tag must be selected.");
+    }
+    if (selectedTags.length > 5) {
+      setSuccess(false);
+      setError("You can select a maximum of 5 tags.");
+    }
+    return true;
+  };
+
   const submitArticle = async () => {
+    if (!validateArticle()) return;
+    
     const formData = {
       title,
       content: editorState,
@@ -79,7 +114,9 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
         <div className="setproperties-container">
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <p>Post title:</p>
-            <p>{getNumberOfWords(title)}/10</p>
+            <p style={{
+              color: `${getNumberOfWords(title) > 10 ? "red" : ""}`
+            }}>{getNumberOfWords(title)}/10</p>
           </div>
           <input
             value={title}
@@ -121,7 +158,7 @@ const ArticlePoster = ({ edit }: { edit: boolean }) => {
         </div>
 
         {!success && (
-          <p style={{ color: "red" }}>There was an error. Contact Paul.</p>
+          <p style={{ color: "red" }}>{error}</p>
         )}
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getUserData } from "../components/api/Api";
+import { getUserData, getUserGdprData, deleteUser } from "../components/api/Api";
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from "../components/auth/AuthContext";
 import { jwtDecode } from "jwt-decode";
@@ -26,15 +26,30 @@ export const Profile = () => {
   const [isMyProfile, setIsMyProfile] = useState(false);
 
   const getAllData = () => {
-    // Download all user data
+    getUserGdprData(username!).then((data) => {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${username}_data.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }).catch((error) => {
+      console.error("Error downloading data:", error);
+    });
   }
 
   const deleteAccount = () => {
-    // Delete user account
+    deleteUser(username!).then(() => {
+    }).catch((error) => {
+      console.error("Error deleting account:", error);
+    });
   }
 
   const goToSettings = () => {
-    navigate("/settings");
+    navigate("/profile/edit");
   }
 
   const signOut = () => {

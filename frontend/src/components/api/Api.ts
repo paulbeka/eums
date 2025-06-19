@@ -226,4 +226,15 @@ export const deleteUser = async (username: string) => {
   );
 }
 
+export const getUserGdprData = async (username?: string) => {
+  if (username === undefined || username === null) throw new Error("Username is required to fetch user data.");
+  return api.get(`/gdpr${username ? "?username="+ username : ""}`)
+    .then(response => {
+      if (response.status !== 200) {
+        throw "Request failed! Contact an admin.";
+      }
+      return response.data;
+    });
+}
+
 export default api;

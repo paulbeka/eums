@@ -24,6 +24,7 @@ import { AuthProvider } from './components/auth/AuthContext';
 import { NewsletterSignup } from './pages/NewsletterSignup';
 import { TermsAndConditions } from './pages/TermsAndConditions';
 import { AdminUserManagmentPage } from './pages/admin/AdminUserManagmentPage';
+import { EditProfile } from './pages/EditProfile';
 
 
 ReactGA.initialize("G-D8JV5H8HE7");
@@ -72,6 +73,9 @@ function App() {
           } />
           <Route path="article-manager/edit/:articleId" element={
             <ProtectedRoute element={<ArticlePoster edit={true} />} />
+          } />
+          <Route path="profile/edit" element={
+            <ProtectedRoute element={<EditProfile />} />
           } />
 
           {/* ADMIN ONLY */}

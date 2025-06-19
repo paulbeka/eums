@@ -321,3 +321,12 @@ def get_user_profile_data(username: str, db: Session):
         "posts": posts_count,
         "likes": likes_count,
     }
+
+
+def get_gdpr(username: str, db: Session):
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        return None
+
+    # HERE WE ARE RETURNING A DOWNLOAD URL
+    pass

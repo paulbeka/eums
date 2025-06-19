@@ -16,6 +16,7 @@ from .util import get_user_from_token, verify_token, run_if_admin, run_if_logged
 
 from .email.email_util import send_article_uploaded_to_admins
 from .home_page_api.home_page_api import homePageRouter
+from .user_api.user_api import userRouter
 
 from datetime import timedelta
 from jose import JWTError, jwt
@@ -27,6 +28,7 @@ import aiosmtplib, requests, os
 
 app = FastAPI()
 app.include_router(homePageRouter)
+app.include_router(userRouter)
 
 os.makedirs("thumbnails", exist_ok=True)
 
@@ -361,22 +363,3 @@ async def send_email(contact: ContactForm):
         raise HTTPException(status_code=500, detail="Failed to send email.")
 
 
-######## USER MANAGEMENT AND PROFILE ########
-
-
-@app.get("/profile/{username}")
-def get_user_profile_data_endpoint(username: str, db: Session = Depends(get_db)):
-    user = get_user_profile_data(username, db)
-    if user is None:
-        raise HTTPException(status_code=404, detail="Unknown user")
-    return user
-
-
-@app.get("/users")
-def get_user_list_endpoint(username: str = Query(""), skip: int = 0, limit: int = 10, db: Session =  Depends(get_db)):
-    return get_user_list(db, username, skip, limit)
-
-
-@app.delete("/users")
-def delete_user_endpoint(username: str = Query(""), db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    return run_if_admin(token, db, delete_user, username)
