@@ -11,6 +11,7 @@ import { Helmet } from 'react-helmet-async';
 import { likeArticle } from '../components/util_tools/UserActions';
 import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import { useAuth } from '../components/auth/AuthContext';
+import { InstagramEmbed } from 'react-social-media-embed';
 
 
 const Home = () => {
@@ -23,58 +24,9 @@ const Home = () => {
   const [contentError, setContentError] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const [sortType, setSortType] = useState<Set<string>>(new Set([]));
-  const [rankBy, setRankBy] = useState<string>("");
-
   const optionsRef = useRef<HTMLDivElement>(null);
-  const observerRef = useRef<HTMLDivElement>(null);
   
   const adsPresent = true;
-
-  const rankByCallback = (newRank: string) => {
-    if (rankBy === newRank) {
-      setRankBy("");
-      setVisibleContent(content);
-      return;
-    }
-    setRankBy(newRank);
-    switch (newRank) {
-      case "date":
-        setVisibleContent(prevContent =>
-          [...prevContent].sort((a, b) => {
-        const dateA = new Date(a.upload_date).getTime();
-        const dateB = new Date(b.upload_date).getTime();
-        return dateB - dateA; // Newest first
-          })
-        );
-        break;
-      case "likes":
-        setVisibleContent(prevContent =>
-          [...prevContent].sort((a, b) => {
-            const likesA = a.type === "article" ? (a as Article).total_likes : 0;
-            const likesB = b.type === "article" ? (b as Article).total_likes : 0;
-            return likesB - likesA; 
-          })
-        );
-        break;
-    }
-  }
-
-  const sortBy = (chosenSortType: string) => {
-    if (sortType.size && sortType.has(chosenSortType)) {
-      setSortType(prev => {
-        const newSortType = new Set(prev);
-        newSortType.delete(chosenSortType);
-        return newSortType;
-      });
-      return;
-    }
-    setSortType(prev => {
-      const newSortType = new Set(prev);
-      newSortType.add(chosenSortType);
-      return newSortType;
-    });
-  }
 
   const clickLike = (articleId: number) => {
     if (!isAuthenticated) {
@@ -101,49 +53,11 @@ const Home = () => {
     });
   }
     
-
-  useEffect(() => {
-    const optionsEl = optionsRef.current;
-    const observerTarget = document.getElementById("stop-observer");
-  
-    if (!optionsEl || !observerTarget) return;
-  
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          // Near footer — stop being fixed
-          optionsEl.style.position = "absolute";
-          optionsEl.style.top = `${entry.target.getBoundingClientRect().top + window.scrollY - optionsEl.offsetHeight}px`;
-        } else {
-          // Not near footer — stay fixed
-          optionsEl.style.position = "fixed";
-          optionsEl.style.top = "20px";
-        }
-      },
-      {
-        root: null, // viewport
-        threshold: 0,
-      }
-    );
-  
-    observer.observe(observerTarget);
-  
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (sortType.size) {
-      setVisibleContent(content.filter(item => sortType.has(item.type)));
-    } else {
-      setVisibleContent(content);
-    }
-  }, [sortType]);
-
   useEffect(() => {
     setLoading(true);
     getFrontpageContent().then(res => {
       setContent(res);
-      setVisibleContent(res);
+      setVisibleContent([{type: "instagram"}, ...res]);
       setContentError(false);
       setLoading(false);
     })
@@ -163,26 +77,6 @@ const Home = () => {
     </Helmet>
     <BrowserView>
     <div className="home">
-      <div className="home-options-container">
-        <div className="home-options">
-          <h3 className="home-options-title">Sort By</h3>
-          <div className="home-category-buttons-container">
-            <button className={`home-category-botton ${rankBy === "date" ? "home-category-botton-active": ""}`} onClick={() => rankByCallback("date")}>
-              <span>Newest</span>
-            </button>
-            <button className={`home-category-botton ${rankBy === "likes" ? "home-category-botton-active": ""}`} onClick={() => rankByCallback("likes")}>
-              <span>Most Liked</span>
-            </button>
-          </div>
-          
-          <h3 className="home-options-title">Categories</h3>
-          <div className="home-category-buttons-container">
-            <button className={`home-category-botton ${sortType.has("article") ? "home-category-botton-active": ""}`} onClick={() => sortBy("article")}><span>Articles</span></button>
-            <button className={`home-category-botton ${sortType.has("video") ? "home-category-botton-active": ""}`} onClick={() => sortBy("video")}><span>Videos</span></button>
-            <button className={`home-category-botton ${sortType.has("social_media") ? "home-category-botton-active": ""}`} onClick={() => sortBy("social_media")}><span>Media</span></button>
-          </div>
-        </div>
-      </div>
       <div className="post-content">
         {visibleContent.map((item, index) => {
           if (item.type === "article") {
@@ -195,7 +89,7 @@ const Home = () => {
                   
                 <div className="home-article-title">
                   <Link to={`/article/${item.id}`}><h3>{item.title}</h3></Link>
-                  <div style={{ display: "flex", alignItems: "center", zIndex: 10000 }}>
+                  <div style={{ display: "flex", alignItems: "center", zIndex: 5 }}>
                     {item.type === "article" && item?.user_has_liked ? (
                       <AiFillLike 
                       size={35} 
@@ -226,9 +120,16 @@ const Home = () => {
                 </Link>
               </div>
             );
+          } else if (item.type === "instagram") {
+            return (
+              <div key={index} className="home-post-insta">
+                <InstagramEmbed
+                  url='https://www.instagram.com/p/DLCOsQzIhmJ/'
+                />
+              </div>
+            );
           }
         })}
-        <div id="stop-observer" style={{ height: "1px" }}></div>
       </div>
       {adsPresent && <div className="ad-slot">
 
