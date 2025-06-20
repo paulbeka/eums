@@ -61,8 +61,8 @@ export const NewsletterSignup = () => {
         </div>
       </BrowserView>
 
-      <MobileView>
-        <div className="newsletter-signup-container">
+      <MobileView style={{ height: "100vh", display: "flex" }}>
+        <div className="newsletter-mobile-signup-container">
           <h1 className="newsletter-title">EU Made Simple Newspaper</h1>
           <p className="newsletter-description">Stay informed with our latest updates!</p>
           <div style={{ display: "flex", flexDirection: "column" }}>

@@ -238,7 +238,52 @@ const Home = () => {
 
     <MobileView>
       <div className="home-mobile-container">
-        
+        <center><h1 style={{paddingBlock: "0.5em"}}>Feed</h1></center>
+        <div className="mobile-feed-content">
+          {visibleContent.map((item, index) => {
+            if (item.type === "article") {
+              item = item as Article;
+              return (
+                <div key={index} className="home-mobile-post">
+                  <Link to={`/article/${item.id}`} className="mobile-post-article-thumbnail">
+                    <img src={`${BASE_URL}/thumbnails/${item.thumbnail}`} alt={item.title} className="home-mobile-article-thumbnail" />
+                  </Link>
+                  <div className="home-mobile-article-title">
+                    <Link to={`/article/${item.id}`}><h3>{item.title}</h3></Link>
+                    <div style={{ display: "flex", alignItems: "center", zIndex: 10000 }}>
+                      {item.type === "article" && item?.user_has_liked ? (
+                        <AiFillLike 
+                        size={35} 
+                        style={{ marginRight: "0.5em", cursor: "pointer" }}
+                        onClick={() => clickLike((item as Article).id)} 
+                        />
+                      ) : item.type === "article" ? (
+                        <AiOutlineLike 
+                        size={35} 
+                        style={{ marginRight: "0.5em", cursor: "pointer" }}
+                        onClick={() => clickLike((item as Article).id)} 
+                        />
+                      ) : null}
+                      <span style={{ marginTop: "5px" }}>{item.total_likes}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            } else if (item.type === "video") {
+              item = item as Video;
+              return (
+                <div key={index} className="home-mobile-post">
+                  <Link target="_blank" to={item.url}>
+                    <div className="video-cropper">
+                      <img src={item.thumbnail} alt={item.title} className="home-mobile-video-thumbnail" />
+                    </div>
+                    <h2 className="video-thumbnail-title">{item.title}</h2>
+                  </Link>
+                </div>
+              );
+            }
+          })}
+        </div>
       </div>
     </MobileView>
   </>)

@@ -3,8 +3,8 @@ import "./NavBar.css";
 import { Link } from "react-router-dom";
 import { FaBagShopping } from "react-icons/fa6";
 import { BrowserView, MobileView } from "react-device-detect";
-import { jwtDecode } from 'jwt-decode';
 import { useAuth } from "../auth/AuthContext";
+import { getProfileName } from "../util_tools/Util";
 
 
 const NavBar: React.FC<{ 
@@ -37,13 +37,6 @@ const NavBar: React.FC<{
       { path: '/register', text: 'Register' },
       { path: '/login', text: 'Login' }
     ];
-
-  const getProfileName = () => {
-    if (localStorage.getItem("access_token")) {
-      return jwtDecode(localStorage.getItem("access_token")!)["sub"];
-    }
-    return false;
-  }
 
   const mobileHandleClick = (item: {path: string, text: string}) => {
     setCurrentPage(item.text);

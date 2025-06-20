@@ -110,3 +110,43 @@
     overflow: hidden;
   }
 }
+
+.mobile-feed-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 600px;
+  margin: 1em auto;
+
+  .home-mobile-post {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .home-mobile-article-thumbnail {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .video-cropper {
+    position: relative;
+    clip-path: inset(30px 0 35px 0);
+  }
+
+  .home-mobile-video-thumbnail {
+    width: 100%;
+  }
+
+  .video-thumbnail-title {
+    position: relative;
+    top: -30px;
+  }
+
+  .home-mobile-article-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 0;
+  }
+}

@@ -6,7 +6,7 @@ import { useAuth } from "../components/auth/AuthContext";
 import { jwtDecode } from "jwt-decode";
 import "./CSS/Profile.css";
 
-interface UserProfile {
+export interface UserProfile {
   full_name: string;
   email: string;
   date_of_birth: string;
