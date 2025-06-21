@@ -323,10 +323,42 @@ def get_user_profile_data(username: str, db: Session):
     }
 
 
-def get_gdpr(username: str, db: Session):
+def get_gdpr(db: Session, username: str):
     user = db.query(User).filter(User.username == username).first()
     if not user:
         return None
+    
+    user_data = {
+        "id": user.id,
+        "username": user.username,
+        "full_name": user.full_name,
+        "email": user.email,
+        "date_of_birth": str(user.date_of_birth),
+        "country": user.country,
+        "gender": user.gender,
+        "profile_picture": user.profile_picture,
+        "is_admin": user.is_admin,
+        "articles": [],
+        "likes": []
+    }
 
-    # HERE WE ARE RETURNING A DOWNLOAD URL
-    pass
+    for article in user.articles:
+        user_data["articles"].append({
+            "id": article.id,
+            "title": article.title,
+            "content": article.content,
+            "editing_status": article.editing_status.value,
+            "thumbnail": article.thumbnail,
+            "upload_date": article.upload_date.isoformat(),
+            "tags": [tag.tag for tag in article.tags]
+        })
+
+    for like in user.likes:
+        user_data["likes"].append({
+            "timestamp": like.timestamp.isoformat(),
+            "article_id": like.article.id,
+            "article_title": like.article.title,
+            "article_author": like.article.author.username
+        })
+
+    return user_data

@@ -182,6 +182,14 @@ const Home = () => {
                   </Link>
                 </div>
               );
+            } else if (item.type === "instagram") {
+              return (
+                <div key={index} className="home-post-insta">
+                  <InstagramEmbed
+                    url='https://www.instagram.com/p/DLCOsQzIhmJ/'
+                  />
+                </div>
+              );
             }
           })}
         </div>

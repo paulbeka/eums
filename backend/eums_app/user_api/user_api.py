@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
@@ -26,11 +26,13 @@ def get_user_list_endpoint(username: str = Query(""), skip: int = 0, limit: int 
 
 @userRouter.delete("/users")
 def delete_user_endpoint(username: str = Query(""), db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-	if get_user_from_token(token) == username:
-		run_if_logged_in(username)
+	if get_user_from_token(token, db) == username:
+		run_if_logged_in(token, db, delete_user, username)
 	else:
 		return run_if_admin(token, db, delete_user, username)
 
 @userRouter.get("/gdpr")
 def get_user_gdpr_data(username: str = Query(""), db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-	return run_if_logged_in(token, db, get_gdpr, username, db)
+	if get_user_from_token(token, db).username == username:
+		return run_if_logged_in(token, db, get_gdpr, username)
+	raise HTTPException(status_code=401, detail="Not allowed to fetch gdpr data of other users than yourself.") 

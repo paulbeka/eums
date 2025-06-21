@@ -1,50 +1,60 @@
-import tweepy
+import os
 import requests
 from datetime import datetime
-from ..util import login_and_get_token
+from dotenv import load_dotenv
 
-TWITTER_BEARER_TOKEN = 'AAAAAAAAAAAAAAAAAAAAACCa0wEAAAAA5Ox3HADZPy46V%2B1k4VSdLNHM2%2BE%3Dn26b7T6dAKWz3ZzTCHjkzeGkkVYsvhYm7LTle3rigkiG5WJX0z'
-BACKEND_URL = "http://localhost:8000"
+load_dotenv()
 
-client = tweepy.Client(bearer_token=TWITTER_BEARER_TOKEN)
+ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
+USER_ID = os.getenv("INSTAGRAM_USER_ID")
+TARGET_URL = os.getenv("TARGET_API_URL")
 
-def get_user_id(username):
-    user = client.get_user(username=username)
-    return user.data.id
+INSTAGRAM_API_URL = f"https://graph.instagram.com/{USER_ID}/media"
+FIELDS = "id,caption,media_type,media_url,permalink,timestamp"
 
-def post_to_backend(url, thumbnail, upload_date, token):
-    payload = {
-        'url': url,
-        'thumbnail': thumbnail,
-        'upload_date': upload_date
+def fetch_instagram_posts():
+    params = {
+        "fields": FIELDS,
+        "access_token": ACCESS_TOKEN
     }
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json"
-    }
+    response = requests.get(INSTAGRAM_API_URL, params=params)
+    if response.status_code != 200:
+        print(f"Failed to fetch posts: {response.text}")
+        return []
+    return response.json().get("data", [])
+
+def post_to_target(posts):
+    for post in posts:
+        data = {
+            "url": post.get("permalink"),
+            "upload_date": post.get("timestamp")
+        }
+        response = requests.post(TARGET_URL, json=data)
+        if response.status_code == 200:
+            print(f"Posted successfully: {data}")
+        else:
+            print(f"Failed to post: {response.status_code} - {response.text}")
+
+
+def get_already_posted():
     try:
-        response = requests.post(f"{BACKEND_URL}/social-media", json=payload, headers=headers)
-        print(f"Posted: {payload} | Status: {response.status_code}")
+        response = requests.get(TARGET_URL)
+        response.raise_for_status()
+        return response.json()  # Expecting a list of dicts like {"url": ..., "upload_date": ...}
     except requests.exceptions.RequestException as e:
-        print(f"Request failed: {e}")
+        print(f"Error fetching existing posts: {e}")
+        return []
 
 
-def get_latest_tweets(username, limit=1):
-    token = login_and_get_token()
-    if not token:
-        return
+def main():
+    already_posted = get_already_posted()
+    posted_urls = {post["url"] for post in already_posted}
 
-    user_id = get_user_id(username)
-    tweets = client.get_users_tweets(id=user_id, max_results=limit, tweet_fields=["created_at"])
+    posts = fetch_instagram_posts()
+    new_posts = [p for p in posts if p.get("permalink") not in posted_urls]
 
-    for tweet in tweets.data:
-        tweet_id = tweet.id
-        tweet_url = f"https://twitter.com/{username}/status/{tweet_id}"
-        thumbnail_url = "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"  # Placeholder
-        upload_date = tweet.created_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+    post_to_target(new_posts)
+    
 
-        print(tweet_url)
-        post_to_backend(tweet_url, thumbnail_url, upload_date, token)
-
-def social_media_updater():
-    return get_latest_tweets("EU_Made_Simple")
+if __name__ == "__main__":
+    main()
