@@ -77,6 +77,9 @@ const Home = () => {
     </Helmet>
     <BrowserView>
     <div className="home">
+      <div className="home-sidebar">
+        Hello world
+      </div>
       <div className="post-content">
         {visibleContent.map((item, index) => {
           if (item.type === "article") {
@@ -130,6 +133,9 @@ const Home = () => {
             );
           }
         })}
+      </div>
+      <div className="home-sidebar">
+        Hello world
       </div>
       {adsPresent && <div className="ad-slot">
 

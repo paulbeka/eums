@@ -42,13 +42,13 @@ const BasePage = () => {
           <div style={{"position":"fixed", "margin":"1em", "zIndex":"99"}}>
             <Hamburger toggled={navbarOpenMobile} toggle={setNavbarOpenMobile} aria-label="sidebar open button" />
           </div>
-          <Link to={`/profile/${username}`} className="profile-picture-container">
+          {isAuthenticated ? <Link to={`/profile/${username}`} className="profile-picture-container">
             <img
               src={userData?.profilePicture || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}
               alt="Profile"
               className="mobile-base-profile-picture"
             />          
-          </Link>
+          </Link> : <></>}
           </>:
         <></>}
         <Outlet />
