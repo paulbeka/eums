@@ -48,7 +48,8 @@ class RegisterUserPayload(BaseModel):
 
     @validator("country")
     def check_country(cls, v):
-        if v and v.upper() not in EU_COUNTRIES:
+        if v not in EU_COUNTRIES:
             raise ValueError("Country must be an EU member state")
         return v
 
+    # Better validation could be done, using v.upper() only, but beyond scope for now
