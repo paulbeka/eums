@@ -42,7 +42,8 @@ export const Profile = () => {
   }
 
   const deleteAccount = () => {
-    deleteUser(username!).then(() => {
+    deleteUser(username!).then(() => {logout();
+    navigate("/");
     }).catch((error) => {
       console.error("Error deleting account:", error);
     });
