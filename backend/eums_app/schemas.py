@@ -53,3 +53,20 @@ class RegisterUserPayload(BaseModel):
         return v
 
     # Better validation could be done, using v.upper() only, but beyond scope for now
+
+class UpdateUserPayload(BaseModel):
+    full_name: str
+    email: EmailStr 
+    date_of_birth: date
+    country: Optional[str] = None
+    gender: Optional[str] = Field(None, pattern="^(male|female|other)$", description="Must be 'male', 'female' or 'other'")
+    profile_picture: Optional[str] = None
+
+    class Config:
+        alias_generator = lambda string: string.lower() if string == "full_name" else string
+
+    @validator("country")
+    def check_country(cls, v):
+        if v not in EU_COUNTRIES:
+            raise ValueError("Country must be an EU member state")
+        return v
