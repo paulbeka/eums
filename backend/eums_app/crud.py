@@ -6,7 +6,7 @@ import json
 
 from .models import User, Article, Video, TopicTag, Like, ArticleStatus, SocialMediaPost
 from .util import save_thumbnail
-from .schemas import RegisterUserPayload
+from .schemas import RegisterUserPayload, UpdateUserPayload
 
 
 ### AUTH / LOGIN ###
@@ -52,6 +52,21 @@ def create_user(db: Session, payload: RegisterUserPayload):
     db.refresh(db_user)
     
     return db_user
+
+def update_user(db: Session, userId: str, payload: UpdateUserPayload):
+    db_us = db.query(User).filter(User.username == userId).first()
+    if not db_us:
+        raise Exception("No User associated with the Username")
+        return[]
+    db_us.full_name = payload.full_name
+    db_us.email = payload.email
+    db_us.date_of_birth = payload.date_of_birth
+    db_us.country = payload.country
+    db_us.profile_picture = payload.profile_picture
+
+    db.commit()
+    return db_us
+
 
 
 ### ARTICLES ###

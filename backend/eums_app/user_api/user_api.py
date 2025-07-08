@@ -26,7 +26,7 @@ def get_user_list_endpoint(username: str = Query(""), skip: int = 0, limit: int 
 
 @userRouter.delete("/users")
 def delete_user_endpoint(username: str = Query(""), db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-	if get_user_from_token(token, db) == username:
+	if get_user_from_token(token, db).username == username:
 		run_if_logged_in(token, db, delete_user, username)
 	else:
 		return run_if_admin(token, db, delete_user, username)

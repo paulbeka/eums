@@ -147,6 +147,10 @@ async def register_user_endpoint(payload: RegisterUserPayload, db: Session = Dep
     user = create_user(db, payload)
     return {"message": "User registered successfully", "user": user}
 
+@app.put("/users/{userId}")
+async def edit_user_ennpoint(userId: str, payload: UpdateUserPayload, db: Session = Depends(get_db)):
+    user = update_user(db, userId, payload)
+    return {"message": "Profile updated successfully", "user": user}
 
 #### ARTICLES ####
 

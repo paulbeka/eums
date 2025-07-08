@@ -128,7 +128,7 @@ export const EditProfile = () => {
 
     api.put(`/users/${userId}`, formDataToSend)
       .then(() => {
-        navigate("/profile");
+        navigate("/");
       })
       .catch((err) => setErrors({ general: err.message || "Failed to update profile." }));
   };
