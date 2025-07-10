@@ -5,14 +5,20 @@
   margin: 0 auto;
 
   .home-sidebar {
+    display: inline-block;
     width: 400px;
+    max-height: 80vh;
+    overflow-y: scroll;
     margin: 1em;
     padding: 1em;
     background: white;
-    height: 60vh;
     border-radius: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
+
+  .home-sidebar::-webkit-scrollbar { 
+    display: none; 
+  } 
 
   .post-content {
     max-width: 600px;
@@ -41,7 +47,7 @@
     align-items: center;
     margin: 0.5em 0;
     cursor: pointer;
-    border-radius: 10px;
+    border-radius: 3px;
     padding: 0.5em 1em;
   }
 

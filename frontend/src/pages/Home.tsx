@@ -23,6 +23,8 @@ const Home = () => {
   
   const filterOptions = ["all", "article", "video", "instagram"];
   const [filter, setFilter] = useState("all");
+  const Languages = ["English", "French", "German"];
+  const [language, setLanguage] = useState("English");
 
   const [contentError, setContentError] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -80,11 +82,10 @@ const Home = () => {
     <BrowserView>
     <div className="home">
       <div className="home-sidebar">
-        <h3 style={{ margin: "0.5em 0", padding: "0.5em 1em"}}>Sort by</h3>
+        <h3 style={{ margin: "0.5em 0", padding: "0.5em 0.5em"}}>Sort by</h3>
         {filterOptions.map((item, key) => (
           <div className="filter-option" key={key} onClick={() => {
             setFilter(item);
-            
             if (filter === item && item !== "all") {
               setVisibleContent(content);
               setFilter("all");
@@ -99,6 +100,16 @@ const Home = () => {
             </p>
           </div>
         ))}
+        <h3 style={{ margin: "0.5em 0", padding: "0.5em 0.5em"}}>Language</h3>
+        {Languages.map((lang, key) => (<div className="filter-option"
+          style={{ backgroundColor: lang === language ? "#f0f0f0" : "transparent" }}
+          key={key} 
+          onClick={() => {
+            setLanguage(lang);
+          }}
+        >
+          <p>{lang}</p>
+        </div>))}
       </div>
       <div className="post-content">
         {visibleContent.map((item, index) => {
