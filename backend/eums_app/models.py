@@ -12,8 +12,7 @@ class ArticleStatus(enum.Enum):
     public = "public"
     admin_available = "admin_available"
     private = "private"
-
-
+    
 class User(Base):
     __tablename__ = "users"
 

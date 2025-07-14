@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import "./CSS/Home.css";
 import { Video, Article } from '../components/types/Content.type';
 import { Link, useNavigate } from 'react-router-dom';
@@ -21,10 +21,14 @@ const Home = () => {
   const [content, setContent] = useState<(Article | Video)[]>([]);
   const [visibleContent, setVisibleContent] = useState<(Article | Video)[]>([]);
   
+  const filterOptions = ["all", "article", "video", "instagram"];
+  const [filter, setFilter] = useState("all");
+  const Languages = ["English", "French", "German"];
+  const [language, setLanguage] = useState("English");
+
   const [contentError, setContentError] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const optionsRef = useRef<HTMLDivElement>(null);
   
   const adsPresent = true;
 
@@ -56,7 +60,7 @@ const Home = () => {
   useEffect(() => {
     setLoading(true);
     getFrontpageContent().then(res => {
-      setContent(res);
+      setContent([{type: "instagram"}, ...res]); // TODO: CHANGE THIS TO LOAD INSTAGRAM POSTS FROM API
       setVisibleContent([{type: "instagram"}, ...res]);
       setContentError(false);
       setLoading(false);
@@ -77,6 +81,36 @@ const Home = () => {
     </Helmet>
     <BrowserView>
     <div className="home">
+      <div className="home-sidebar">
+        <h3 style={{ margin: "0.5em 0", padding: "0.5em 0.5em"}}>Sort by</h3>
+        {filterOptions.map((item, key) => (
+          <div className="filter-option" key={key} onClick={() => {
+            setFilter(item);
+            if (filter === item && item !== "all") {
+              setVisibleContent(content);
+              setFilter("all");
+            } else if (item === "all") {
+              setVisibleContent(content);
+            } else {
+              setVisibleContent([...content.filter(c => c.type === item.toLowerCase())]);
+            }
+          }} style={{ backgroundColor: item === filter ? "#f0f0f0" : "transparent" }}>
+            <p>
+              {item === "article" ? "Articles" : item[0].toUpperCase() + item.slice(1)}
+            </p>
+          </div>
+        ))}
+        <h3 style={{ margin: "0.5em 0", padding: "0.5em 0.5em"}}>Language</h3>
+        {Languages.map((lang, key) => (<div className="filter-option"
+          style={{ backgroundColor: lang === language ? "#f0f0f0" : "transparent" }}
+          key={key} 
+          onClick={() => {
+            setLanguage(lang);
+          }}
+        >
+          <p>{lang}</p>
+        </div>))}
+      </div>
       <div className="post-content">
         {visibleContent.map((item, index) => {
           if (item.type === "article") {
@@ -131,6 +165,22 @@ const Home = () => {
           }
         })}
       </div>
+      <div className="home-sidebar">
+        {content.filter(val => val.type === "article").sort((a, b) => {
+            return (b as Article).total_likes - (a as Article).total_likes;
+          })
+          .slice(0, 5).map((item, index) => {
+            item = item as Article;
+            return (
+              <Link key={index} to={`/article/${item.id}`} className="home-sidebar-article-title">
+                <span>{item.title}</span>
+                <span>{item.total_likes} likes</span>
+              </Link>
+            );
+          })
+        }
+
+      </div>
       {adsPresent && <div className="ad-slot">
 
       </div>}
@@ -151,7 +201,7 @@ const Home = () => {
                   </Link>
                   <div className="home-mobile-article-title">
                     <Link to={`/article/${item.id}`}><h3>{item.title}</h3></Link>
-                    <div style={{ display: "flex", alignItems: "center", zIndex: 10000 }}>
+                    <div style={{ display: "flex", alignItems: "center", zIndex: 5 }}>
                       {item.type === "article" && item?.user_has_liked ? (
                         <AiFillLike 
                         size={35} 

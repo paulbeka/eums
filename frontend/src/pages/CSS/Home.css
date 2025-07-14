@@ -1,8 +1,24 @@
 .home {
   display: flex;
   justify-content: center;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
+
+  .home-sidebar {
+    display: inline-block;
+    width: 400px;
+    max-height: 80vh;
+    overflow-y: scroll;
+    margin: 1em;
+    padding: 1em;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .home-sidebar::-webkit-scrollbar { 
+    display: none; 
+  } 
 
   .post-content {
     max-width: 600px;
@@ -24,6 +40,19 @@
     margin-bottom: 2em;
     overflow: hidden;
     padding: 1em;
+  }
+
+  .filter-option {
+    display: flex;
+    align-items: center;
+    margin: 0.5em 0;
+    cursor: pointer;
+    border-radius: 3px;
+    padding: 0.5em 1em;
+  }
+
+  .filter-option:hover {
+    background-color: #f0f0f0;
   }
 
   .home-post:hover {
@@ -59,6 +88,14 @@
     width: 100%;
     border-radius: 20px;
   }
+
+  .home-sidebar-article-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 0;
+  }
+
 /* 
   .ad-slot {
     width: 100%;

@@ -32,6 +32,10 @@
   align-items: center;
 }
 
+.text-nav:first-child {
+  margin-left: 0;
+}
+
 .text-nav {
   color: white;
   margin-left: 4em;
