@@ -12,11 +12,7 @@ class ArticleStatus(enum.Enum):
     public = "public"
     admin_available = "admin_available"
     private = "private"
-
-
-article_status = Enum(ArticleStatus, name="articlestatus")  
-
-
+    
 class User(Base):
     __tablename__ = "users"
 
@@ -69,7 +65,7 @@ class Article(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     title = Column(String, index=True, nullable=False)
     content = Column(Text, nullable=False)
-    editing_status = Column(article_status, nullable=False)
+    editing_status = Column(Enum(ArticleStatus, name="articlestatus"), nullable=False)
     thumbnail = Column(String)
     upload_date = Column(DateTime, default=datetime.utcnow, nullable=False)
 
