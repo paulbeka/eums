@@ -166,7 +166,20 @@ const Home = () => {
         })}
       </div>
       <div className="home-sidebar">
-        This is going to be the top articles/videos this month
+        {content.filter(val => val.type === "article").sort((a, b) => {
+            return (b as Article).total_likes - (a as Article).total_likes;
+          })
+          .slice(0, 5).map((item, index) => {
+            item = item as Article;
+            return (
+              <Link key={index} to={`/article/${item.id}`} className="home-sidebar-article-title">
+                <span>{item.title}</span>
+                <span>{item.total_likes} likes</span>
+              </Link>
+            );
+          })
+        }
+
       </div>
       {adsPresent && <div className="ad-slot">
 
@@ -188,7 +201,7 @@ const Home = () => {
                   </Link>
                   <div className="home-mobile-article-title">
                     <Link to={`/article/${item.id}`}><h3>{item.title}</h3></Link>
-                    <div style={{ display: "flex", alignItems: "center", zIndex: 10000 }}>
+                    <div style={{ display: "flex", alignItems: "center", zIndex: 5 }}>
                       {item.type === "article" && item?.user_has_liked ? (
                         <AiFillLike 
                         size={35} 
