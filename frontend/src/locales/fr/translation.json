@@ -1,0 +1,21 @@
+{
+  "home.title": "EUMS - Accueil",
+  "home.description": "La page d'accueil de EUMS.",
+  "home.sortBy": "Trier par",
+  "home.language": "Langue",
+  "filter.all": "Tous",
+  "filter.article": "Articles",
+  "filter.video": "Vidéo",
+  "filter.instagram": "Instagram",
+  "mobile.feed": "Fil d’actualité",
+  "likes": "{{count}} likes",
+  "navbar.aboutus": "À propos de nous",
+  "navbar.newsletter": "Newsletter",
+  "navbar.contact": "Contact",
+  "navbar.managearticles": "Gérer les articles",
+  "navbar.postarticle": "Publier un article",
+  "navbar.usermanagement": "Gestion des utilisateurs",
+  "navbar.register": "S'inscrire",
+  "navbar.login": "Se connecter",
+  "navbar.home": "Accueil"
+}

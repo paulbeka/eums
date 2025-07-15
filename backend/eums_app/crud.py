@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
 from datetime import datetime
 from typing import List
-import json
+import json, re
 
 from .models import User, Article, Video, TopicTag, Like, ArticleStatus, SocialMediaPost
 from .util import save_thumbnail
@@ -163,7 +163,8 @@ def create_article(
 ):
     thumbnail_filename = None
     if thumbnail_base64:
-        thumbnail_filename = f"{title.replace(' ', '_')}_thumbnail.png"
+        sanitized_title = sanitize_filename(title.replace(' ', '_'))
+        thumbnail_filename = f"{sanitized_title}_thumbnail.png"
         save_thumbnail(thumbnail_base64, thumbnail_filename)
 
     existing_tags = db.query(TopicTag).filter(TopicTag.tag.in_(tags)).all()
@@ -377,3 +378,7 @@ def get_gdpr(db: Session, username: str):
         })
 
     return user_data
+
+
+def sanitize_filename(name):
+    return re.sub(r'[<>:"/\\|?*\x00-\x1F]', '', name).strip().rstrip('.')

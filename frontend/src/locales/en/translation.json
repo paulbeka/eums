@@ -1,0 +1,21 @@
+{
+  "home.title": "EUMS - Home",
+  "home.description": "The EUMS Home page.",
+  "home.sortBy": "Sort by",
+  "home.language": "Language",
+  "filter.all": "All",
+  "filter.article": "Articles",
+  "filter.video": "Video",
+  "filter.instagram": "Instagram",
+  "mobile.feed": "Feed",
+  "likes": "{{count}} likes",
+  "navbar.aboutus": "About Us",
+  "navbar.newsletter": "Newsletter",
+  "navbar.contact": "Contact",
+  "navbar.managearticles": "Manage Articles",
+  "navbar.postarticle": "Post Article",
+  "navbar.usermanagement": "User Management",
+  "navbar.register": "Register",
+  "navbar.login": "Login",
+  "navbar.home": "Home"
+}

@@ -1,60 +1,47 @@
-import os
-import requests
-from datetime import datetime
-from dotenv import load_dotenv
+import instaloader
+from instaloader.exceptions import TwoFactorAuthRequiredException
+from ..util import INSTAGRAM_PASSWORD
 
-load_dotenv()
-
-ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
-USER_ID = os.getenv("INSTAGRAM_USER_ID")
-TARGET_URL = os.getenv("TARGET_API_URL")
-
-INSTAGRAM_API_URL = f"https://graph.instagram.com/{USER_ID}/media"
-FIELDS = "id,caption,media_type,media_url,permalink,timestamp"
-
-def fetch_instagram_posts():
-    params = {
-        "fields": FIELDS,
-        "access_token": ACCESS_TOKEN
-    }
-    response = requests.get(INSTAGRAM_API_URL, params=params)
-    if response.status_code != 200:
-        print(f"Failed to fetch posts: {response.text}")
-        return []
-    return response.json().get("data", [])
-
-def post_to_target(posts):
-    for post in posts:
-        data = {
-            "url": post.get("permalink"),
-            "upload_date": post.get("timestamp")
-        }
-        response = requests.post(TARGET_URL, json=data)
-        if response.status_code == 200:
-            print(f"Posted successfully: {data}")
-        else:
-            print(f"Failed to post: {response.status_code} - {response.text}")
+USERNAME = "eu_made_simple"
+SESSION_FILE = f"{USERNAME}.session"
 
 
-def get_already_posted():
+def social_media_publish():
+    L = instaloader.Instaloader()
+
     try:
-        response = requests.get(TARGET_URL)
-        response.raise_for_status()
-        return response.json()  # Expecting a list of dicts like {"url": ..., "upload_date": ...}
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching existing posts: {e}")
-        return []
+        print(f"Loading saved session for {USERNAME}...")
+        L.load_session_from_file(USERNAME)
+        print("Session loaded successfully.")
+    except FileNotFoundError:
+        print(f"No saved session found. Logging in as {USERNAME}...")
+        PASSWORD = INSTAGRAM_PASSWORD  # Use imported password, or fallback to input
+        if not PASSWORD:
+            PASSWORD = input("Enter your Instagram password: ")
+
+        try:
+            L.login(USERNAME, PASSWORD)  # This may raise TwoFactorAuthRequiredException
+        except TwoFactorAuthRequiredException:
+            two_factor_code = input("Two-factor authentication required. Enter 2FA code: ")
+            L.two_factor_login(two_factor_code)
+
+        L.save_session_to_file(filename=SESSION_FILE)
+        print("Login successful. Session saved.")
+
+    print("Fetching latest posts...")
+    profile = instaloader.Profile.from_username(L.context, USERNAME)
+
+    count = 0
+    for post in profile.get_posts():
+        print(f"{post.date_utc.strftime('%Y-%m-%d')} - {post.permalink}")
+        count += 1
+        if count == 5:
+            break
 
 
 def main():
-    already_posted = get_already_posted()
-    posted_urls = {post["url"] for post in already_posted}
+    social_media_publish()
 
-    posts = fetch_instagram_posts()
-    new_posts = [p for p in posts if p.get("permalink") not in posted_urls]
-
-    post_to_target(new_posts)
-    
 
 if __name__ == "__main__":
     main()

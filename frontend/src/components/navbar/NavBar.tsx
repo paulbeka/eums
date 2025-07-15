@@ -5,7 +5,7 @@ import { FaBagShopping } from "react-icons/fa6";
 import { BrowserView, MobileView } from "react-device-detect";
 import { useAuth } from "../auth/AuthContext";
 import { getProfileName } from "../util_tools/Util";
-
+import { useTranslation } from "react-i18next";
 
 const NavBar: React.FC<{ 
   currentPage: string,
@@ -14,28 +14,29 @@ const NavBar: React.FC<{
   setIsOpenMobile: React.Dispatch<React.SetStateAction<boolean>>
 }> = ({ currentPage, setCurrentPage, isOpenMobile, setIsOpenMobile }) => {
   const { isAuthenticated, isAdmin } = useAuth();
+  const { t } = useTranslation();
   
   const navItems = isAuthenticated
   ? (isAdmin ? [
-      { path: '/about', text: 'About Us' },
-      { path: '/newsletter-signup', text: 'Newsletter' },
-      { path: '/contact', text: 'Contact' },
-      { path: '/article-manager', text: "Manage Articles" },
-      { path: '/article-poster', text: 'Post Article' },
-      { path: '/admin-user-management', text: 'User Management' }
+      { path: '/about', text: 'navbar.aboutus' },
+      { path: '/newsletter-signup', text: 'navbar.newsletter' },
+      { path: '/contact', text: 'navbar.contact' },
+      { path: '/article-manager', text: "navbar.managearticles" },
+      { path: '/article-poster', text: 'navbar.postarticle' },
+      { path: '/admin-user-management', text: 'navbar.usermanagement' }
     ] : [
-      { path: '/about', text: 'About Us' },
-      { path: '/newsletter-signup', text: 'Newsletter' },
-      { path: '/contact', text: 'Contact' },
-      { path: '/article-manager', text: "Manage Articles" },
-      { path: '/article-poster', text: 'Post Article' }
+      { path: '/about', text: 'navbar.aboutus' },
+      { path: '/newsletter-signup', text: 'navbar.newsletter' },
+      { path: '/contact', text: 'navbar.contact' },
+      { path: '/article-manager', text: "navbar.managearticles" },
+      { path: '/article-poster', text: 'navbar.postarticle' }
     ])
   : [
-      { path: '/about', text: 'About Us' },
-      { path: '/newsletter-signup', text: 'Newsletter' },
-      { path: '/contact', text: 'Contact' },
-      { path: '/register', text: 'Register' },
-      { path: '/login', text: 'Login' }
+      { path: '/about', text: 'navbar.aboutus' },
+      { path: '/newsletter-signup', text: 'navbar.newsletter' },
+      { path: '/contact', text: 'navbar.contact' },
+      { path: '/register', text: 'navbar.register' },
+      { path: '/login', text: 'navbar.login' }
     ];
 
   const mobileHandleClick = (item: {path: string, text: string}) => {
@@ -49,11 +50,11 @@ const NavBar: React.FC<{
       <div className="navlink-container">
         <div className="left-content">
           <Link onClick={() => setCurrentPage("")} to="/" className="text-nav nav-img-container">
-            <img className="navbar-logo" src="/images/navbar_logo.png" alt="Navbar Logo" />
+            <img className="navbar-logo" src="/images/navbar_logo.png" alt={t('navbar.home')} />
           </Link>
           {navItems.map((item, index) => (
             <Link key={index} to={item.path} onClick={() => setCurrentPage(item.text)} className="text-nav">
-              <span className={`${currentPage === item.text ? "bold-text-nav" : ""}`}>{item.text}</span>
+              <span className={`${currentPage === item.text ? "bold-text-nav" : ""}`}>{t(item.text)}</span>
             </Link>
           ))}
         </div>
@@ -64,6 +65,7 @@ const NavBar: React.FC<{
                 className="navbar-profile-icon"
                 height="30"
                 src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" 
+                alt={t('navbar.usermanagement')}
               />
             </Link>
           }
@@ -77,11 +79,11 @@ const NavBar: React.FC<{
     </BrowserView>
     <MobileView>
       <div className={`mobile-navbar-container ${isOpenMobile ? "active" : ""}`}>
-        <img className="navbar-logo-mobile" src="/images/navbar_logo.png" alt="Navbar Logo" />
+        <img className="navbar-logo-mobile" src="/images/navbar_logo.png" alt={t('navbar.home')} />
         <div className="mobile-navbar-link-container">
-          {[{path: '/', text: "Home"}, ...navItems].map((item, index) => (
+          {[{path: '/', text: "navbar.home"}, ...navItems].map((item, index) => (
               <Link key={index} to={item.path} onClick={() => mobileHandleClick(item)} className="text-nav-mobile">
-                <span className={`${currentPage === item.text ? "bold-text-nav-mobile" : ""} text-nav-mobile`}>{item.text}</span>
+                <span className={`${currentPage === item.text ? "bold-text-nav-mobile" : ""} text-nav-mobile`}>{t(item.text)}</span>
               </Link>
             ))}
         </div>

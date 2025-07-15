@@ -1,5 +1,5 @@
 import './App.css';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route } from 'react-router-dom';
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import { CAPTCHA_SITE_KEY } from './Config';
@@ -25,6 +25,7 @@ import { NewsletterSignup } from './pages/NewsletterSignup';
 import { TermsAndConditions } from './pages/TermsAndConditions';
 import { AdminUserManagmentPage } from './pages/admin/AdminUserManagmentPage';
 import { EditProfile } from './pages/EditProfile';
+import i18n, { languageMap } from './i18n';
 
 
 ReactGA.initialize("G-D8JV5H8HE7");
@@ -33,6 +34,14 @@ ReactGA.initialize("G-D8JV5H8HE7");
 function App() {
 
   const location = useLocation();
+  const [language, setLanguage] = useState<string>("English");
+
+  useEffect(() => {
+    const lng = languageMap[language];
+    if (lng) {
+      i18n.changeLanguage(lng);
+    }
+  }, [language, i18n]);
 
   useEffect(() => {
     ReactGA.send({ hitType: "pageview", page: location.pathname });
@@ -42,7 +51,7 @@ function App() {
     <AuthProvider>
       <Routes>
         <Route path="/" element={<BasePage />} >
-          <Route index element={<Home />} />
+          <Route index element={<Home language={language} setLanguage={setLanguage} />} />
           <Route path="about" element={<About />} />
           
           <Route path="contact" element={

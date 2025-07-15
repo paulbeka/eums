@@ -5,7 +5,7 @@ from src.ai.ai_transcriber import ai_generator, ai_generate_list
 from src.transcriptions.transcriptions import get_transcriptions, get_transcriptions_pipeline
 from src.publisher.publisher import publish_ai_content, publish_ai_content_pipeline
 from src.video_updater.video_updater import get_videos_and_thumbnails
-from src.video_updater.social_media_updater import social_media_updater
+from src.video_updater.social_media_updater import social_media_publish
 
 
 def main():
@@ -31,7 +31,7 @@ def main():
     elif args.command == "publish":
         publish_ai_content()
     elif args.command == "social_media_publish":
-        social_media_updater()
+        social_media_publish()
     elif args.command == "publish_missing_videos":
         transcripts = get_transcriptions_pipeline()
         articles = ai_generate_list(transcripts)
