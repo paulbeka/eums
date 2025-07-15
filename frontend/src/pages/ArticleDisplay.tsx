@@ -95,9 +95,6 @@ const ArticleDisplay = () => {
                     src={`${BASE_URL}/thumbnails/${articleContent.thumbnail}`}
                     className="article-main-image"
                   />
-                  <div className="article-display-main-article-title">
-                    <p>{articleContent["title"]}</p>
-                  </div>
                 </div>
                 <div className="article-display-metadata">
                   <div className="article-display-date">
@@ -107,6 +104,8 @@ const ArticleDisplay = () => {
                     <p>BY {articleContent.author.full_name.toUpperCase()}</p>
                   </div>
                 </div>
+
+                <h2 className="post-content" style={{ marginBlock: "20px"}}>{articleContent["title"]}</h2>
                 <div
                   className="post-content"
                   dangerouslySetInnerHTML={{
@@ -131,7 +130,7 @@ const ArticleDisplay = () => {
                   src={`${BASE_URL}/thumbnails/${articleContent.thumbnail}`}
                   className="article-main-image"
                 />
-                <h2 style={{ marginBlock: "1em" }}>{articleContent["title"]}</h2>
+                <h2 style={{ marginBlock: "1em", marginLeft: "5px" }}>{articleContent["title"]}</h2>
               </div>
               <div
                 dangerouslySetInnerHTML={{

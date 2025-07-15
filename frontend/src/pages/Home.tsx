@@ -13,15 +13,13 @@ import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import { useAuth } from '../components/auth/AuthContext';
 import { InstagramEmbed } from 'react-social-media-embed';
 import { useTranslation } from 'react-i18next';
+import { useGlobalStore } from '../store/GlobalStore';
 
-interface HomeProps {
-  language: string;
-  setLanguage: React.Dispatch<React.SetStateAction<string>>;
-}
 
-const Home = ({ language, setLanguage }: HomeProps) => {
+const Home = () => {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuth();
+  const { state, dispatch } = useGlobalStore();
   const navigate = useNavigate();
 
   const [content, setContent] = useState<(Article | Video)[]>([]);
@@ -63,8 +61,8 @@ const Home = ({ language, setLanguage }: HomeProps) => {
 
   useEffect(() => {
     setLoading(true);
-    getFrontpageContent().then(res => {
-      setContent([{ type: "instagram" }, ...res]); // TODO: CHANGE THIS TO LOAD INSTAGRAM POSTS FROM API
+    getFrontpageContent(state.language).then(res => {
+      setContent([{ type: "instagram" }, ...res]);
       setVisibleContent([{ type: "instagram" }, ...res]);
       setContentError(false);
       setLoading(false);
@@ -73,7 +71,7 @@ const Home = ({ language, setLanguage }: HomeProps) => {
         setContentError(true)
         setLoading(false);
       });
-  }, []);
+  }, [state.language]);
 
   if (contentError) return <ErrorLoading />;
   if (loading) return <Loading />;
@@ -104,11 +102,9 @@ const Home = ({ language, setLanguage }: HomeProps) => {
           ))}
           <h3 style={{ margin: "0.5em 0", padding: "0.5em 0.5em" }}>{t('home.language')}</h3>
           {Languages.map((lang, key) => (<div className="filter-option"
-            style={{ backgroundColor: lang === language ? "#f0f0f0" : "transparent" }}
+            style={{ backgroundColor: lang === state.language ? "#f0f0f0" : "transparent" }}
             key={key}
-            onClick={() => {
-              setLanguage(lang);
-            }}
+            onClick={(e) => dispatch({ type: 'SET_LANGUAGE', payload: lang })}
           >
             <p>{lang}</p>
           </div>))}

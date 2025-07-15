@@ -17,5 +17,16 @@
   "navbar.usermanagement": "Benutzerverwaltung",
   "navbar.register": "Registrieren",
   "navbar.login": "Anmelden",
-  "navbar.home": "Startseite"
+  "navbar.home": "Startseite",
+  "contact.pageTitle": "EUMS - Kontakt",
+  "contact.pageDescription": "Kontaktieren Sie EU Made Simple hier",
+  "contact.thankYouTitle": "Vielen Dank!",
+  "contact.thankYouMessage": "Ihre Nachricht wurde erfolgreich gesendet. Wir melden uns in Kürze bei Ihnen.",
+  "contact.title": "KONTAKTIEREN SIE UNS",
+  "contact.nameLabel": "Ihr Name",
+  "contact.emailLabel": "Ihre E-Mail-Adresse",
+  "contact.subjectLabel": "Betreff",
+  "contact.messageLabel": "Ihre Nachricht",
+  "contact.errorMessage": "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+  "contact.submitButton": "Senden"
 }

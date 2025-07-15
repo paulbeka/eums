@@ -26,6 +26,7 @@ import { TermsAndConditions } from './pages/TermsAndConditions';
 import { AdminUserManagmentPage } from './pages/admin/AdminUserManagmentPage';
 import { EditProfile } from './pages/EditProfile';
 import i18n, { languageMap } from './i18n';
+import { useGlobalStore } from './store/GlobalStore';
 
 
 ReactGA.initialize("G-D8JV5H8HE7");
@@ -34,7 +35,8 @@ ReactGA.initialize("G-D8JV5H8HE7");
 function App() {
 
   const location = useLocation();
-  const [language, setLanguage] = useState<string>("English");
+  const { state } = useGlobalStore();
+  const { language } = state;
 
   useEffect(() => {
     const lng = languageMap[language];
@@ -51,7 +53,7 @@ function App() {
     <AuthProvider>
       <Routes>
         <Route path="/" element={<BasePage />} >
-          <Route index element={<Home language={language} setLanguage={setLanguage} />} />
+          <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           
           <Route path="contact" element={

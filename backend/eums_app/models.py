@@ -40,6 +40,7 @@ class Video(Base):
     url = Column(String, nullable=False)
     livestream = Column(Boolean, nullable=False)
     upload_date = Column(Date, nullable=False)
+    language = Column(String, nullable=True)
 
 
 article_tags = Table(

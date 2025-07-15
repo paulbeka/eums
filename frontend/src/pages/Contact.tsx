@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { useGoogleReCaptcha, GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { sendEmail } from "../components/api/Api";
 import { Helmet } from 'react-helmet-async';
 import "./CSS/Contact.css";
 import Loading from "../components/frontend_util/Loading";
-
+import { useTranslation } from "react-i18next";
 
 const Contact = () => {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
@@ -60,80 +61,82 @@ const Contact = () => {
   };
 
   if (isLoading && !isSubmitted) {
-    return (
-      <Loading />
-    )
+    return <Loading />;
   }
 
-  return (<>
-    <Helmet>
-      <title>EUMS - Contact</title>
-      <meta name="description" content="Contact EU Made Simple Here" />
-    </Helmet>
-    <div className="contact">
-      {isSubmitted ? (
-        <div className="thank-you-message">
-          <h2>Thank You!</h2>
-          <p>Your message has been successfully sent. We will get back to you soon.</p>
-        </div>
-      ) : (
-        <form className="contact-form" onSubmit={submitContact}>
-          <div className="contact-title-div">
-            <h2 className="contact-title">CONTACT US</h2>
+  return (
+    <>
+      <Helmet>
+        <title>{t("contact.pageTitle")}</title>
+        <meta name="description" content={t("contact.pageDescription")} />
+      </Helmet>
+      <div className="contact">
+        {isSubmitted ? (
+          <div className="thank-you-message">
+            <h2>{t("contact.thankYouTitle")}</h2>
+            <p>{t("contact.thankYouMessage")}</p>
           </div>
-          <div className="input-div">
-            <label htmlFor="name">Your Name</label>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="input-box"
-              type="text"
-              id="name"
-              required
-            />
-          </div>
-          <div className="input-div">
-            <label htmlFor="email">Your Email</label>
-            <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="input-box"
-              type="email"
-              id="email"
-              required
-            />
-          </div>
-          <div className="input-div">
-            <label htmlFor="subject">Subject</label>
-            <input
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              className="input-box"
-              type="text"
-              id="subject"
-              required
-            />
-          </div>
-          <div className="input-div">
-            <label htmlFor="message">Your Message</label>
-            <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="input-box"
-              id="message"
-              required
-            />
-          </div>
-          {error && (
-            <p style={{ color: "red" }}>
-              There has been an error. Please try again.
-            </p>
-          )}
-          <button type="submit" className="submit-btn">Submit</button>
-        </form>
-      )}
-    </div>
-  </>);
+        ) : (
+          <form className="contact-form" onSubmit={submitContact}>
+            <div className="contact-title-div">
+              <h2 className="contact-title">{t("contact.title")}</h2>
+            </div>
+            <div className="input-div">
+              <label htmlFor="name">{t("contact.nameLabel")}</label>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="input-box"
+                type="text"
+                id="name"
+                required
+              />
+            </div>
+            <div className="input-div">
+              <label htmlFor="email">{t("contact.emailLabel")}</label>
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="input-box"
+                type="email"
+                id="email"
+                required
+              />
+            </div>
+            <div className="input-div">
+              <label htmlFor="subject">{t("contact.subjectLabel")}</label>
+              <input
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                className="input-box"
+                type="text"
+                id="subject"
+                required
+              />
+            </div>
+            <div className="input-div">
+              <label htmlFor="message">{t("contact.messageLabel")}</label>
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="input-box"
+                id="message"
+                required
+              />
+            </div>
+            {error && (
+              <p style={{ color: "red" }}>
+                {t("contact.errorMessage")}
+              </p>
+            )}
+            <button type="submit" className="submit-btn">
+              {t("contact.submitButton")}
+            </button>
+          </form>
+        )}
+      </div>
+    </>
+  );
 };
 
 export default Contact;

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Query, Security
 
 from datetime import datetime
-from sqlalchemy import desc, union_all
+from sqlalchemy import desc, union_all, or_
 from sqlalchemy.orm import Session
 from typing import List, Union, Optional
 
@@ -18,6 +18,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
 @homePageRouter.get("/content")
 def get_all_content_endpoint(
+	language: str = "English",
 	skip: int = 0,
 	limit: int = 20,
 	db: Session = Depends(get_db),
@@ -29,7 +30,13 @@ def get_all_content_endpoint(
 	articles = articles_query.order_by(desc(Article.upload_date)).offset(skip).limit(limit).all()
 	
 	# Fetch videos
-	videos_query = db.query(Video)
+	videos_query = None
+	if language == 'English':
+		videos_query = db.query(Video).filter(
+			or_(Video.language == 'English', Video.language.is_(None))
+		)
+	else:
+		videos_query = db.query(Video).filter(Video.language == language)
 	videos = videos_query.order_by(desc(Video.upload_date)).offset(skip).limit(limit).all()
 
 	# Fetch social media posts

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { BASE_URL } from "../../Config";
-
+import { useGlobalStore } from '../../store/GlobalStore';
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -135,7 +135,11 @@ export const postArticleToAdminsApi = async (articleId: string) => {
 
 
 export const getVideos = async (livestreams: boolean) => {
-  return api.get(`/videos/?livestreams=${livestreams}`)
+  const { state } = useGlobalStore();
+
+  return api.get(`/videos/?livestreams=${livestreams}`
+    + `&language=${state.language}`
+  )
   .then(response => {
     if (response.status !== 200) {
       throw "Request failed! Contact an admin.";
@@ -148,8 +152,8 @@ export const getVideos = async (livestreams: boolean) => {
 }
 
 
-export const getFrontpageContent = async () => {
-  return api.get("/content")
+export const getFrontpageContent = async (language: string) => {
+  return api.get("/content?language=" + language)
   .then(response => {
     if (response.status !== 200) {
       throw "Request failed! Contact an admin.";
