@@ -12,15 +12,13 @@ BACKEND_URL = os.getenv("BACKEND_URL")
 API_KEY = os.getenv("API_KEY")
 INSTAGRAM_PASSWORD = os.getenv("INSTAGRAM_PASSWORD")
 
-ENGLISH_CHANNEL_ID = "UC8KFs307LrTkQCu-P1Fl6dw"
 
-
-def get_videos_from_channel():
+def get_videos_from_channel(channelId):
     youtube = build('youtube', 'v3', developerKey=API_KEY)
     
     request = youtube.channels().list(
         part='contentDetails',
-        id=ENGLISH_CHANNEL_ID
+        id=channelId
     )
     response = request.execute()
     uploads_playlist_id = response['items'][0]['contentDetails']['relatedPlaylists']['uploads']

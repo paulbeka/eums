@@ -285,7 +285,7 @@ def post_new_tag(tagName: str, db: Session = Depends(get_db), token: str = Depen
 @app.post("/videos/")
 def post_video_endpoint(payload: Dict[str, str], db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     return run_if_admin(token, db, create_video, 
-        payload["title"], payload["thumbnail"], payload["url"], payload["livestream"] == "true", payload["upload_date"])
+        payload["title"], payload["thumbnail"], payload["url"], payload["livestream"] == "true", payload["upload_date"], payload["language"])
 
 
 @app.delete("/videos/{videoId}")

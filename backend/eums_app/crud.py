@@ -237,10 +237,10 @@ def post_article_to_admins(article: Article, db: Session):
 
 ### VIDEOS ###
 
-def create_video(db: Session, title: str, thumbnail: str, url: str, livestream: str, upload_date: str):
+def create_video(db: Session, title: str, thumbnail: str, url: str, livestream: str, upload_date: str, language: str = None):
     parsed_date = datetime.strptime(upload_date, "%Y-%m-%dT%H:%M:%SZ")
     video = Video(title=title, thumbnail=thumbnail, 
-        url=url, livestream=livestream, upload_date=parsed_date)
+        url=url, livestream=livestream, upload_date=parsed_date, language=language)
     db.add(video)
     db.commit()
     db.refresh(video)
