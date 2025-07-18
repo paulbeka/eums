@@ -6,6 +6,7 @@ import { BrowserView, MobileView } from "react-device-detect";
 import { useAuth } from "../auth/AuthContext";
 import { getProfileName } from "../util_tools/Util";
 import { useTranslation } from "react-i18next";
+import path from "path";
 
 const NavBar: React.FC<{ 
   currentPage: string,
@@ -18,25 +19,26 @@ const NavBar: React.FC<{
   
   const navItems = isAuthenticated
   ? (isAdmin ? [
+      { path: '/', text: 'navbar.home' },
       { path: '/about', text: 'navbar.aboutus' },
-      { path: '/newsletter-signup', text: 'navbar.newsletter' },
       { path: '/contact', text: 'navbar.contact' },
+      { path: '/newsletter-signup', text: 'navbar.newsletter' },
       { path: '/article-manager', text: "navbar.managearticles" },
       { path: '/article-poster', text: 'navbar.postarticle' },
       { path: '/admin-user-management', text: 'navbar.usermanagement' }
     ] : [
+      { path: '/', text: 'navbar.home' },
       { path: '/about', text: 'navbar.aboutus' },
-      { path: '/newsletter-signup', text: 'navbar.newsletter' },
       { path: '/contact', text: 'navbar.contact' },
+      { path: '/newsletter-signup', text: 'navbar.newsletter' },
       { path: '/article-manager', text: "navbar.managearticles" },
       { path: '/article-poster', text: 'navbar.postarticle' }
     ])
   : [
+      { path: '/', text: 'navbar.home' },
       { path: '/about', text: 'navbar.aboutus' },
-      { path: '/newsletter-signup', text: 'navbar.newsletter' },
       { path: '/contact', text: 'navbar.contact' },
-      { path: '/register', text: 'navbar.register' },
-      { path: '/login', text: 'navbar.login' }
+      { path: '/newsletter-signup', text: 'navbar.newsletter' },
     ];
 
   const mobileHandleClick = (item: {path: string, text: string}) => {

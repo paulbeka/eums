@@ -34,6 +34,11 @@
     max-height: 450px;
   }
 
+  .video-post {
+    background: white!important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
   .home-post-insta {
     width: 100%;
     border-radius: 20px;

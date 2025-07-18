@@ -143,7 +143,7 @@ const Home = () => {
             } else if (item.type === "video") {
               item = item as Video;
               return (
-                <div key={index} className="home-post">
+                <div key={index} className="home-post video-post">
                   <Link target="_blank" to={item.url}>
                     <div className="video-cropper">
                       <img src={item.thumbnail} alt={item.title} className="home-video-thumbnail" />

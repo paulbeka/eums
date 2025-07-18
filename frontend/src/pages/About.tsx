@@ -22,7 +22,7 @@ const About = () => {
           </p>
         </div>
 
-        <hr style={{ width: "70%", margin: "3em auto" }} />
+        <hr style={{ width: "80%", margin: "3em auto" }} />
 
         <div className="team-container">
           <h1 style={{ textAlign: "center", fontSize: "30pt", marginBottom: "1em" }}>The EUMS Team</h1>
@@ -66,7 +66,7 @@ const About = () => {
             {listOfMembers.map(person => 
               <div className="member-container">
                 <div className="about-person-image">
-                  <img style={{ width: "100%", height: "auto" }} src={person.image} />
+                  <img style={{ width: "100%", height: "auto" }} src={person.image} alt={person.name} />
                 </div>
                 <div className="about-person-details-container">
                   <h3>{person.name}</h3>
