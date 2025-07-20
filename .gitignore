@@ -10,3 +10,6 @@ simple_bot/src/publisher/__pycache__/publisher.cpython-312.pyc
 simple_bot/src/transcriptions/__pycache__/transcriptions.cpython-312.pyc
 simple_bot/src/video_updater/__pycache__/video_updater.cpython-312.pyc
 simple_bot/venv/
+
+.vscode
+backend/.venv

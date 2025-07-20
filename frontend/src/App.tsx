@@ -25,6 +25,7 @@ import { NewsletterSignup } from './pages/NewsletterSignup';
 import { TermsAndConditions } from './pages/TermsAndConditions';
 import { AdminUserManagmentPage } from './pages/admin/AdminUserManagmentPage';
 import { EditProfile } from './pages/EditProfile';
+import RetriveProfile from './pages/RetriveProfile';
 
 
 ReactGA.initialize("G-D8JV5H8HE7");
@@ -61,6 +62,7 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="profile/:username" element={<Profile />} />
           <Route path="terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="retriveprofile" element={<RetriveProfile />} />
           
           <Route path="*" element={<PageNotFound />} />
 

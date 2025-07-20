@@ -58,6 +58,7 @@ const Login = () => {
         {error && <p style={{ color: "red", marginBottom: "1em" }}>{error}</p>}
         <button type="submit" className="submit-btn">Submit</button>
         <p className="click-to-register">No account? <u style={{ fontWeight: "bold" }}><Link to={"/register"}>Register</Link></u></p>
+        <p className="lost-account"><u style={{ fontWeight: "bold" }}><Link to={"/retriveprofile"}>Forgot your Password?</Link></u></p>
       </form>
     </div>
   </>);
