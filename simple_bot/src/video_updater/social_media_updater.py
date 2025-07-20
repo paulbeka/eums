@@ -22,7 +22,7 @@ def social_media_publish():
         try:
             L.login(USERNAME, PASSWORD)  # This may raise TwoFactorAuthRequiredException
         except TwoFactorAuthRequiredException:
-            two_factor_code = input("Two-factor authentication required. Enter 2FA code: ")
+            two_factor_code = int(input("Two-factor authentication required. Enter 2FA code: "))
             L.two_factor_login(two_factor_code)
 
         L.save_session_to_file(filename=SESSION_FILE)

@@ -152,19 +152,18 @@ export const getVideos = async (livestreams: boolean) => {
 }
 
 
-export const getFrontpageContent = async (language: string) => {
-  return api.get("/content?language=" + language)
-  .then(response => {
-    if (response.status !== 200) {
-      throw "Request failed! Contact an admin.";
-    }
-    return response.data;
-  })
-  .catch(err => {
-    throw err;
-  })
-}
-
+export const getFrontpageContent = async (language: string, offset = 0, limit = 20) => {
+  return api.get(`/content?language=${language}&skip=${offset}&limit=${limit}`)
+    .then(response => {
+      if (response.status !== 200) {
+        throw "Request failed! Contact an admin.";
+      }
+      return response.data;
+    })
+    .catch(err => {
+      throw err;
+    });
+};
 
 export const getTags = async () => {
   return api.get("/tags")

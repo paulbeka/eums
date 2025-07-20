@@ -10,6 +10,7 @@ import { getUserData } from "../components/api/Api";
 import { Link } from "react-router-dom";
 import "./CSS/BasePage.css";
 import { getProfileName } from "../components/util_tools/Util";
+import { ScrollToTop } from "../components/frontend_util/ScrollToTop";
 
 
 const BasePage = () => {
@@ -31,6 +32,7 @@ const BasePage = () => {
 
   return (
     <div className="main-container">
+      <ScrollToTop />
       <NavBar 
         currentPage={currentPage} 
         setCurrentPage={setCurrentPage}

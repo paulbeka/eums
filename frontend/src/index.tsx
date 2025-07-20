@@ -7,6 +7,9 @@ import { BrowserRouter } from 'react-router-dom';
 import './i18n';
 import { GlobalProvider } from './store/GlobalStore';
 
+if ('scrollRestoration' in window.history) {
+  window.history.scrollRestoration = 'manual';
+}
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

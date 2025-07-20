@@ -5,6 +5,17 @@ import listOfMembers from "./data/aboutList.json";
 
 
 const About = () => {
+
+  const mediaIcons = [
+    { icon: "/images/social_media_icons/youtube", link: "https://www.youtube.com/@EUMadeSimple/videos" },
+    { icon: "/images/social_media_icons/instagram", link: "https://www.instagram.com/eu_made_simple/" },
+    { icon: "/images/social_media_icons/discord", link: "https://discord.gg/jrzyVUjW" },
+    { icon: "/images/social_media_icons/patreon", link: "https://www.patreon.com/eumadesimple" },
+    { icon: "/images/social_media_icons/x", link: "https://x.com/EU_Made_Simple/" },
+    { icon: "/images/social_media_icons/tiktok", link: "https://www.tiktok.com/@eumadesimple" },
+    { icon: "/images/social_media_icons/linkedin", link: "https://www.linkedin.com/company/eumadesimple/" },
+    { icon: "/images/social_media_icons/spotify", link: "https://open.spotify.com/show/0Nb6smcVnEtmRI2IkRqP56" }  
+  ]
   
   return <>
     <Helmet>
@@ -20,12 +31,29 @@ const About = () => {
           <p style={{ textAlign: "center", fontSize: "16pt" }}>
             Our purpose? Delivering easy-to-digest, comprehensive, and easy-to-understand information about EU news and politics.
           </p>
+          <div className="media-icons-container">
+            {mediaIcons.map(icon => (
+              <a key={icon.link} href={icon.link} target="_blank" rel="noopener noreferrer" className="media-icon">
+                <img
+                  src={`${icon.icon}.svg`}
+                  onMouseOver={(event) => {
+                    const img = event.currentTarget as HTMLImageElement;
+                    img.src = `${icon.icon}-shadow.svg`;
+                  }}
+                  onMouseOut={(event) => {
+                    const img = event.currentTarget as HTMLImageElement;
+                    img.src = `${icon.icon}.svg`;
+                  }}
+                />
+              </a>
+            ))}
+          </div>
         </div>
 
-        <hr style={{ width: "80%", margin: "3em auto" }} />
+        <hr style={{ width: "90%", margin: "3em auto" }} />
 
         <div className="team-container">
-          <h1 style={{ textAlign: "center", fontSize: "30pt", marginBottom: "1em" }}>The EUMS Team</h1>
+          <h1 style={{ textAlign: "center", fontSize: "30pt" }}>The EUMS Team</h1>
           <div className="team-members-container">
             {listOfMembers.map((person, index) => (<>
               <div key={index} className={`member-container ${((index+1) % 2) === 0 ? 'align-right' : 'align-left'}`}>

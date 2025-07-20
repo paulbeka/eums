@@ -15,7 +15,6 @@ from fastapi.security import OAuth2PasswordBearer
 homePageRouter = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
-
 @homePageRouter.get("/content")
 def get_all_content_endpoint(
 	language: str = "English",
@@ -25,32 +24,28 @@ def get_all_content_endpoint(
 	public_only: bool = Query(True),
 	token: Optional[str] = Security(oauth2_scheme)
 ):
-	# Fetch posts/articles
+	# Fetch all relevant items from DB
 	articles_query = db.query(Article).filter(Article.editing_status == "public") if public_only else db.query(Article)
-	articles = articles_query.order_by(desc(Article.upload_date)).offset(skip).limit(limit).all()
-	
-	# Fetch videos
-	videos_query = None
+	videos_query = db.query(Video)
 	if language == 'English':
-		videos_query = db.query(Video).filter(
-			or_(Video.language == 'English', Video.language.is_(None))
-		)
+		videos_query = videos_query.filter(or_(Video.language == 'English', Video.language.is_(None)))
 	else:
-		videos_query = db.query(Video).filter(Video.language == language)
-	videos = videos_query.order_by(desc(Video.upload_date)).offset(skip).limit(limit).all()
-
-	# Fetch social media posts
+		videos_query = videos_query.filter(Video.language == language)
 	social_media_query = db.query(SocialMediaPost)
-	social_media_posts = social_media_query.order_by(desc(SocialMediaPost.upload_date)).offset(skip).limit(limit).all()
+
+	articles = articles_query.all()
+	videos = videos_query.all()
+	social_media_posts = social_media_query.all()
 
 	user_id = None
 	if token:
 		user = get_user_from_token(token, db)
 		if user:
 			user_id = user.id
-	
-	# Combine them
+
+	# Build unified content list
 	combined_content = []
+
 	for article in articles:
 		combined_content.append({
 			"id": article.id,
@@ -61,7 +56,7 @@ def get_all_content_endpoint(
 			"total_likes": db.query(Like).filter(Like.article_id == article.id).count(),
 			"user_has_liked": db.query(Like).filter_by(user_id=user_id, article_id=article.id).first() is not None if user_id else None
 		})
-	
+
 	for video in videos:
 		combined_content.append({
 			"id": video.id,
@@ -75,16 +70,22 @@ def get_all_content_endpoint(
 	for media_post in social_media_posts:
 		combined_content.append({
 			"id": media_post.id,
-			"type": "social_media",
+			"type": "instagram",
 			"url": media_post.url,
 			"upload_date": media_post.upload_date,
 			"thumbnail": media_post.thumbnail
 		})
-	
-	# Sort everything by created_at descending
 
+	# Sort by upload date descending
 	combined_content.sort(
 		key=lambda x: dt.combine(x["upload_date"], dt.min.time()) if isinstance(x["upload_date"], date) and not isinstance(x["upload_date"], dt) else x["upload_date"],
 		reverse=True
 	)
-	return combined_content
+
+	# Return empty list if skip is beyond range
+	if skip >= len(combined_content):
+		return []
+
+	# Apply pagination
+	paginated = combined_content[skip:skip + limit]
+	return paginated

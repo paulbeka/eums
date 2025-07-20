@@ -30,7 +30,7 @@ def main():
         ai_generator()
     elif args.command == "publish":
         publish_ai_content()
-    elif args.command == "social_media_publish":
+    elif args.command == "populate_instagram":
         social_media_publish()
     elif args.command == "publish_missing_videos":
         transcripts = get_transcriptions_pipeline()

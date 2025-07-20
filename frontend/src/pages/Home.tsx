@@ -15,7 +15,6 @@ import { InstagramEmbed } from 'react-social-media-embed';
 import { useTranslation } from 'react-i18next';
 import { useGlobalStore } from '../store/GlobalStore';
 
-
 const Home = () => {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuth();
@@ -31,7 +30,10 @@ const Home = () => {
 
   const [contentError, setContentError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
+  const BATCH_SIZE = 20;
   const adsPresent = true;
 
   const clickLike = (articleId: number) => {
@@ -57,24 +59,64 @@ const Home = () => {
     }).catch((err) => {
       console.error("Error liking article:", err);
     });
-  }
+  };
+
+  const loadMoreContent = async () => {
+    setLoading(true);
+    try {
+      const res = await getFrontpageContent(state.language, offset, BATCH_SIZE);
+      const newContent = offset === 0 ? [{ type: "instagram" }, ...res] : res;
+
+      const combined = [...content, ...newContent];
+      setContent(combined);
+
+      const filtered = filter === "all"
+        ? combined
+        : combined.filter(c => c.type === filter.toLowerCase());
+      setVisibleContent(filtered);
+
+      setOffset(prev => prev + BATCH_SIZE);
+      if (res.length < BATCH_SIZE) setHasMore(false);
+      setContentError(false);
+    } catch (err) {
+      console.error(err);
+      setContentError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    setLoading(true);
-    getFrontpageContent(state.language).then(res => {
-      setContent([{ type: "instagram" }, ...res]);
-      setVisibleContent([{ type: "instagram" }, ...res]);
-      setContentError(false);
-      setLoading(false);
-    })
-      .catch((err) => {
-        setContentError(true)
-        setLoading(false);
-      });
+    setOffset(0);
+    setHasMore(true);
+    setContent([]);
+    setVisibleContent([]);
+    loadMoreContent();
   }, [state.language]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollHeight = document.documentElement.scrollHeight;
+      const currentScroll = window.innerHeight + window.scrollY;
+      if (currentScroll + 100 >= scrollHeight && !loading && hasMore) {
+        loadMoreContent();
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [loading, hasMore, offset, filter]);
+
+  const applyFilter = (item: string) => {
+    setFilter(item);
+    if (item === "all") {
+      setVisibleContent(content);
+    } else {
+      const filtered = content.filter(c => c.type === item.toLowerCase());
+      setVisibleContent(filtered);
+    }
+  };
+
   if (contentError) return <ErrorLoading />;
-  if (loading) return <Loading />;
 
   return (<>
     <Helmet>
@@ -86,97 +128,77 @@ const Home = () => {
         <div className="home-sidebar">
           <h3 style={{ margin: "0.5em 0", padding: "0.5em 0.5em" }}>{t('home.sortBy')}</h3>
           {filterOptions.map((item, key) => (
-            <div className="filter-option" key={key} onClick={() => {
-              setFilter(item);
-              if (filter === item && item !== "all") {
-                setVisibleContent(content);
-                setFilter("all");
-              } else if (item === "all") {
-                setVisibleContent(content);
-              } else {
-                setVisibleContent([...content.filter(c => c.type === item.toLowerCase())]);
-              }
-            }} style={{ backgroundColor: item === filter ? "#f0f0f0" : "transparent" }}>
+            <div className="filter-option" key={key} onClick={() => applyFilter(item)}
+              style={{ backgroundColor: item === filter ? "#f0f0f0" : "transparent" }}>
               <p>{t(`filter.${item}`)}</p>
             </div>
           ))}
           <h3 style={{ margin: "0.5em 0", padding: "0.5em 0.5em" }}>{t('home.language')}</h3>
-          {Languages.map((lang, key) => (<div className="filter-option"
-            style={{ backgroundColor: lang === state.language ? "#f0f0f0" : "transparent" }}
-            key={key}
-            onClick={(e) => dispatch({ type: 'SET_LANGUAGE', payload: lang })}
-          >
-            <p>{lang}</p>
-          </div>))}
+          {Languages.map((lang, key) => (
+            <div className="filter-option"
+              style={{ backgroundColor: lang === state.language ? "#f0f0f0" : "transparent" }}
+              key={key}
+              onClick={() => dispatch({ type: 'SET_LANGUAGE', payload: lang })}>
+              <p>{lang}</p>
+            </div>
+          ))}
         </div>
+
         <div className="post-content">
           {visibleContent.map((item, index) => {
             if (item.type === "article") {
-              item = item as Article;
+              const article = item as Article;
               return (
                 <div key={index} className="home-post">
-                  <Link to={`/article/${item.id}`}>
-                    <img src={`${BASE_URL}/thumbnails/${item.thumbnail}`} alt={item.title} className="home-article-thumbnail" />
+                  <Link to={`/article/${article.id}`}>
+                    <img src={`${BASE_URL}/thumbnails/${article.thumbnail}`} alt={article.title} className="home-article-thumbnail" />
                   </Link>
-
                   <div className="home-article-title">
-                    <Link to={`/article/${item.id}`}><h3>{item.title}</h3></Link>
+                    <Link to={`/article/${article.id}`}><h3>{article.title}</h3></Link>
                     <div style={{ display: "flex", alignItems: "center", zIndex: 5 }}>
-                      {item?.user_has_liked ? (
-                        <AiFillLike
-                          size={35}
-                          style={{ marginRight: "0.5em", cursor: "pointer" }}
-                          onClick={() => clickLike((item as Article).id)}
-                        />
+                      {article.user_has_liked ? (
+                        <AiFillLike size={35} style={{ marginRight: "0.5em", cursor: "pointer" }} onClick={() => clickLike(article.id)} />
                       ) : (
-                        <AiOutlineLike
-                          size={35}
-                          style={{ marginRight: "0.5em", cursor: "pointer" }}
-                          onClick={() => clickLike((item as Article).id)}
-                        />
+                        <AiOutlineLike size={35} style={{ marginRight: "0.5em", cursor: "pointer" }} onClick={() => clickLike(article.id)} />
                       )}
-                      <span style={{ marginTop: "5px" }}>{item.total_likes}</span>
+                      <span style={{ marginTop: "5px" }}>{article.total_likes}</span>
                     </div>
                   </div>
                 </div>
               );
             } else if (item.type === "video") {
-              item = item as Video;
+              const video = item as Video;
               return (
                 <div key={index} className="home-post video-post">
-                  <Link target="_blank" to={item.url}>
+                  <Link target="_blank" to={video.url}>
                     <div className="video-cropper">
-                      <img src={item.thumbnail} alt={item.title} className="home-video-thumbnail" />
+                      <img src={video.thumbnail} alt={video.title} className="home-video-thumbnail" />
                     </div>
-                    <h2 className="video-thumbnail-title">{item.title}</h2>
+                    <h2 className="video-thumbnail-title">{video.title}</h2>
                   </Link>
                 </div>
               );
             } else if (item.type === "instagram") {
               return (
                 <div key={index} className="home-post-insta">
-                  <InstagramEmbed
-                    url='https://www.instagram.com/p/DLCOsQzIhmJ/'
-                  />
+                  <InstagramEmbed url='https://www.instagram.com/p/DLCOsQzIhmJ/' />
                 </div>
               );
             }
           })}
+          <Loading />
         </div>
+
         <div className="home-sidebar">
-          {content.filter(val => val.type === "article").sort((a, b) => {
-            return (b as Article).total_likes - (a as Article).total_likes;
-          })
-            .slice(0, 5).map((item, index) => {
-              item = item as Article;
-              return (
-                <Link key={index} to={`/article/${item.id}`} className="home-sidebar-article-title">
-                  <span>{item.title}</span>
-                  <span>{t('likes', { count: item.total_likes })}</span>
-                </Link>
-              );
-            })
-          }
+          {content.filter(val => val.type === "article").sort((a, b) => (b as Article).total_likes - (a as Article).total_likes).slice(0, 5).map((item, index) => {
+            const article = item as Article;
+            return (
+              <Link key={index} to={`/article/${article.id}`} className="home-sidebar-article-title">
+                <span>{article.title}</span>
+                <span>{t('likes', { count: article.total_likes })}</span>
+              </Link>
+            );
+          })}
         </div>
         {adsPresent && <div className="ad-slot"></div>}
       </div>
@@ -188,55 +210,46 @@ const Home = () => {
         <div className="mobile-feed-content">
           {visibleContent.map((item, index) => {
             if (item.type === "article") {
-              item = item as Article;
+              const article = item as Article;
               return (
                 <div key={index} className="home-mobile-post">
-                  <Link to={`/article/${item.id}`} className="mobile-post-article-thumbnail">
-                    <img src={`${BASE_URL}/thumbnails/${item.thumbnail}`} alt={item.title} className="home-mobile-article-thumbnail" />
+                  <Link to={`/article/${article.id}`} className="mobile-post-article-thumbnail">
+                    <img src={`${BASE_URL}/thumbnails/${article.thumbnail}`} alt={article.title} className="home-mobile-article-thumbnail" />
                   </Link>
                   <div className="home-mobile-article-title">
-                    <Link to={`/article/${item.id}`}><h3>{item.title}</h3></Link>
+                    <Link to={`/article/${article.id}`}><h3>{article.title}</h3></Link>
                     <div style={{ display: "flex", alignItems: "center", zIndex: 5 }}>
-                      {item?.user_has_liked ? (
-                        <AiFillLike
-                          size={35}
-                          style={{ marginRight: "0.5em", cursor: "pointer" }}
-                          onClick={() => clickLike((item as Article).id)}
-                        />
+                      {article.user_has_liked ? (
+                        <AiFillLike size={35} style={{ marginRight: "0.5em", cursor: "pointer" }} onClick={() => clickLike(article.id)} />
                       ) : (
-                        <AiOutlineLike
-                          size={35}
-                          style={{ marginRight: "0.5em", cursor: "pointer" }}
-                          onClick={() => clickLike((item as Article).id)}
-                        />
+                        <AiOutlineLike size={35} style={{ marginRight: "0.5em", cursor: "pointer" }} onClick={() => clickLike(article.id)} />
                       )}
-                      <span style={{ marginTop: "5px" }}>{item.total_likes}</span>
+                      <span style={{ marginTop: "5px" }}>{article.total_likes}</span>
                     </div>
                   </div>
                 </div>
               );
             } else if (item.type === "video") {
-              item = item as Video;
+              const video = item as Video;
               return (
                 <div key={index} className="home-mobile-post">
-                  <Link target="_blank" to={item.url}>
+                  <Link target="_blank" to={video.url}>
                     <div className="video-cropper">
-                      <img src={item.thumbnail} alt={item.title} className="home-mobile-video-thumbnail" />
+                      <img src={video.thumbnail} alt={video.title} className="home-mobile-video-thumbnail" />
                     </div>
-                    <h2 className="video-thumbnail-title">{item.title}</h2>
+                    <h2 className="video-thumbnail-title">{video.title}</h2>
                   </Link>
                 </div>
               );
             } else if (item.type === "instagram") {
               return (
                 <div key={index} className="home-post-insta">
-                  <InstagramEmbed
-                    url='https://www.instagram.com/p/DLCOsQzIhmJ/'
-                  />
+                  <InstagramEmbed url='https://www.instagram.com/p/DLCOsQzIhmJ/' />
                 </div>
               );
             }
           })}
+          <Loading />
         </div>
       </div>
     </MobileView>
