@@ -194,7 +194,7 @@ const Home = () => {
             const article = item as Article;
             return (
               <Link key={index} to={`/article/${article.id}`} className="home-sidebar-article-title">
-                <span>{article.title}</span>
+                <span title={article.title} className="truncated-title">{article.title}</span>
                 <span>{t('likes', { count: article.total_likes })}</span>
               </Link>
             );

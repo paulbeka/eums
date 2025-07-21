@@ -1,16 +1,18 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";  // assuming react-i18next
 import "./CSS/NewsletterSignup.css";
 import { BrowserView, MobileView } from "react-device-detect";
 import api from "../components/api/Api";
 
 export const NewsletterSignup = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
   const registerUser = async () => {
     if (email.trim() === "") {
-      setMessage("Please enter a valid email address.");
+      setMessage(t("newsletter.error.invalidEmail"));
       return;
     }
 
@@ -21,13 +23,13 @@ export const NewsletterSignup = () => {
       const response = await api.post("/newsletter-subscribe", { email });
 
       if (response.status === 200 || response.status === 201) {
-        setMessage("Subscription successful! Check your inbox.");
+        setMessage(t("newsletter.success"));
         setEmail("");
       } else {
-        setMessage("Subscription failed. Please try again.");
+        setMessage(t("newsletter.failure"));
       }
     } catch (error: any) {
-      setMessage(error.response?.data?.detail || "An error occurred. Try again.");
+      setMessage(error.response?.data?.detail || t("newsletter.error.generic"));
     } finally {
       setLoading(false);
     }
@@ -37,8 +39,8 @@ export const NewsletterSignup = () => {
     <>
       <BrowserView>
         <div className="newsletter-signup-container">
-          <h1 className="newsletter-title">EU Made Simple Newspaper</h1>
-          <p className="newsletter-description">Stay informed with our latest updates!</p>
+          <h1 className="newsletter-title">{t("newsletter.title")}</h1>
+          <p className="newsletter-description">{t("newsletter.description")}</p>
           <div className="newsletter-form">
             <input
               id="email"
@@ -46,7 +48,7 @@ export const NewsletterSignup = () => {
               className="newsletter-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              placeholder={t("newsletter.emailPlaceholder")}
               disabled={loading}
             />
             <button 
@@ -54,7 +56,9 @@ export const NewsletterSignup = () => {
               onClick={registerUser}
               disabled={loading}
             >
-              <h3 style={{ padding: "0.5em 1em" }}>{loading ? "Signing Up..." : "Sign Up Now!"}</h3>
+              <h3 style={{ padding: "0.5em 1em" }}>
+                {loading ? t("newsletter.button.loading") : t("newsletter.button.default")}
+              </h3>
             </button>
           </div>
           {message && <p className="newsletter-message">{message}</p>}
@@ -63,8 +67,8 @@ export const NewsletterSignup = () => {
 
       <MobileView style={{ height: "100vh", display: "flex" }}>
         <div className="newsletter-mobile-signup-container">
-          <h1 className="newsletter-title">EU Made Simple Newspaper</h1>
-          <p className="newsletter-description">Stay informed with our latest updates!</p>
+          <h1 className="newsletter-title">{t("newsletter.title")}</h1>
+          <p className="newsletter-description">{t("newsletter.description")}</p>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <input
               id="email"
@@ -72,7 +76,7 @@ export const NewsletterSignup = () => {
               className="newsletter-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              placeholder={t("newsletter.emailPlaceholder")}
               style={{ width: "100%", marginBottom: "1em" }}
               disabled={loading}
             />
@@ -82,7 +86,9 @@ export const NewsletterSignup = () => {
               style={{ textAlign: "center" }}
               disabled={loading}
             >
-              <h3 style={{ padding: "0.5em 1em", width: "100%" }}>{loading ? "Signing Up..." : "Sign Up Now!"}</h3>
+              <h3 style={{ padding: "0.5em 1em", width: "100%" }}>
+                {loading ? t("newsletter.button.loading") : t("newsletter.button.default")}
+              </h3>
             </button>
           </div>
           {message && <p className="newsletter-message">{message}</p>}

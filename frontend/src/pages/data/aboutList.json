@@ -1,29 +1,29 @@
 [
   {
-    "name": "Lambertus Robben", 
-    "role": "Founder & CEO", 
-    "description": "I’m 36, from the Netherlands, living in Germany, and I started the EUMS brand to help people understand the EU better after Brexit showed me how little most of us really know about it.", 
+    "name": "Lambertus Robben",
+    "role": "team.lambertus.role",
+    "description": "team.lambertus.description",
     "image": "images/profile_pictures/lambertus.png",
     "email": "lrobben@eumadesimple.eu"
   },
   {
-    "name": "Elliot Baudeweyns", 
-    "role": "Head of Livestreams", 
-    "description": "Hey! I'm Elliot — a Dutch student in Poland with a passion for politics, international relations, and digital spaces, working at EU Made Simple to strengthen informed democracies by interviewing experts, connecting like-minded groups, and representing the platform beyond its videos.",
+    "name": "Elliot Baudeweyns",
+    "role": "team.elliot.role",
+    "description": "team.elliot.description",
     "image": "images/profile_pictures/elliot.jpg",
     "email": "ebaudeweyns@eumadesimple.eu"
   },
   {
-    "name": "Paul Bekaert", 
-    "role": "Head of French Channel", 
-    "description": "I’m 22, from France, and I am European. I really got into EU politics after the Russian invasion of Ukraine, and since then, I’ve been dedicated to making European politics more accessible.", 
+    "name": "Paul Bekaert",
+    "role": "team.paul.role",
+    "description": "team.paul.description",
     "image": "images/profile_pictures/paul.jpg",
     "email": "pbekaert@eumadesimple.eu"
   },
   {
-    "name": "Jonathan Reinders", 
-    "role": "Head of German Channel", 
-    "description": "Hi! I'm Jonathan from Munich — a Spanish-socialized German with Austrian humor, living in Italy, looking like a Swede, loving the Balkans, passionate about languages, sports, and storytelling, and working at EUMS to explore the 450 million lives across 27 countries that make up Europe.",
+    "name": "Jonathan Reinders",
+    "role": "team.jonathan.role",
+    "description": "team.jonathan.description",
     "image": "images/profile_pictures/jonathan.jpg",
     "email": "jreinders@eumadesimple.eu"
   }

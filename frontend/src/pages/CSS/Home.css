@@ -101,6 +101,14 @@
     margin: 5px 0;
   }
 
+  .truncated-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    max-width: 75%;
+  }
+
 /* 
   .ad-slot {
     width: 100%;

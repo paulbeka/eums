@@ -77,31 +77,57 @@
     margin-top: 1em;
     max-width: 750px;
   }
+
+  .subchannel-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 1em;
+    width: 80%;
+    margin: 0.5em auto;
+  }
+
+  .subchannel-item {
+    display: flex;
+    min-width: 30%;
+    padding: 2em;
+    background: white;
+    border-radius: 20px;
+    margin: 0.5em;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .subchannel-item:hover {
+    transform: scale(1.01);
+    transition: transform 0.1s ease-in-out;
+  }
+
+  .subchannel-logo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 1em;
+  }
 }
 
 /* PHONE CONTENT */
 
 .mobile-about-container {
   padding: 1em;
-
-  .about-text-explainers {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .about-text-explainer {
-    margin: 0;
-    margin-bottom: 2em;
-  }
+  margin-top: 2em;
 
   .team-members-container {
-    margin: 0;
+    margin: 0 auto;
     display: flex;
+    justify-content: center;
+    flex-direction: column;
   }
 
   .member-container {
     width: 90%;
-    margin: 0;
+    margin: 0 auto;
     margin-bottom: 2em;
     display: flex;
     flex-direction: column;
@@ -115,6 +141,31 @@
 
   .about-person-details-container {
     width: 90%;
+  }
+
+  .subchannel-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+  }
+
+  .subchannel-item {
+    display: flex;
+    flex-direction: column;
+    width: 45%;
+    text-align: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: white;
+    border-radius: 20px;
+    margin: 1em auto;
+    padding: 1em;
+  }
+
+  .subchannel-logo {
+    width: 80%;
+    border-radius: 50%;
+    margin-bottom: 1em;
   }
 }
 
