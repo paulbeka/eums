@@ -82,10 +82,6 @@ def get_all_content_endpoint(
 		reverse=True
 	)
 
-	# Return empty list if skip is beyond range
-	if skip >= len(combined_content):
-		return []
-
 	# Apply pagination
 	paginated = combined_content[skip:skip + limit]
 	return paginated

@@ -14,6 +14,7 @@ import { useAuth } from '../components/auth/AuthContext';
 import { InstagramEmbed } from 'react-social-media-embed';
 import { useTranslation } from 'react-i18next';
 import { useGlobalStore } from '../store/GlobalStore';
+import { YouTubeThumbnail } from '../components/frontend_util/YoutubeThumbnail';
 
 const Home = () => {
   const { t } = useTranslation();
@@ -138,7 +139,13 @@ const Home = () => {
             <div className="filter-option"
               style={{ backgroundColor: lang === state.language ? "#f0f0f0" : "transparent" }}
               key={key}
-              onClick={() => dispatch({ type: 'SET_LANGUAGE', payload: lang })}>
+              onClick={() => {
+                if (lang === state.language) return;
+                setContent([]);
+                setOffset(0);
+                setHasMore(true);
+                dispatch({ type: 'SET_LANGUAGE', payload: lang })
+              }}>
               <p>{lang}</p>
             </div>
           ))}
@@ -171,9 +178,7 @@ const Home = () => {
               return (
                 <div key={index} className="home-post video-post">
                   <Link target="_blank" to={video.url}>
-                    <div className="video-cropper">
-                      <img src={video.thumbnail} alt={video.title} className="home-video-thumbnail" />
-                    </div>
+                    <YouTubeThumbnail videoId={video.url.split("=")[1]} title={video.title} className="home-video-thumbnail" />
                     <h2 className="video-thumbnail-title">{video.title}</h2>
                   </Link>
                 </div>
@@ -234,9 +239,7 @@ const Home = () => {
               return (
                 <div key={index} className="home-mobile-post">
                   <Link target="_blank" to={video.url}>
-                    <div className="video-cropper">
-                      <img src={video.thumbnail} alt={video.title} className="home-mobile-video-thumbnail" />
-                    </div>
+                    <YouTubeThumbnail videoId={video.url.split("=")[1]} title={video.title} className="home-video-thumbnail" />
                     <h2 className="video-thumbnail-title">{video.title}</h2>
                   </Link>
                 </div>
