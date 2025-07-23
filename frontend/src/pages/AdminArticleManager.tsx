@@ -3,17 +3,29 @@ import { getArticles, deleteArticle, changeVisibility } from "../components/api/
 import { Link } from "react-router-dom";
 import { Article } from "../components/types/Content.type";
 import { FaRegPenToSquare, FaRegTrashCan } from "react-icons/fa6";
-import "./CSS/ArticleManager.css";
 import ArticleVisibility from "../components/frontend_util/ArticleVisibility";
+import { useAuth } from "../components/auth/AuthContext";
+import { fetchArticlesPostedByUser } from "../components/api/Api";
+import { postArticleToAdminsApi } from "../components/api/Api";
+import "./CSS/ArticleManager.css";
+
 
 const AdminArticleManager = () => {
+  const { isAdmin, userId } = useAuth();
   const [articles, setArticles] = useState<Article[]>([]);
-  const [changedArticles, setChangedArticles] = useState<Record<number, boolean>>({});
-
+  const [changedArticles, setChangedArticles] = useState<Record<number, string>>({});
 
   const fetchArticles = async () => {
     try {
-      const fetchedArticles = await getArticles(false, 100);
+      let fetchedArticles;
+      if (isAdmin && userId !== null) {
+        fetchedArticles = await getArticles(false, 100);
+      } else {
+        fetchedArticles = await fetchArticlesPostedByUser(userId!, false);
+      }
+      if (fetchedArticles === null) {
+        throw new Error("Failed to fetch articles");
+      }
       setArticles(fetchedArticles);
     } catch (error) {
       console.error("Error fetching articles:", error);
@@ -39,7 +51,7 @@ const AdminArticleManager = () => {
 
 
   const handleVisibilityChange = (articleId: number, visibility: string) => {
-    setChangedArticles((prev) => ({ ...prev, [articleId]: visibility === "public" }));
+    setChangedArticles((prev) => ({ ...prev, [articleId]: visibility }));
   };
 
 
@@ -47,8 +59,8 @@ const AdminArticleManager = () => {
     try {
       changeVisibility(changedArticles)
       .then(res => {
-        alert("Changes saved successfully!");
         setChangedArticles({});
+        alert("Changes saved successfully!");
         fetchArticles();
       })
       .catch(err => alert(err));
@@ -58,11 +70,20 @@ const AdminArticleManager = () => {
     }
   };
 
+  const postArticleToAdmins = (article: Article) => {
+    postArticleToAdminsApi(article.id.toString()).then(res => {
+      setChangedArticles({});
+      alert("Article posted to admins successfully!");
+      fetchArticles();
+    })
+    .catch(err => alert(err));
+  }
 
   useEffect(() => {
     fetchArticles();
-  }, []);
+  }, [isAdmin, userId]);
 
+  console.log(articles);
 
   return (
     <div className="article-manager">
@@ -73,10 +94,20 @@ const AdminArticleManager = () => {
             <div className="article-div" key={article.id}>
               <Link to={`/article/${article.id}`}>{article.title}</Link>
               <div className="article-button-container">
+                {!isAdmin && article.editing_status === "private" &&
+                <div className="post-to-admin-button" onClick={() => postArticleToAdmins(article)}>
+                  <p>Click here to post to Admins</p>
+                </div>}
+                {isAdmin && 
+                  <div style={{ marginRight: "1em"}}>
+                    <Link to={`/profile/${article.author?.username}`}>Posted by: <u>{article.author?.username}</u></Link>
+                  </div>
+                }
                 <ArticleVisibility
                   article={article}
                   onVisibilityChange={handleVisibilityChange}
                 />
+                {(isAdmin || article.editing_status === "private") && <>
                 <Link to={`edit/${article.id}`}>
                   <FaRegPenToSquare />
                 </Link>
@@ -85,7 +116,7 @@ const AdminArticleManager = () => {
                   onClick={() => handleDelete(article.id)}
                 >
                   <FaRegTrashCan />
-                </div>
+                </div></>}
               </div>
             </div>
           ))}

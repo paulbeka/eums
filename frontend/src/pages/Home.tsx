@@ -1,314 +1,261 @@
 import { useState, useEffect } from 'react';
 import "./CSS/Home.css";
 import { Video, Article } from '../components/types/Content.type';
-import { Link } from 'react-router-dom';
-import { getArticles, getVideos } from '../components/api/Api';
+import { Link, useNavigate } from 'react-router-dom';
+import { getFrontpageContent } from '../components/api/Api';
 import { BASE_URL } from "../Config";
 import { BrowserView, MobileView } from "react-device-detect";
 import Loading from '../components/frontend_util/Loading';
 import ErrorLoading from '../components/frontend_util/ErrorLoading';
 import { Helmet } from 'react-helmet-async';
-import { formatArticleContent } from "../components/util_tools/Util";
-
+import { likeArticle } from '../components/util_tools/UserActions';
+import { AiFillLike, AiOutlineLike } from "react-icons/ai";
+import { useAuth } from '../components/auth/AuthContext';
+import { InstagramEmbed } from 'react-social-media-embed';
+import { useTranslation } from 'react-i18next';
+import { useGlobalStore } from '../store/GlobalStore';
+import { YouTubeThumbnail } from '../components/frontend_util/YoutubeThumbnail';
 
 const Home = () => {
+  const { t } = useTranslation();
+  const { isAuthenticated } = useAuth();
+  const { state, dispatch } = useGlobalStore();
+  const navigate = useNavigate();
 
-  const N_VIDEOS = 4;
+  const [content, setContent] = useState<(Article | Video)[]>([]);
+  const [visibleContent, setVisibleContent] = useState<(Article | Video)[]>([]);
 
-  const [videos, setVideos] = useState<Video[]>([]);
-  const [interviews, setInterviews] = useState<Video[]>([]);
-  const [articles, setArticles] = useState<Article[]>([]);
+  const filterOptions = ["all", "article", "video", "instagram"];
+  const [filter, setFilter] = useState("all");
+  const Languages = ["English", "French", "German"];
 
-  const [videoError, setVideoError] = useState(false);
-  const [interviewError, setInterviewError] = useState(false);
-  const [articleError, setArticleError] = useState(false);
+  const [contentError, setContentError] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
-  const mediaIcons = [
-    { icon: "/images/social_media_icons/youtube", link: "https://www.youtube.com/@EUMadeSimple/videos" },
-    { icon: "/images/social_media_icons/instagram", link: "https://www.instagram.com/eu_made_simple/" },
-    { icon: "/images/social_media_icons/discord", link: "https://discord.gg/jrzyVUjW" },
-    { icon: "/images/social_media_icons/patreon", link: "https://www.patreon.com/eumadesimple" },
-    { icon: "/images/social_media_icons/x", link: "https://x.com/EU_Made_Simple/" },
-    { icon: "/images/social_media_icons/tiktok", link: "https://www.tiktok.com/@eumadesimple" },
-    { icon: "/images/social_media_icons/linkedin", link: "https://www.linkedin.com/company/eumadesimple/" },
-    { icon: "/images/social_media_icons/spotify", link: "https://open.spotify.com/show/0Nb6smcVnEtmRI2IkRqP56" }  
-  ]
+  const BATCH_SIZE = 20;
+  const adsPresent = true;
+
+  const clickLike = (articleId: number) => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    likeArticle(articleId).then((data) => {
+      setVisibleContent(prev =>
+        prev.map(item => {
+          if (item.type !== "article") return item;
+          item = item as Article;
+          if (item.id === articleId) {
+            return {
+              ...item,
+              total_likes: item.total_likes + (data.like ? 1 : -1),
+              user_has_liked: data.like
+            } as Article;
+          }
+          return item;
+        })
+      );
+    }).catch((err) => {
+      console.error("Error liking article:", err);
+    });
+  };
+
+  const loadMoreContent = async () => {
+    setLoading(true);
+    try {
+      const res = await getFrontpageContent(state.language, offset, BATCH_SIZE);
+      const newContent = offset === 0 ? [...res] : res;
+
+      const combined = [...content, ...newContent];
+      setContent(combined);
+
+      const filtered = filter === "all"
+        ? combined
+        : combined.filter(c => c.type === filter.toLowerCase());
+      setVisibleContent(filtered);
+
+      setOffset(prev => prev + BATCH_SIZE);
+      if (res.length < BATCH_SIZE) setHasMore(false);
+      setContentError(false);
+    } catch (err) {
+      console.error(err);
+      setContentError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    getArticles(true).then(res => {
-      setArticles([...res].sort((a, b) => b.id - a.id));
-      setArticleError(false);
-    })
-    .catch((err) => setArticleError(true)); 
-    getVideos(false).then(res => {
-      setVideos(res);
-      setVideoError(false);
-    })
-    .catch((err) => setVideoError(true));
-    getVideos(true).then(res => {
-      setInterviews(res);
-      setInterviewError(false)
-    })
-    .catch((err) => setInterviewError(true));
-  }, []);
+    setOffset(0);
+    setHasMore(true);
+    setContent([]);
+    setVisibleContent([]);
+    loadMoreContent();
+  }, [state.language]);
 
-  const getArticleParagraphs = (article: Article) => {
-    const blockList = article.content.split("\\n")
-      .filter(item => item !== "");
-    if (blockList.length > 1) {
-      return (
-        <div className="main-article-paragraph-containers">
-          <p className="main-article-paragraph">{formatArticleContent(blockList[0])}</p>
-          <p className="main-article-paragraph">{formatArticleContent(blockList[1])}</p>
-        </div>
-      )
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollHeight = document.documentElement.scrollHeight;
+      const currentScroll = window.innerHeight + window.scrollY;
+      if (currentScroll + 100 >= scrollHeight && !loading && hasMore) {
+        loadMoreContent();
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [loading, hasMore, offset, filter]);
+
+  const applyFilter = (item: string) => {
+    setFilter(item);
+    if (item === "all") {
+      setVisibleContent(content);
     } else {
-      return <><br /></>
+      const filtered = content.filter(c => c.type === item.toLowerCase());
+      setVisibleContent(filtered);
     }
-  }
+  };
+
+  if (contentError) return <ErrorLoading />;
 
   return (<>
     <Helmet>
-      <title>EUMS - Home</title>
-      <meta name="description" content="The EUMS Home page." />
+      <title>{t('home.title')}</title>
+      <meta name="description" content={t('home.description')} />
     </Helmet>
     <BrowserView>
-    <div className="home">
-      <div className="top-bar-options">
-        <div className="video-options">
-          <div style={{display: "flex"}}>
-            <p className="toolbar-title">Videos</p>
-          </div>
-          <Link to={"all-videos"} className="hot-topics-button">
-            <p style={{ padding: "0 1em" }}>See all</p>
-          </Link>
-        </div>
-        <div className="article-options">
-          <div style={{display: "flex"}}>
-            <p className="toolbar-title">Hot topics</p>
-          </div>
-          <Link to={"all-articles"} className="hot-topics-button">
-            <p style={{ padding: "0 1em" }}>See all</p>
-          </Link>
-        </div>
-      </div>
-      <div className="top-home-content">
-        <div className="video-container eums-box-shadow">
-          {videos.length ? <>
-          {videos.slice(0, N_VIDEOS).map(video => 
-            <Link to={video.url} target="_blank" className="video-item">
-              <div className="video-thumbnail-container">
-                <img src={video.thumbnail} className="video-thumbnail"/>
-              </div>
-              <p style={{
-                  width: "90%",
-                  margin: "0 auto",
-                  marginTop: "10px"
-                }}
-              >{video.title}</p>
-            </Link>
-          )}</> : videoError ? <ErrorLoading /> : <Loading />}
-        </div>
-        <div className="article-container eums-box-shadow">
-          {articles.length ? <>
-
-          <div className="main-article">
-            <Link to={`/article/${articles[0].id}`} className="main-article-image-container">
-              <img className="main-article-thumbnail" src={`${BASE_URL}/thumbnails/${articles[0].thumbnail}`} />
-              <div className="main-article-title">
-                {articles[0].tags[0]?.tag ? 
-                  <h2 style={{ fontSize: "30px" }} className="home-page-article-title">
-                    {articles[0].tags[0]?.tag.toUpperCase()}
-                  </h2>
-                  : <></>
-                }
-                <h2 style={{ fontSize: "30px" }} className="home-page-article-title">{articles[0].title}</h2>
-              </div>
-            </Link>
-            <div>
-              {getArticleParagraphs(articles[0])}
-              <div style={{ display: "flex", justifyContent: "flex-end"}}>
-                <Link 
-                  to={`/article/${articles[0].id}`}
-                  className="home-page-continue-reading-link"
-                ><i>Continue reading...</i></Link>
-              </div>
-              <center><hr style={{width: "50%"}}/></center>
+      <div className="home">
+        <div className="home-sidebar">
+          <h3 style={{ margin: "0.5em 0", padding: "0.5em 0.5em" }}>{t('home.sortBy')}</h3>
+          {filterOptions.map((item, key) => (
+            <div className="filter-option" key={key} onClick={() => applyFilter(item)}
+              style={{ backgroundColor: item === filter ? "#f0f0f0" : "transparent" }}>
+              <p>{t(`filter.${item}`)}</p>
             </div>
-          </div>
+          ))}
+          <h3 style={{ margin: "0.5em 0", padding: "0.5em 0.5em" }}>{t('home.language')}</h3>
+          {Languages.map((lang, key) => (
+            <div className="filter-option"
+              style={{ backgroundColor: lang === state.language ? "#f0f0f0" : "transparent" }}
+              key={key}
+              onClick={() => {
+                if (lang === state.language) return;
+                setContent([]);
+                setOffset(0);
+                setHasMore(true);
+                dispatch({ type: 'SET_LANGUAGE', payload: lang })
+              }}>
+              <p>{lang}</p>
+            </div>
+          ))}
+        </div>
 
-          <div className="other-articles">
-            {articles.slice(1,3).map(article =>
-              <Link to={`/article/${article.id}`} className="bottom-article">
-                <div className="bottom-article-content-container">
-                  <img className="bottom-article-thumbnail" src={`${BASE_URL}/thumbnails/${article.thumbnail}`} />
-                  <div className="other-article-title">
-                    {article.tags[0]?.tag ?
-                      <h3 className="home-page-article-title">{article.tags[0]?.tag.toUpperCase()}</h3>
-                      : <></>
-                    }
-                    <h3 className="home-page-article-title">{article.title}</h3>
+        <div className="post-content">
+          {visibleContent.map((item, index) => {
+            if (item.type === "article") {
+              const article = item as Article;
+              return (
+                <div key={index} className="home-post">
+                  <Link to={`/article/${article.id}`}>
+                    <img src={`${BASE_URL}/thumbnails/${article.thumbnail}`} alt={article.title} className="home-article-thumbnail" />
+                  </Link>
+                  <div className="home-article-title">
+                    <Link to={`/article/${article.id}`}><h3>{article.title}</h3></Link>
+                    <div style={{ display: "flex", alignItems: "center", zIndex: 5 }}>
+                      {article.user_has_liked ? (
+                        <AiFillLike size={35} style={{ marginRight: "0.5em", cursor: "pointer" }} onClick={() => clickLike(article.id)} />
+                      ) : (
+                        <AiOutlineLike size={35} style={{ marginRight: "0.5em", cursor: "pointer" }} onClick={() => clickLike(article.id)} />
+                      )}
+                      <span style={{ marginTop: "5px" }}>{article.total_likes}</span>
+                    </div>
                   </div>
                 </div>
-              </Link>
-            )}
-          </div>
-          <div className="article-container-footer">
-            <Link to={"all-articles"} className="hot-topics-button">
-              <img src="/images/fire-emoji.png" style={{maxWidth: "20px", marginLeft: "0.5em"}} />
-              <p style={{padding: "0.5em", marginRight: "0.5em"}}>More Hot Topics!</p>
-            </Link>
-          </div>
-          </> : articleError ? <ErrorLoading /> : <Loading />}
-          <br />
+              );
+            } else if (item.type === "video") {
+              const video = item as Video;
+              return (
+                <div key={index} className="home-post video-post">
+                  <Link target="_blank" to={video.url}>
+                    <YouTubeThumbnail videoId={video.url.split("=")[1]} title={video.title} className="home-video-thumbnail" />
+                  </Link>
+                </div>
+              );
+            } else if (item.type === "instagram") {
+              return (
+                <div key={index} className="home-post-insta">
+                  <InstagramEmbed url='https://www.instagram.com/p/DLCOsQzIhmJ/' />
+                </div>
+              );
+            }
+          })}
+          <Loading />
         </div>
-      </div>
-      <div className="middle-home-content">
-        <div className="map-container eums-box-shadow">
-          <div className="map-top-bar">
-            <div style={{display: "flex"}}>
-              <p className="map-title">Country by Country (Under Construction)</p>
-            </div>
-          </div>
-          <div className="map-section-container">
-            <img src="/images/eu-map.svg" style={{ width: "60%", margin: "1em", maxWidth: "700px"}}/>
-            <div style={{ margin: "1em" }}>
-              <p style={{ fontWeight: "bold", fontSize: "16pt", marginTop: "1em"}}>Country by country</p>
-              <p style={{ marginTop: "1em"}}>This section is currently under construction, and so is not yet accessible to all users. Future goals include creating an interactive European map where users 
-                can access EU data by country, such as important elections, news, and events! 
-                Keep a look out, as we will be releasing this feature as soon as possible.</p>
-            </div>
-          </div>
-        </div>
-        <div className="interview-container eums-box-shadow">
-          <div className="map-top-bar">
-            <div style={{display: "flex"}}>
-              <p className="map-title" style={{color: "black"}}>Livestreams</p>
-            </div>
-            <Link to={"all-interviews"} className="hot-topics-button">
-              <p style={{padding: "0.5em 1em"}}>See All</p>
-            </Link>
-          </div>
 
-          <div style={{ margin: "1em", display: "flex", flexDirection: "column", height: "100%" }}>
-            {interviews.length ? <>
-            {interviews.slice(0,2).map(video => 
-              <Link to={video.url} target="_blank" style={{ marginTop: "20px"}}>
-                <div className="video-thumbnail-container">
-                  <img src={video.thumbnail} className="video-thumbnail"/>
-                </div>
-                <p style={{
-                    width: "90%",
-                    margin: "0 auto",
-                    marginTop: "10px"
-                  }}
-                >{video.title}</p>
+        <div className="home-sidebar">
+          {content.filter(val => val.type === "article").sort((a, b) => (b as Article).total_likes - (a as Article).total_likes).slice(0, 5).map((item, index) => {
+            const article = item as Article;
+            return (
+              <Link key={index} to={`/article/${article.id}`} className="home-sidebar-article-title">
+                <span title={article.title} className="truncated-title">{article.title}</span>
+                <span>{t('likes', { count: article.total_likes })}</span>
               </Link>
-            )}</> : interviewError ? <ErrorLoading /> : <Loading />}
-          </div>
+            );
+          })}
         </div>
+        {adsPresent && <div className="ad-slot"></div>}
       </div>
-
-      <div className="bottom-home-content">
-        <div className="media-links-container">
-          <p className="map-title" style={{color: "black"}}>Join the Community</p>
-          <p>Get involved, connect with others and <b>make a difference.</b></p>
-          <br />
-          <div className="media-icons">
-            {mediaIcons.map(icon => (
-              <Link to={icon.link} target="_blank" className="media-icon">
-                <img
-                  src={`${icon.icon}.svg`}
-                  onMouseOver={(event) => {
-                    const img = event.currentTarget as HTMLImageElement;
-                    img.src = `${icon.icon}-shadow.svg`;
-                  }}
-                  onMouseOut={(event) => {
-                    const img = event.currentTarget as HTMLImageElement;
-                    img.src = `${icon.icon}.svg`;
-                  }}
-                />              
-              </Link>)
-            )}
-          </div>
-        </div>
-        <div className="support-container eums-box-shadow">
-          <div style={{display: "flex"}}>
-            <p className="map-title" style={{color: "black"}}>Support Us</p>
-          </div>
-          <div className="support-content">
-            <p>You can <b>support EU Made Simple </b> by many different means, here's how:</p>
-            <div className="bottom-content">
-              <div className="split-content" style={{ paddingRight: "2em" }}>
-                <p style={{ textAlign: "justify", marginRight: "1em" }}><b>Become a Patreon</b> and be part of the EUMS members! By becoming a Patreon you can even have influence over <b>decision making</b> of the community strategy or choose which topics we will treat in our videos*.</p>
-                <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", marginTop: "1em" }}>
-                  <Link to="https://www.patreon.com/eumadesimple" className="color-button">Join!</Link>
-                </div>
-              </div>
-              <div style={{ paddingLeft: "2em" }} className="split-content">
-                <p style={{ textAlign: "justify" }}><b>Create content</b> for us by writing your own <b>articles</b> that could be published on our site, or do a coverage on our <b>YouTube content</b> in your local language to engage with a wider audience and help us create more social media content!</p>
-                <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", marginTop: "1em" }}>
-                  <button className="color-button">Start Creating!</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     </BrowserView>
 
     <MobileView>
       <div className="home-mobile-container">
-        <div className="mobile-articles-container">
-          <h1 style={{textAlign: "center"}}>Articles</h1>
-
-          {articles.length ? articles.slice(0, 3).map(article => (
-            <Link to={`/article/${article.id}`} className="mobile-article-container">
-              <img className="mobile-article-thumbnail" src={`${BASE_URL}/thumbnails/${article.thumbnail}`} />
-              <h3 style={{ marginLeft: "10px" }}>{article.title}</h3>
-            </Link>
-          )) : articleError ? <ErrorLoading /> : <Loading />}
+        <center><h1 style={{ paddingBlock: "0.5em" }}>{t('mobile.feed')}</h1></center>
+        <div className="mobile-feed-content">
+          {visibleContent.map((item, index) => {
+            if (item.type === "article") {
+              const article = item as Article;
+              return (
+                <div key={index} className="home-mobile-post">
+                  <Link to={`/article/${article.id}`} className="mobile-post-article-thumbnail">
+                    <img src={`${BASE_URL}/thumbnails/${article.thumbnail}`} alt={article.title} className="home-mobile-article-thumbnail" />
+                  </Link>
+                  <div className="home-mobile-article-title">
+                    <Link to={`/article/${article.id}`}><h3>{article.title}</h3></Link>
+                    <div style={{ display: "flex", alignItems: "center", zIndex: 5 }}>
+                      {article.user_has_liked ? (
+                        <AiFillLike size={35} style={{ marginRight: "0.5em", cursor: "pointer" }} onClick={() => clickLike(article.id)} />
+                      ) : (
+                        <AiOutlineLike size={35} style={{ marginRight: "0.5em", cursor: "pointer" }} onClick={() => clickLike(article.id)} />
+                      )}
+                      <span style={{ marginTop: "5px" }}>{article.total_likes}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            } else if (item.type === "video") {
+              const video = item as Video;
+              return (
+                <div key={index} className="home-mobile-post">
+                  <Link target="_blank" to={video.url}>
+                    <YouTubeThumbnail videoId={video.url.split("=")[1]} title={video.title} className="home-video-thumbnail" />
+                    <h2 className="video-thumbnail-title">{video.title}</h2>
+                  </Link>
+                </div>
+              );
+            } else if (item.type === "instagram") {
+              return (
+                <div key={index} className="home-post-insta">
+                  <InstagramEmbed url='https://www.instagram.com/p/DLCOsQzIhmJ/' />
+                </div>
+              );
+            }
+          })}
+          <Loading />
         </div>
-
-        <Link to={"all-articles"} className="mobile-hot-topics-button">
-          <p>See All</p>
-        </Link>
-        
-        <hr style={{ width: "90%", margin: "auto" }}/>
-
-        <div className="mobile-articles-container">
-          <h1 style={{textAlign: "center"}}>Videos</h1>
-          {videos.length ? videos.slice(0, 3).map(video => (
-            <Link to={video.url} target="_blank" className="mobile-article-container">
-              <img className="mobile-video-thumbnail" src={video.thumbnail} />
-              <h3 style={{ marginLeft: "10px" }}>{video.title}</h3>
-            </Link>
-          )) : videoError ? <ErrorLoading /> : <Loading />}
-        </div>
-
-        <Link to={"all-videos"} className="mobile-hot-topics-button">
-          <p>See All</p>
-        </Link>
-
-        <hr style={{ width: "90%", margin: "auto" }}/>
-
-        <div className="mobile-articles-container">
-          <h1 style={{textAlign: "center"}}>Interviews</h1>
-          {interviews.length ? interviews.slice(0, 2).map(interview => (
-            <Link to={interview.url} target="_blank" className="mobile-article-container">
-              <img className="mobile-video-thumbnail" src={interview.thumbnail} />
-              <h3 style={{ marginLeft: "10px" }}>{interview.title}</h3>
-            </Link>
-          )) : interviewError ? <ErrorLoading /> : <Loading />}
-        </div>
-
-        <Link to={"all-interviews"} className="mobile-hot-topics-button">
-          <p>See All</p>
-        </Link>
       </div>
     </MobileView>
-  </>)
-}
+  </>);
+};
 
 export default Home;

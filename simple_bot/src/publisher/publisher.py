@@ -10,7 +10,7 @@ BACKEND_URL = os.getenv("BACKEND_URL")
 
 def publish_ai_content():
 	access_token = login_and_get_token()
-	api_endpoint = f"{BACKEND_URL}/article"
+	api_endpoint = f"{BACKEND_URL}/articles/"
 
 	generated_articles = os.listdir(GENERATED_ARTICLES_FOLDER)
 	for ai_file in generated_articles:

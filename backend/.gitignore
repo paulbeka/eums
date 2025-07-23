@@ -1,6 +1,7 @@
 /venv/
 
 /eums_app/.env
+/thumbnails
 
 eums.db
 __pycache__/
@@ -9,3 +10,4 @@ __pycache__/
 migrations/
 
 .env
+

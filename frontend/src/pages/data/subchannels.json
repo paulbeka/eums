@@ -1,0 +1,32 @@
+[
+  {
+    "link": "https://www.youtube.com/@EULeichtGemacht",
+    "key": "german",
+    "logo": "images/subchannels/logos/german.jpg"
+  },
+  {
+    "link": "https://www.youtube.com/@LUESimplifiee",
+    "key": "french",
+    "logo": "images/subchannels/logos/french.png"
+  },
+  {
+    "link": "https://www.youtube.com/@EE_APLA",
+    "key": "greek",
+    "logo": "images/subchannels/logos/french.png"
+  },
+  {
+    "link": "https://www.youtube.com/@UEinModSimplu",
+    "key": "romanian",
+    "logo": "images/subchannels/logos/french.png"
+  },
+  {
+    "link": "https://www.youtube.com/@UEinmodosemplice",
+    "key": "italian",
+    "logo": "images/subchannels/logos/french.png"
+  },
+  {
+    "link": "https://www.youtube.com/@LaUEMasSimple",
+    "key": "spanish",
+    "logo": "images/subchannels/logos/french.png"
+  }
+]

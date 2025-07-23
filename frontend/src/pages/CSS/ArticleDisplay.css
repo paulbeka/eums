@@ -67,3 +67,9 @@
 .article-display-mobile-container {
   padding: 1em;
 }
+
+.article-display-metadata {
+  padding: 1em;
+  color: rgb(129, 129, 129);
+  font-weight: bold;
+}

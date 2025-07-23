@@ -27,9 +27,9 @@ def fetch_transcription(video_title, video_id):
 
 
 def get_transcriptions_pipeline():
-	videos = get_videos_from_channel()
+	videos = get_videos_from_channel("UC8KFs307LrTkQCu-P1Fl6dw")
 	transcripts = []
-	for video in videos[0:2]:
+	for video in videos[0:20]: # TODO: MAKE THIS A VARIABLE
 		try:
 			print(f"Fetching video transcript for: {video['title']}")
 			transcript = YouTubeTranscriptApi.get_transcript(video['video_id'])

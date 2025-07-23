@@ -1,17 +1,34 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Date, Table
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Date, Table, UniqueConstraint, Enum
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+from datetime import datetime
+import enum
 
 
 Base = declarative_base()
 
 
+class ArticleStatus(enum.Enum):
+    public = "public"
+    admin_available = "admin_available"
+    private = "private"
+    
 class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
+    username = Column(String, nullable=False, unique=True, index=True)
+    full_name = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=False)
+    date_of_birth = Column(Date, nullable=False)
+    hashed_password = Column(String, nullable=False)
+    country = Column(String, nullable=True)
+    gender = Column(String, nullable=True)
+    profile_picture = Column(String, nullable=True)
+    is_admin = Column(Boolean, default=False)
+
+    articles = relationship("Article", back_populates="author")
+    likes = relationship("Like", back_populates="user")
 
 
 class Video(Base):
@@ -23,6 +40,7 @@ class Video(Base):
     url = Column(String, nullable=False)
     livestream = Column(Boolean, nullable=False)
     upload_date = Column(Date, nullable=False)
+    language = Column(String, nullable=True)
 
 
 article_tags = Table(
@@ -33,15 +51,30 @@ article_tags = Table(
 )
 
 
+class SocialMediaPost(Base):
+    __tablename__ = "social_media"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    url = Column(String, index=True, nullable=False)
+    upload_date = Column(DateTime, nullable=False)
+    thumbnail = Column(String, nullable=True)
+
+
 class Article(Base):
     __tablename__ = "articles"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     title = Column(String, index=True, nullable=False)
     content = Column(Text, nullable=False)
-    public = Column(Boolean, nullable=False)
+    editing_status = Column(Enum(ArticleStatus, name="articlestatus"), nullable=False)
     thumbnail = Column(String)
+    upload_date = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    author = relationship("User", back_populates="articles")
+
     tags = relationship('TopicTag', secondary=article_tags, back_populates='articles')
+    likes = relationship("Like", back_populates="article")
 
 
 class TopicTag(Base):
@@ -51,3 +84,17 @@ class TopicTag(Base):
     tag = Column(String, nullable=False)
 
     articles = relationship('Article', secondary=article_tags, back_populates='tags')
+
+
+class Like(Base):
+    __tablename__ = "likes"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"), nullable=False)
+    article_id = Column(Integer, ForeignKey('articles.id', ondelete="CASCADE"), nullable=False)
+    timestamp = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    user = relationship("User", back_populates="likes")
+    article = relationship("Article", back_populates="likes")
+
+    __table_args__ = (UniqueConstraint('user_id', 'article_id', name='unique_like'),)
