@@ -19,3 +19,20 @@
 .visibility-selector {
   margin-right: 1em;
 }
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 0.5em;
+}
+
+.post-to-admin-button {
+  margin-right: 1em;
+  font-size: 9pt;
+  padding-inline: 0.5em;
+  cursor: pointer;
+  border: 1px solid black;
+  background: yellow;
+  border-radius: 5px;
+}

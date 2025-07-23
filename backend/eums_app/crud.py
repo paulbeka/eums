@@ -2,33 +2,85 @@ from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
 from datetime import datetime
 from typing import List
-import json
+import json, re
 
-from .models import User, Article, Video, TopicTag
+from .models import User, Article, Video, TopicTag, Like, ArticleStatus, SocialMediaPost
 from .util import save_thumbnail
+from .schemas import RegisterUserPayload, UpdateUserPayload
 
 
 ### AUTH / LOGIN ###
 
+def get_user_by_id(db: Session, userId: str):
+    return db.query(User).filter(User.id == userId).first()
+
 def get_user_by_username(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
 
+def get_user_list(db: Session, username: str, skip: int = 0, limit: int = 10):
+    query = db.query(User)
+    if len(username) > 0:
+        query = query.filter(User.username.ilike(f"%{username}%"))
+    users = query.offset(skip).limit(limit).all()
+    return [
+        {key: value for key, value in user.__dict__.items() if key != "hashed_password" and not key.startswith("_")}
+        for user in users
+    ]
 
-def create_user(db: Session, username: str, hashed_password: str):
-    db_user = User(username=username, hashed_password=hashed_password)
+def delete_user(db: Session, username: str):
+    user = db.query(User).filter(User.username == username).first()
+    db.delete(user)
+    db.commit()
+    return {"detail": "User deleted successfully"}
+
+
+def create_user(db: Session, payload: RegisterUserPayload):
+    db_user = User(
+        username=payload.username,
+        full_name=payload.full_name,
+        email=payload.email,
+        hashed_password=payload.password,
+        date_of_birth=payload.date_of_birth,
+        country=payload.country,
+        gender=payload.gender,
+        profile_picture=payload.profile_picture,
+        is_admin=False
+    )
+    
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+    
     return db_user
+
+def update_user(db: Session, userId: str, payload: UpdateUserPayload):
+    db_us = db.query(User).filter(User.username == userId).first()
+    if not db_us:
+        raise Exception("No User associated with the Username")
+        return[]
+    db_us.full_name = payload.full_name
+    db_us.email = payload.email
+    db_us.date_of_birth = payload.date_of_birth
+    db_us.country = payload.country
+    db_us.profile_picture = payload.profile_picture
+
+    db.commit()
+    return db_us
+
 
 
 ### ARTICLES ###
 
 
 def get_articles(db: Session, skip: int = 0, limit: int = 10, public_only: bool = True):
-    query = db.query(Article).options(joinedload(Article.tags))
+    query = db.query(Article).options(
+        joinedload(Article.tags),
+        joinedload(Article.author)
+    )
     if public_only:
-        query = query.filter(Article.public == True)
+        query = query.filter(Article.editing_status == ArticleStatus.public)
+    query = query.filter(Article.editing_status != ArticleStatus.private)
+    
     articles = query.offset(skip).limit(limit).all()
 
     return [
@@ -36,48 +88,105 @@ def get_articles(db: Session, skip: int = 0, limit: int = 10, public_only: bool 
             "id": article.id,
             "title": article.title,
             "content": article.content,
-            "public": article.public,
+            "editing_status": article.editing_status,
             "thumbnail": article.thumbnail,
             "tags": [{"id": tag.id, "tag": tag.tag} for tag in article.tags],
+            "author": {
+                "id": article.author.id,
+                "username": article.author.username
+            } if article.author else None
         }
         for article in articles
     ]
 
-def get_article(articleId: str, db: Session, public_only: bool = True):
-    query = db.query(Article).options(joinedload(Article.tags)).filter(Article.id == articleId)
+
+def get_articles_from_user(db: Session, username: str, public_only: bool):
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        return []
+
+    query = db.query(Article).options(joinedload(Article.tags)).filter(Article.user_id == user.id)
+    
+    if public_only:
+        query = query.filter(Article.editing_status == ArticleStatus.public)
+    
+    return query.all()
+
+
+def get_article(articleId: str, db: Session, user_id: int = None, public_only: bool = True):
+    query = db.query(Article).options(
+        joinedload(Article.tags), 
+        joinedload(Article.author)
+    ).filter(Article.id == articleId)
+
     article = query.first()
+
+    if not article.editing_status == ArticleStatus.public and user_id is not None:
+        user = db.query(User).filter(User.id == user_id).first()
+        if (user is None) or (not user.is_admin) or (article.user_id != user_id):
+            return None
+
+    if article is None:
+        return None
+
+    total_likes = db.query(Like).filter(Like.article_id == article.id).count()
+
+    user_has_liked = False
+    if user_id is not None:
+        user_has_liked = db.query(Like).filter_by(user_id=user_id, article_id=article.id).first() is not None
+
     return {
         "id": article.id,
         "title": article.title,
         "content": article.content,
-        "public": article.public,
+        "public": article.editing_status,
         "thumbnail": article.thumbnail,
         "tags": [{"id": tag.id, "tag": tag.tag} for tag in article.tags],
+        "author": {
+            "id": article.author.id,
+            "username": article.author.username,
+            "full_name": article.author.full_name
+        },
+        "posting_date": article.upload_date,
+        "total_likes": total_likes,
+        **({"user_has_liked": user_has_liked} if user_id is not None else {})
     }
 
 
-
-def create_article(db: Session, title: str, content: dict, public: bool, thumbnail_base64: str, tags: List[str]):
+def create_article(
+    db: Session, 
+    title: str, 
+    content: dict, 
+    thumbnail_base64: str, 
+    tags: List[str], 
+    user_id: int
+):
     thumbnail_filename = None
     if thumbnail_base64:
-        thumbnail_filename = f"{title.replace(' ', '_')}_thumbnail.png"
+        sanitized_title = sanitize_filename(title.replace(' ', '_'))
+        thumbnail_filename = f"{sanitized_title}_thumbnail.png"
         save_thumbnail(thumbnail_base64, thumbnail_filename)
 
     existing_tags = db.query(TopicTag).filter(TopicTag.tag.in_(tags)).all()
     existing_tag_names = {tag.tag for tag in existing_tags}
 
-    new_tags = [tag for tag in tags if tag not in existing_tag_names]
-    for tag_name in new_tags:
-        new_tag = TopicTag(tag=tag_name)
-        db.add(new_tag)
-        existing_tags.append(new_tag) 
+    new_tags = [TopicTag(tag=tag_name) for tag_name in tags if tag_name not in existing_tag_names]
+    db.add_all(new_tags)
+    db.commit()  
+
+    all_tags = existing_tags + new_tags
+
+    editing_status = ArticleStatus.private
+    if get_user_by_id(db, user_id).is_admin:
+        editing_status = ArticleStatus.admin_available
 
     db_article = Article(
         title=title,
         content=json.dumps(content),
-        public=public,
+        editing_status=editing_status,
         thumbnail=thumbnail_filename,
-        tags=existing_tags  
+        user_id=user_id,
+        tags=all_tags  
     )
 
     db.add(db_article)
@@ -86,6 +195,7 @@ def create_article(db: Session, title: str, content: dict, public: bool, thumbna
     return db_article.id
 
 
+### TODO: FIX THIS FOR THE DIFFERENT EDITING STATES
 def edit_article(db: Session, id: int, title: str, content: str, public: bool):
     # TODO: Add edit tags functionality
     db_article = db.query(Article).filter(Article.id == id).first()
@@ -93,7 +203,7 @@ def edit_article(db: Session, id: int, title: str, content: str, public: bool):
         raise Exception("Article not found")
     db_article.title = title
     db_article.content = json.dumps(content)
-    db_article.public = public
+    db_article.editing_status = public
     db.commit()
     db.refresh(db_article)
     return db_article
@@ -109,22 +219,28 @@ def delete_article(db: Session, articleId: str):
         raise Exception("Article not found")
 
 
-def change_article_visibility(db: Session, articleId: int, public: bool):
+def change_article_visibility(db: Session, articleId: int, editing_status: ArticleStatus):
     article = db.query(Article).filter(Article.id == articleId).first()
     if not article:
         raise Exception("Article not found")
-    article.public = public
+    article.editing_status = editing_status
     db.commit()
     db.refresh(article)
     return article
 
 
+def post_article_to_admins(article: Article, db: Session):
+    article.editing_status = ArticleStatus.admin_available
+    db.commit()
+    return {"detail": "Article submitted for admin review"}
+
+
 ### VIDEOS ###
 
-def create_video(db: Session, title: str, thumbnail: str, url: str, livestream: str, upload_date: str):
+def create_video(db: Session, title: str, thumbnail: str, url: str, livestream: str, upload_date: str, language: str = None):
     parsed_date = datetime.strptime(upload_date, "%Y-%m-%dT%H:%M:%SZ")
     video = Video(title=title, thumbnail=thumbnail, 
-        url=url, livestream=livestream, upload_date=parsed_date)
+        url=url, livestream=livestream, upload_date=parsed_date, language=language)
     db.add(video)
     db.commit()
     db.refresh(video)
@@ -146,6 +262,26 @@ def get_videos(livestreams: bool, db: Session, skip: int = 0, limit: int = 10):
     return query.offset(skip).limit(limit).all()
 
 
+### SOCIAL MEDIA POSTS ###
+
+def get_social_media_posts(db: Session, skip: int = 0, limit: int = 10):
+    query = db.query(SocialMediaPost).order_by(SocialMediaPost.upload_date.desc())
+    return query.offset(skip).limit(limit).all()
+
+
+def create_social_media_post(db: Session, url: str, upload_date: str, thumbnail: str):
+    parsed_date = datetime.strptime(upload_date, "%Y-%m-%dT%H:%M:%SZ")
+    db_post = SocialMediaPost(
+        url=url,
+        upload_date=parsed_date,
+        thumbnail=thumbnail
+    )
+    db.add(db_post)
+    db.commit()
+    db.refresh(db_post)
+    return db_post
+
+
 ### CATEGORY TAGS ###
 
 def create_tag(db: Session, tag: str):
@@ -158,3 +294,91 @@ def create_tag(db: Session, tag: str):
 
 def get_tags(db: Session):
     return db.query(TopicTag).all()
+
+
+#### Likes ####
+
+def toggle_like(db: Session, article_id: int, user_id: int):
+    like = db.query(Like).filter_by(user_id=user_id, article_id=article_id).first()
+    
+    if like:
+        db.delete(like)
+        db.commit()
+        return { "like": False }
+    else:
+        new_like = Like(user_id=user_id, article_id=article_id)
+        db.add(new_like)
+        db.commit()
+        db.refresh(new_like)
+        return { "like": True }
+
+
+
+#### USER MANAGEMENT AND PROFILE ####
+
+def get_user_profile_data(username: str, db: Session):
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        return None
+
+    posts_count = db.query(Article).filter(Article.author.has(id=user.id)).filter(Article.editing_status == ArticleStatus.public).count()
+    likes_count = db.query(Like).join(Article).filter(Article.author.has(id=user.id)).count()
+
+    return {
+        "id": user.id,
+        "username": user.username,
+        "full_name": user.full_name,
+        "email": user.email,
+        "date_of_birth": user.date_of_birth,
+        "country": user.country,
+        "gender": user.gender,
+        "profile_picture": user.profile_picture,
+        "is_admin": user.is_admin,
+        "posts": posts_count,
+        "likes": likes_count,
+    }
+
+
+def get_gdpr(db: Session, username: str):
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        return None
+    
+    user_data = {
+        "id": user.id,
+        "username": user.username,
+        "full_name": user.full_name,
+        "email": user.email,
+        "date_of_birth": str(user.date_of_birth),
+        "country": user.country,
+        "gender": user.gender,
+        "profile_picture": user.profile_picture,
+        "is_admin": user.is_admin,
+        "articles": [],
+        "likes": []
+    }
+
+    for article in user.articles:
+        user_data["articles"].append({
+            "id": article.id,
+            "title": article.title,
+            "content": article.content,
+            "editing_status": article.editing_status.value,
+            "thumbnail": article.thumbnail,
+            "upload_date": article.upload_date.isoformat(),
+            "tags": [tag.tag for tag in article.tags]
+        })
+
+    for like in user.likes:
+        user_data["likes"].append({
+            "timestamp": like.timestamp.isoformat(),
+            "article_id": like.article.id,
+            "article_title": like.article.title,
+            "article_author": like.article.author.username
+        })
+
+    return user_data
+
+
+def sanitize_filename(name):
+    return re.sub(r'[<>:"/\\|?*\x00-\x1F]', '', name).strip().rstrip('.')

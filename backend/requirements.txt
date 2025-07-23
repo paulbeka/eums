@@ -16,4 +16,4 @@ asyncpg==0.30.0
 uvicorn==0.34.0
 email_validator==2.2.0
 python-multipart==0.0.18
-
+instaloader==4.14.1

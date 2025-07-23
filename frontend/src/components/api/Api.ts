@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { BASE_URL } from "../../Config";
-
+import { useGlobalStore } from '../../store/GlobalStore';
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -21,6 +21,19 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+export const verifyToken = async () => {
+  const token = localStorage.getItem("access_token");
+  try {
+    const response = await axios.get(`${BASE_URL}/verify-token`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.status === "valid";
+  } catch {
+    return false;
+  }
+}
 
 export const getArticles = async (getPublicOnly: boolean, limit?: number) => {
   return api.get(getPublicOnly ? '/articles/' : 
@@ -32,6 +45,16 @@ export const getArticles = async (getPublicOnly: boolean, limit?: number) => {
       throw error;
     });
 }
+
+export const fetchArticlesPostedByUser = async (userId: string, public_only: boolean = true) => {
+  return api.get(`/articles/${userId}?public_only=${public_only}`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+} 
 
 export const postArticle = async (payload: { 
     title: string, 
@@ -88,11 +111,11 @@ export const deleteArticle = async (articleId: number) => {
 }
 
 
-export const changeVisibility = async (changedArticles: Record<number, boolean>) => {
+export const changeVisibility = async (changedArticles: Record<number, string>) => {
   api.post("/articles/change-visibility", changedArticles)
   .then(response => {
     if (response.status !== 200) {
-      throw "Request failed! Contact an admin.";
+      throw new Error("Request failed! Contact an admin.");
     }
   })
   .catch(err => {
@@ -101,8 +124,22 @@ export const changeVisibility = async (changedArticles: Record<number, boolean>)
 }
 
 
+export const postArticleToAdminsApi = async (articleId: string) => {
+  return api.post(`/articles/post-to-admins/${articleId}`)
+  .then(response => {
+    if (response.status !== 200) {
+      throw new Error("Request failed! Contact an admin.");
+    }
+  })
+}
+
+
 export const getVideos = async (livestreams: boolean) => {
-  return api.get(`/videos/?livestreams=${livestreams}`)
+  const { state } = useGlobalStore();
+
+  return api.get(`/videos/?livestreams=${livestreams}`
+    + `&language=${state.language}`
+  )
   .then(response => {
     if (response.status !== 200) {
       throw "Request failed! Contact an admin.";
@@ -114,6 +151,19 @@ export const getVideos = async (livestreams: boolean) => {
   })
 }
 
+
+export const getFrontpageContent = async (language: string, offset = 0, limit = 20) => {
+  return api.get(`/content?language=${language}&skip=${offset}&limit=${limit}`)
+    .then(response => {
+      if (response.status !== 200) {
+        throw "Request failed! Contact an admin.";
+      }
+      return response.data;
+    })
+    .catch(err => {
+      throw err;
+    });
+};
 
 export const getTags = async () => {
   return api.get("/tags")
@@ -124,7 +174,6 @@ export const getTags = async () => {
     return response.data;
   })
 }
-
 
 export const sendEmail = async (payload: any) => {
   return api.post("/contact", payload)
@@ -137,5 +186,58 @@ export const sendEmail = async (payload: any) => {
   .catch(err => {return false})
 }
 
+export const registerUser = async (payload: any) => {
+  return api.post("/register-user", payload)
+  .then(response => {
+    if (response.status !== 200) {
+      throw new Error(`Error: ${response.status}`);
+    }
+    return true;
+  })
+}
+
+export const getUserData = async (username: string) => {
+  return api.get(`/profile/${username}`)
+    .then(response => {
+      if (response.status !== 200) {
+        throw "Request failed! Contact an admin.";
+      }
+      return response.data;
+    }
+  );
+}
+
+export const getAllUsersApi = async (username?: string) => {
+  return api.get(`/users${username ? "?username="+ username : ""}`)
+    .then(response => {
+      if (response.status !== 200) {
+        throw "Request failed! Contact an admin.";
+      }
+      return response.data;
+    }
+  );
+}
+
+export const deleteUser = async (username: string) => {
+  return api.delete(`/users${username ? "?username="+ username : ""}`)
+    .then(response => {
+      if (response.status !== 200) {
+        throw "Request failed! Contact an admin.";
+      }
+      return response.data;
+    }
+  );
+}
+
+export const getUserGdprData = async (username?: string) => {
+  if (username === undefined || username === null) throw new Error("Username is required to fetch user data.");
+  return api.get(`/gdpr${username ? "?username="+ username : ""}`)
+    .then(response => {
+      if (response.status !== 200) {
+        throw "Request failed! Contact an admin.";
+      }
+      return response.data;
+    });
+}
 
 export default api;
