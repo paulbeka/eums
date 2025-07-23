@@ -30,7 +30,7 @@ export const YouTubeThumbnail = ({
     }
   };
 
-  return (
+  return (<>
     <div className={currentResIndex > 0 ? "video-cropper": ""}>
       <img
         src={imgSrc}
@@ -39,5 +39,7 @@ export const YouTubeThumbnail = ({
         onLoad={handleImageLoad}
       />
     </div>
+    <h2 className={currentResIndex > 0 ? "video-thumbnail-title" : ""}>{title}</h2>
+  </>
   );
 };

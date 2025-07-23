@@ -5,3 +5,8 @@
   overflow: hidden;
   clip-path: inset(13% 0 13% 0);
 }
+
+.video-thumbnail-title {
+  position: relative;
+  top: -100px;
+} 

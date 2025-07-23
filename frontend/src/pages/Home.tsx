@@ -66,7 +66,7 @@ const Home = () => {
     setLoading(true);
     try {
       const res = await getFrontpageContent(state.language, offset, BATCH_SIZE);
-      const newContent = offset === 0 ? [{ type: "instagram" }, ...res] : res;
+      const newContent = offset === 0 ? [...res] : res;
 
       const combined = [...content, ...newContent];
       setContent(combined);
@@ -179,7 +179,6 @@ const Home = () => {
                 <div key={index} className="home-post video-post">
                   <Link target="_blank" to={video.url}>
                     <YouTubeThumbnail videoId={video.url.split("=")[1]} title={video.title} className="home-video-thumbnail" />
-                    <h2 className="video-thumbnail-title">{video.title}</h2>
                   </Link>
                 </div>
               );
