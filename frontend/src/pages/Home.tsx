@@ -239,7 +239,6 @@ const Home = () => {
                 <div key={index} className="home-mobile-post">
                   <Link target="_blank" to={video.url}>
                     <YouTubeThumbnail videoId={video.url.split("=")[1]} title={video.title} className="home-video-thumbnail" />
-                    <h2 className="video-thumbnail-title">{video.title}</h2>
                   </Link>
                 </div>
               );

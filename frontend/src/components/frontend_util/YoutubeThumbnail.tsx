@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BrowserView, MobileView } from 'react-device-detect';
 import './CSS/YoutubeThumbnail.css';
 
 export const YouTubeThumbnail = ({
@@ -30,16 +31,31 @@ export const YouTubeThumbnail = ({
     }
   };
 
-  return (<>
-    <div className={currentResIndex > 0 ? "video-cropper": ""}>
-      <img
-        src={imgSrc}
-        alt={title}
-        className={className}
-        onLoad={handleImageLoad}
-      />
-    </div>
-    <h2 className={currentResIndex > 0 ? "video-thumbnail-title" : ""}>{title}</h2>
+  return (
+  <>
+    <BrowserView>
+      <div className={currentResIndex > 0 ? "video-cropper": ""}>
+        <img
+          src={imgSrc}
+          alt={title}
+          className={className}
+          onLoad={handleImageLoad}
+        />
+      </div>
+      <h2 className={currentResIndex > 0 ? "video-thumbnail-title" : ""}>{title}</h2>
+    </BrowserView>
+    <MobileView className={`yt-thumbnail-mobile ${currentResIndex > 0 ? "margin-cropper": ""}`}>
+      <div className={`${currentResIndex > 0 ? "video-cropper": ""}`}>
+        <img
+          src={imgSrc}
+          alt={title}
+          className={`${className} mobile-thumbnail`}
+          onLoad={handleImageLoad}
+        />
+      </div>
+      <h2 className={currentResIndex > 0 ? "video-thumbnail-title"
+        : ""}>{title}</h2>
+    </MobileView>
   </>
   );
 };

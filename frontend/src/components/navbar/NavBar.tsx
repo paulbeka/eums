@@ -83,7 +83,7 @@ const NavBar: React.FC<{
       <div className={`mobile-navbar-container ${isOpenMobile ? "active" : ""}`}>
         <img className="navbar-logo-mobile" src="/images/navbar_logo.png" alt={t('navbar.home')} />
         <div className="mobile-navbar-link-container">
-          {[{path: '/', text: "navbar.home"}, ...navItems].map((item, index) => (
+          {navItems.map((item, index) => (
               <Link key={index} to={item.path} onClick={() => mobileHandleClick(item)} className="text-nav-mobile">
                 <span className={`${currentPage === item.text ? "bold-text-nav-mobile" : ""} text-nav-mobile`}>{t(item.text)}</span>
               </Link>

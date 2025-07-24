@@ -10,3 +10,26 @@
   position: relative;
   top: -100px;
 } 
+
+.yt-thumbnail-mobile {
+  max-width: 100%;
+  margin-block: 1em;
+
+  .mobile-thumbnail {
+    width: 100%;
+    height: auto;
+  }
+
+  .video-cropper {
+    clip-path: inset(0% 0 14% 0);
+  }
+
+  .video-thumbnail-title {
+    position: relative;
+    top: -75px;
+  } 
+}
+
+.margin-cropper {
+  margin-bottom: -2.5em;
+}
