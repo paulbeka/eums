@@ -1,5 +1,10 @@
 [
   {
+    "link": "https://www.youtube.com/@EUMadeSimple",
+    "key": "english",
+    "logo": "images/subchannels/logos/english.png"
+  },
+  {
     "link": "https://www.youtube.com/@EULeichtGemacht",
     "key": "german",
     "logo": "images/subchannels/logos/german.jpg"
@@ -12,21 +17,36 @@
   {
     "link": "https://www.youtube.com/@EE_APLA",
     "key": "greek",
-    "logo": "images/subchannels/logos/french.png"
+    "logo": "images/subchannels/logos/Greek.png"
   },
   {
     "link": "https://www.youtube.com/@UEinModSimplu",
     "key": "romanian",
-    "logo": "images/subchannels/logos/french.png"
+    "logo": "images/subchannels/logos/Romanian.png"
   },
   {
     "link": "https://www.youtube.com/@UEinmodosemplice",
     "key": "italian",
-    "logo": "images/subchannels/logos/french.png"
+    "logo": "images/subchannels/logos/Italian.png"
   },
   {
     "link": "https://www.youtube.com/@LaUEMasSimple",
     "key": "spanish",
     "logo": "images/subchannels/logos/french.png"
+  },
+  {
+    "link": "https://www.youtube.com/@EUMadeSimplePolish",
+    "key": "polish",
+    "logo": "images/subchannels/logos/Polish.png"
+  },
+  {
+    "link": "https://www.youtube.com/@EUMadeSimpleBulgarian",
+    "key": "bulgarian",
+    "logo": "images/subchannels/logos/bulgarian.png"
+  },
+  {
+    "link": "https://www.youtube.com/@EUJednoduse",
+    "key": "czech",
+    "logo": "images/subchannels/logos/czech.png"
   }
 ]

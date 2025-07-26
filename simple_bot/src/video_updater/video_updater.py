@@ -9,7 +9,11 @@ BACKEND_URL = os.getenv("BACKEND_URL")
 CHANNEL_IDS = {
     "English": "UC8KFs307LrTkQCu-P1Fl6dw",
     "French": "UCSSgqMP5-H5kl9VtuilF8KQ",
-    "German": "UCiudn65dNu5K4m3GnYnJnNw"
+    "German": "UCiudn65dNu5K4m3GnYnJnNw",
+    "Romanian": "UCH2H5GZhn5hlZDFGBrSlLYw",
+    "Greek": "UCvMs8QOwT_wRBoIAtgOuNEg",
+    "Italian": "UCa5-GiLrEnOn6j_Xz7_QixQ",
+    "Spanish": "UCpls769Vvbb-lZV8QtV-gkA"
 }
 
 

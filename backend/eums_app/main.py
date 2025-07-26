@@ -176,7 +176,7 @@ def edit_article_endpoint(articleId: str, article: ArticleResponse, db: Session 
         article.title, article.content, False)
 
 
-@app.get("/articles/")
+@app.get("/articles")
 def get_articles_endpoint(
             skip: int = 0, 
             limit: int = 10, 
@@ -293,7 +293,7 @@ def delete_video_endpoint(videoId: str, db: Session = Depends(get_db), token: st
     return run_if_admin(token, db, delete_video, videoId)
 
 
-@app.get("/videos/")
+@app.get("/videos")
 def get_videos_endpoint(livestreams: bool, db: Session = Depends(get_db)):
     return get_videos(livestreams, db)
 
@@ -314,7 +314,7 @@ def get_social_media_endpoint(db: Session = Depends(get_db)):
 
 #### EMAIL ####
 
-@app.post("/newsletter-subscribe/")
+@app.post("/newsletter-subscribe", include_in_schema=False)
 async def subscribe_to_newsletter(payload: Dict[str, str]):
     email = payload["email"]
     url = "https://api.beehiiv.com/v2/publications/{}/subscriptions".format(PUBLICATION_ID)
