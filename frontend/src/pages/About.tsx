@@ -97,12 +97,20 @@ const About = () => {
           </p>
           <br />
           <div className="subchannel-list">
-            {subchannels.map((subchannel, index) => (
-              <Link key={index} target="_blank" to={subchannel.link} className="subchannel-item">
-                <img src={subchannel.logo} alt={t(`about.subchannels.${subchannel.key}`)} className="subchannel-logo" />
-                <h3>{t(`about.subchannels.${subchannel.key}`)}</h3>
-              </Link>
-            ))}
+            {subchannels.map((subchannel) => {
+              const label = t(`about.subchannels.${subchannel.key}`);
+              return (
+                <Link key={subchannel.key} target="_blank" to={subchannel.link} className="subchannel-item">
+                  <img
+                    loading="lazy"
+                    src={subchannel.logo}
+                    alt={label}
+                    className="subchannel-logo"
+                  />
+                  <h3>{label}</h3>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>

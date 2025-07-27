@@ -5,10 +5,10 @@
   margin: 0 auto;
 
   .home-sidebar {
-    display: inline-block;
+    position: sticky;           /* ← this is the key change */
+    top: 6em;                   /* or whatever offset from the top you want */
     width: 400px;
-    max-height: 80vh;
-    overflow-y: scroll;
+    height: fit-content;
     margin: 1em;
     padding: 1em;
     background: white;
