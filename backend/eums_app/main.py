@@ -282,7 +282,7 @@ def post_new_tag(tagName: str, db: Session = Depends(get_db), token: str = Depen
 #### YOUTUBE / INTERVIEW VIDEOS ####
 
 
-@app.post("/videos/")
+@app.post("/videos")
 def post_video_endpoint(payload: Dict[str, str], db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     return run_if_admin(token, db, create_video, 
         payload["title"], payload["thumbnail"], payload["url"], payload["livestream"] == "true", payload["upload_date"], payload["language"])
@@ -300,7 +300,7 @@ def get_videos_endpoint(livestreams: bool, db: Session = Depends(get_db)):
 
 #### SOCIAL MEDIA POSTS ####
 
-@app.post("/social-media/")
+@app.post("/social-media")
 def post_social_media_endpoint(payload: Dict[str, str], db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     print(payload)
     return run_if_admin(token, db, create_social_media_post,
