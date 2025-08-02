@@ -85,7 +85,7 @@ export const editArticle = async (id: string, payload: {
   return api.post(`/articles/edit/${id}`, payload)
     .then(response => {
       if (response.status === 200) {
-        return response.data;
+        return response.data.id;
       } else {
         return false;
       }

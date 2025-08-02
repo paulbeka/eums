@@ -158,7 +158,7 @@ async def fetch_user_endpoint(userId: str, db: Session = Depends(get_db)):
 
 #### ARTICLES ####
 
-@app.post("/articles/")
+@app.post("/articles")
 async def create_article_endpoint(article: ArticleResponse, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     article = run_if_logged_in(token, db, create_article, 
         article.title, article.content, article.thumbnail, 
@@ -170,8 +170,9 @@ async def create_article_endpoint(article: ArticleResponse, db: Session = Depend
 @app.post("/articles/edit/{articleId}")
 def edit_article_endpoint(articleId: str, article: ArticleResponse, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     return run_if_logged_in(token, db, edit_article, articleId, 
-        article.title, article.content, ArticleStatus.private)
-    
+        article.title, article.content, article.thumbnail, 
+        article.selectedTags, ArticleStatus.private)
+
 
 @app.get("/articles")
 def get_articles_endpoint(

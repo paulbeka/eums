@@ -9,6 +9,26 @@ from .util import save_thumbnail
 from .schemas import RegisterUserPayload, UpdateUserPayload
 
 
+### UTIL
+
+def handle_tags(db: Session, tags: List[str]) -> List[TopicTag]:
+    existing_tags = db.query(TopicTag).filter(TopicTag.tag.in_(tags)).all()
+    existing_tag_names = {tag.tag for tag in existing_tags}
+
+    new_tags = [TopicTag(tag=tag_name) for tag_name in tags if tag_name not in existing_tag_names]
+    db.add_all(new_tags)
+    db.commit()
+
+    return existing_tags + new_tags
+
+
+def handle_thumbnail(title: str, thumbnail_base64: str) -> str:
+    sanitized_title = sanitize_filename(title.replace(' ', '_'))
+    thumbnail_filename = f"{sanitized_title}_thumbnail.png"
+    save_thumbnail(thumbnail_base64, thumbnail_filename)
+    return thumbnail_filename
+
+
 ### AUTH / LOGIN ###
 
 def get_user_by_id(db: Session, userId: str):
@@ -79,7 +99,7 @@ def get_articles(db: Session, skip: int = 0, limit: int = 10, public_only: bool 
     )
     if public_only:
         query = query.filter(Article.editing_status == ArticleStatus.public)
-        
+
     articles = query.offset(skip).limit(limit).all()
 
     return [
@@ -153,27 +173,15 @@ def get_article(articleId: str, db: Session, user_id: int = None, public_only: b
 
 
 def create_article(
-    db: Session, 
-    title: str, 
-    content: dict, 
-    thumbnail_base64: str, 
-    tags: List[str], 
+    db: Session,
+    title: str,
+    content: dict,
+    thumbnail_base64: str,
+    tags: List[str],
     user_id: int
 ):
-    thumbnail_filename = None
-    if thumbnail_base64:
-        sanitized_title = sanitize_filename(title.replace(' ', '_'))
-        thumbnail_filename = f"{sanitized_title}_thumbnail.png"
-        save_thumbnail(thumbnail_base64, thumbnail_filename)
-
-    existing_tags = db.query(TopicTag).filter(TopicTag.tag.in_(tags)).all()
-    existing_tag_names = {tag.tag for tag in existing_tags}
-
-    new_tags = [TopicTag(tag=tag_name) for tag_name in tags if tag_name not in existing_tag_names]
-    db.add_all(new_tags)
-    db.commit()  
-
-    all_tags = existing_tags + new_tags
+    thumbnail_filename = handle_thumbnail(title, thumbnail_base64) if thumbnail_base64 else None
+    all_tags = handle_tags(db, tags)
 
     editing_status = ArticleStatus.private
     if get_user_by_id(db, user_id).is_admin:
@@ -185,7 +193,7 @@ def create_article(
         editing_status=editing_status,
         thumbnail=thumbnail_filename,
         user_id=user_id,
-        tags=all_tags  
+        tags=all_tags
     )
 
     db.add(db_article)
@@ -194,14 +202,29 @@ def create_article(
     return db_article.id
 
 
-### TODO: FIX THIS FOR THE DIFFERENT EDITING STATES
-def edit_article(db: Session, id: int, title: str, content: str, status: ArticleStatus):
+def edit_article(
+    db: Session,
+    id: int,
+    title: str,
+    content: dict,
+    status: ArticleStatus,
+    thumbnail_base64: str = None,
+    tags: List[str] = None,
+):
     db_article = db.query(Article).filter(Article.id == id).first()
     if not db_article:
         raise Exception("Article not found")
+
     db_article.title = title
     db_article.content = json.dumps(content)
     db_article.editing_status = status
+
+    if thumbnail_base64:
+        db_article.thumbnail = handle_thumbnail(title, thumbnail_base64)
+
+    if tags is not None:
+        db_article.tags = handle_tags(db, tags)
+
     db.commit()
     db.refresh(db_article)
     return db_article
