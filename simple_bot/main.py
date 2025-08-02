@@ -18,7 +18,7 @@ def main():
     subparsers.add_parser("populate", help="Get videos + interviews and their thumbnails, and populate the website")
     subparsers.add_parser("publish_missing_videos", help="Fetch all latest videos, feed them to AI, and publish them")
     subparsers.add_parser("publish", help="Publish the generated AI articles (and send an email to owners)")
-    subparsers.add_parser("social_media_publish", help="Publish the social media posts to the site")
+    subparsers.add_parser("populate_instagram", help="Publish the social media posts to the site")
 
     ### TODO (in the future): Populate some kind of newsletter to email to subscribers
 

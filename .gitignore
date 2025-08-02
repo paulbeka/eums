@@ -11,6 +11,9 @@ simple_bot/src/transcriptions/__pycache__/transcriptions.cpython-312.pyc
 simple_bot/src/video_updater/__pycache__/video_updater.cpython-312.pyc
 simple_bot/venv/
 
+# Local sandbox folder
+SANDBOX
+
 # Avoid Backend python Virtual Environment
 backend/.venv/
 # VS code configuration folder

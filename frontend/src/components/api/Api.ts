@@ -36,8 +36,8 @@ export const verifyToken = async () => {
 }
 
 export const getArticles = async (getPublicOnly: boolean, limit?: number) => {
-  return api.get(getPublicOnly ? '/articles/' : 
-    `/articles/?public_only=false${limit? "&limit=" + limit : ""}`)
+  return api.get(getPublicOnly ? '/articles' : 
+    `/articles?public_only=false${limit? "&limit=" + limit : ""}`)
     .then(response => {
       return response.data;
     })
@@ -62,7 +62,7 @@ export const postArticle = async (payload: {
     thumbnail: any, 
     selectedTags: string[] 
   }) => {
-  return api.post("/articles/", payload)
+  return api.post("/articles", payload)
     .then(response => {
       if (response.status === 200) {
         return response.data;

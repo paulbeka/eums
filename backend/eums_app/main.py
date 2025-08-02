@@ -66,7 +66,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
 #### LOGIN/AUTH ####
 
-
 def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta if expires_delta else timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS))
@@ -164,8 +163,6 @@ async def create_article_endpoint(article: ArticleResponse, db: Session = Depend
     article = run_if_logged_in(token, db, create_article, 
         article.title, article.content, article.thumbnail, 
         article.selectedTags, get_user_from_token(token, db).id)
-    # TODO: FIX THE GMAIL ACCOUNT TO SEND ARTICLES AGAIN --- BUT ACTUALLY ONLY DO THIS ON "REVIEW" PUBLISH
-    # await send_article_uploaded_to_admins(article)
     return article
 
 
