@@ -22,11 +22,17 @@ def handle_tags(db: Session, tags: List[str]) -> List[TopicTag]:
     return existing_tags + new_tags
 
 
-def handle_thumbnail(title: str, thumbnail_base64: str) -> str:
-    sanitized_title = sanitize_filename(title.replace(' ', '_'))
-    thumbnail_filename = f"{sanitized_title}_thumbnail.png"
-    save_thumbnail(thumbnail_base64, thumbnail_filename)
-    return thumbnail_filename
+
+def save_thumbnail(thumbnail_base64: str, filename: str):
+    if thumbnail_base64.startswith("data:image"):
+        thumbnail_base64 = re.sub("^data:image/.+;base64,", "", thumbnail_base64)
+    try:
+        thumbnail_data = base64.b64decode(thumbnail_base64)
+    except (base64.binascii.Error, TypeError) as e:
+        raise ValueError("Invalid base64 thumbnail data") from e
+
+    with open(f"thumbnails/{filename}", "wb") as f:
+        f.write(thumbnail_data)
 
 
 ### AUTH / LOGIN ###
