@@ -170,8 +170,8 @@ async def create_article_endpoint(article: ArticleResponse, db: Session = Depend
 @app.post("/articles/edit/{articleId}")
 def edit_article_endpoint(articleId: str, article: ArticleResponse, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     return run_if_logged_in(token, db, edit_article, articleId, 
-        article.title, article.content, False)
-
+        article.title, article.content, ArticleStatus.private)
+    
 
 @app.get("/articles")
 def get_articles_endpoint(

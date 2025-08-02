@@ -196,14 +196,13 @@ def create_article(
 
 
 ### TODO: FIX THIS FOR THE DIFFERENT EDITING STATES
-def edit_article(db: Session, id: int, title: str, content: str, public: bool):
-    # TODO: Add edit tags functionality
+def edit_article(db: Session, id: int, title: str, content: str, status: ArticleStatus):
     db_article = db.query(Article).filter(Article.id == id).first()
     if not db_article:
         raise Exception("Article not found")
     db_article.title = title
     db_article.content = json.dumps(content)
-    db_article.editing_status = public
+    db_article.editing_status = status
     db.commit()
     db.refresh(db_article)
     return db_article
