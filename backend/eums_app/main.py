@@ -168,11 +168,21 @@ async def create_article_endpoint(article: ArticleResponse, db: Session = Depend
 
 # TODO:: ADD CHECKS ON IF THIS IS THE SAME USER AS THE POSTER
 @app.post("/articles/edit/{articleId}")
-def edit_article_endpoint(articleId: str, article: ArticleResponse, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    return run_if_logged_in(token, db, edit_article, articleId, 
-        article.title, article.content, article.thumbnail, 
-        article.selectedTags, ArticleStatus.private)
+def edit_article_endpoint(
+    articleId: str, 
+    article: ArticleResponse, 
+    db: Session = Depends(get_db), 
+    token: str = Depends(oauth2_scheme)
+):
+    user = get_user_from_token(token, db)
+    status = ArticleStatus.admin_only if user.is_admin else ArticleStatus.private
 
+    return edit_article(
+        db, articleId, 
+        article.title, article.content, article.thumbnail, 
+        article.selectedTags, status
+    )
+    
 
 @app.get("/articles")
 def get_articles_endpoint(

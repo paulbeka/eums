@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
 from datetime import datetime
 from typing import List
-import json, re
+import json, re, base64
 
 from .models import User, Article, Video, TopicTag, Like, ArticleStatus, SocialMediaPost
 from .util import save_thumbnail
@@ -22,7 +22,10 @@ def handle_tags(db: Session, tags: List[str]) -> List[TopicTag]:
     return existing_tags + new_tags
 
 
-def handle_thumbnail(thumbnail_base64: str, filename: str):
+def handle_thumbnail(filename: str, thumbnail_base64: str):
+    sanitized_title = sanitize_filename(filename.replace(' ', '_'))
+    filename = f"{sanitized_title}_thumbnail.png"
+    
     if thumbnail_base64.startswith("data:image"):
         thumbnail_base64 = re.sub("^data:image/.+;base64,", "", thumbnail_base64)
     try:
@@ -32,6 +35,7 @@ def handle_thumbnail(thumbnail_base64: str, filename: str):
 
     with open(f"thumbnails/{filename}", "wb") as f:
         f.write(thumbnail_data)
+    return filename
 
 
 ### AUTH / LOGIN ###
@@ -212,9 +216,9 @@ def edit_article(
     id: int,
     title: str,
     content: dict,
-    status: ArticleStatus,
-    thumbnail_base64: str = None,
-    tags: List[str] = None,
+    thumbnail_base64,
+    tags: List[str],
+    status: ArticleStatus
 ):
     db_article = db.query(Article).filter(Article.id == id).first()
     if not db_article:
