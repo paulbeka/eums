@@ -79,8 +79,7 @@ def get_articles(db: Session, skip: int = 0, limit: int = 10, public_only: bool 
     )
     if public_only:
         query = query.filter(Article.editing_status == ArticleStatus.public)
-    query = query.filter(Article.editing_status != ArticleStatus.private)
-    
+        
     articles = query.offset(skip).limit(limit).all()
 
     return [
