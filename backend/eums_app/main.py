@@ -175,7 +175,7 @@ def edit_article_endpoint(
     token: str = Depends(oauth2_scheme)
 ):
     user = get_user_from_token(token, db)
-    status = ArticleStatus.admin_only if user.is_admin else ArticleStatus.private
+    status = ArticleStatus.admin_available if user.is_admin else ArticleStatus.private
 
     return edit_article(
         db, articleId, 
