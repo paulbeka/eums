@@ -22,8 +22,7 @@ def handle_tags(db: Session, tags: List[str]) -> List[TopicTag]:
     return existing_tags + new_tags
 
 
-
-def save_thumbnail(thumbnail_base64: str, filename: str):
+def handle_thumbnail(thumbnail_base64: str, filename: str):
     if thumbnail_base64.startswith("data:image"):
         thumbnail_base64 = re.sub("^data:image/.+;base64,", "", thumbnail_base64)
     try:
