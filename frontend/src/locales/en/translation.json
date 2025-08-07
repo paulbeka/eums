@@ -65,7 +65,7 @@
   "newsletter.button.loading": "Signing Up...",
   "newsletter.button.default": "Sign Up Now!",
   "newsletter.error.invalidEmail": "Please enter a valid email address.",
-  "newsletter.success": "Subscription successful! Check your inbox.",
+  "newsletter.success": "Subscription successful!",
   "newsletter.failure": "Subscription failed. Please try again.",
   "newsletter.error.generic": "An error occurred. Try again.",
 

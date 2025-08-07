@@ -182,7 +182,7 @@ def edit_article_endpoint(
         article.title, article.content, article.thumbnail, 
         article.selectedTags, status
     )
-    
+
 
 @app.get("/articles")
 def get_articles_endpoint(
@@ -324,6 +324,15 @@ def get_social_media_endpoint(db: Session = Depends(get_db)):
 
 @app.post("/newsletter-subscribe", include_in_schema=False)
 async def subscribe_to_newsletter(payload: Dict[str, str]):
+    captcha = payload["captcha"]
+    url = f"https://www.google.com/recaptcha/api/siteverify?secret={CAPTCHA_KEY}&response={captcha}"
+
+    response = requests.post(url)
+    result = response.json()
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail="Captcha verification failed")
+
     email = payload["email"]
     url = "https://api.beehiiv.com/v2/publications/{}/subscriptions".format(PUBLICATION_ID)
     

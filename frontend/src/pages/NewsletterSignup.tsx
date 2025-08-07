@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";  // assuming react-i18next
 import "./CSS/NewsletterSignup.css";
 import { BrowserView, MobileView } from "react-device-detect";
 import api from "../components/api/Api";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";  // assuming you are using this package
 
 export const NewsletterSignup = () => {
   const { t } = useTranslation();
@@ -10,17 +11,28 @@ export const NewsletterSignup = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  const { executeRecaptcha } = useGoogleReCaptcha();
+
   const registerUser = async () => {
+    if (!executeRecaptcha) {
+      console.error("ReCAPTCHA has not been loaded.");
+      return;
+    }
     if (email.trim() === "") {
       setMessage(t("newsletter.error.invalidEmail"));
       return;
     }
+    
+    const captchaToken = await executeRecaptcha("contactFormSubmit");
 
     try {
       setLoading(true);
       setMessage("");
 
-      const response = await api.post("/newsletter-subscribe", { email });
+      const response = await api.post("/newsletter-subscribe", { 
+        email,
+        captcha: captchaToken
+       });
 
       if (response.status === 200 || response.status === 201) {
         setMessage(t("newsletter.success"));

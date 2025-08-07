@@ -32,6 +32,7 @@
     overflow: hidden;
     padding: 1em;
     max-height: 450px;
+    background: white;
   }
 
   .video-post {
@@ -61,7 +62,7 @@
   }
 
   .home-post:hover {
-    background-color: #f0f0f0;
+    background-color: #e0e0e0;
   }
 
   .home-article-title {

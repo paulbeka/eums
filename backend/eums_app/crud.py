@@ -149,6 +149,9 @@ def get_article(articleId: str, db: Session, user_id: int = None, public_only: b
 
     article = query.first()
 
+    if not article:
+        raise Exception("Article not found.")
+
     if not article.editing_status == ArticleStatus.public and user_id is not None:
         user = db.query(User).filter(User.id == user_id).first()
         if (user is None) or (not user.is_admin) or (article.user_id != user_id):

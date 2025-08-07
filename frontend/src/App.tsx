@@ -66,7 +66,11 @@ function App() {
           <Route path="all-articles" element={<AllArticles />} /> 
           <Route path="all-videos" element={<AllVideos livestreams={false} />} />     
           <Route path="all-interviews" element={<AllVideos livestreams={true} />} />     
-          <Route path="newsletter-signup" element={<NewsletterSignup />} />
+          <Route path="newsletter-signup" element={
+            <GoogleReCaptchaProvider reCaptchaKey={CAPTCHA_SITE_KEY}>
+              <NewsletterSignup />
+            </GoogleReCaptchaProvider>
+          } />
 
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
