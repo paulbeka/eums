@@ -5,11 +5,15 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import translationEN from './locales/en/translation.json';
 import translationFR from './locales/fr/translation.json';
 import translationDE from './locales/de/translation.json';
+import translationPL from './locales/pl/translation.json';
+import translationRO from './locales/ro/translation.json';
 
 const resources = {
   en: { translation: translationEN },
   fr: { translation: translationFR },
-  de: { translation: translationDE } 
+  de: { translation: translationDE },
+  pl: { translation: translationPL },
+  ro: { translation: translationRO },
 };
 
 i18n
@@ -26,7 +30,9 @@ i18n
 export const languageMap: Record<string, string> = {
   English: 'en',
   French: 'fr',
-  German: 'de'
+  German: 'de',
+  Polish: 'pl',
+  Romanian: 'ro'
 };
 
 export default i18n;

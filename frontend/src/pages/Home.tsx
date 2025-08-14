@@ -27,7 +27,7 @@ const Home = () => {
 
   const filterOptions = ["all", "article", "video", "instagram"];
   const [filter, setFilter] = useState("all");
-  const Languages = ["English", "French", "German"];
+  const Languages = ["English", "French", "German", "Polish", "Romanian"];
 
   const [contentError, setContentError] = useState(false);
   const [loading, setLoading] = useState(true);

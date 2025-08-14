@@ -13,7 +13,8 @@ CHANNEL_IDS = {
     "Romanian": "UCH2H5GZhn5hlZDFGBrSlLYw",
     "Greek": "UCvMs8QOwT_wRBoIAtgOuNEg",
     "Italian": "UCa5-GiLrEnOn6j_Xz7_QixQ",
-    "Spanish": "UCpls769Vvbb-lZV8QtV-gkA"
+    "Spanish": "UCpls769Vvbb-lZV8QtV-gkA",
+    "Polish": "UCJFWalLZ475gBh2dC2Tmdxg"
 }
 
 

@@ -42,7 +42,7 @@ export const YouTubeThumbnail = ({
           onLoad={handleImageLoad}
         />
       </div>
-      <h2 className={currentResIndex > 0 ? "video-thumbnail-title" : ""}>{title}</h2>
+      <h3 className={currentResIndex > 0 ? "video-thumbnail-title" : ""}>{title}</h3>
     </BrowserView>
     <MobileView className={`yt-thumbnail-mobile ${currentResIndex > 0 ? "margin-cropper": ""}`}>
       <div className={`${currentResIndex > 0 ? "video-cropper": ""}`}>
