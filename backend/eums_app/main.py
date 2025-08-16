@@ -333,22 +333,12 @@ async def subscribe_to_newsletter(payload: Dict[str, str]):
     if not result.get("success"):
         raise HTTPException(status_code=400, detail="Captcha verification failed")
 
-    email = payload["email"]
-    url = "https://api.beehiiv.com/v2/publications/{}/subscriptions".format(PUBLICATION_ID)
-    
-    headers = {
-        "Authorization": f"Bearer {EUMS_BEEHIIV_KEY}",
-        "Content-Type": "application/json"
-    }
+    return postToBeehiiv(payload["email"])
 
-    payload = {"email": email, "reactivation_email": True}
 
-    response = requests.post(url, json=payload, headers=headers)
-
-    if response.status_code != 201 or response.status_code != 200:
-        raise HTTPException(status_code=response.status_code, detail=response.json())
-
-    return {"message": "Subscription successful"}
+@app.post("/newsletter-subscribe-homepage")
+async def subscribe_to_newsletter_homepage(payload: Dict[str, str]):
+    return postToBeehiiv(payload["email"])
 
 
 @app.post("/contact")
@@ -389,3 +379,23 @@ async def send_email(contact: ContactForm):
         raise HTTPException(status_code=500, detail="Failed to send email.")
 
 
+
+
+######## UTIL #############
+
+def postToBeehiiv(email):
+    url = "https://api.beehiiv.com/v2/publications/{}/subscriptions".format(PUBLICATION_ID)
+    
+    headers = {
+        "Authorization": f"Bearer {EUMS_BEEHIIV_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {"email": email, "reactivation_email": True}
+
+    response = requests.post(url, json=payload, headers=headers)
+
+    if response.status_code != 201 or response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.json())
+
+    return {"message": "Subscription successful"}
