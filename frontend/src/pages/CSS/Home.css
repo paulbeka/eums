@@ -4,11 +4,14 @@
   max-width: 1400px;
   margin: 0 auto;
 
-  .home-sidebar {
-    position: sticky;           /* ← this is the key change */
-    top: 6em;                   /* or whatever offset from the top you want */
+  .home-sidebar-container {
+    position: sticky;         
+    top: 6em;                   
     width: 400px;
     height: fit-content;
+  }
+
+  .home-sidebar {
     margin: 1em;
     padding: 1em;
     background: white;

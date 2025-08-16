@@ -15,6 +15,7 @@ import { InstagramEmbed } from 'react-social-media-embed';
 import { useTranslation } from 'react-i18next';
 import { useGlobalStore } from '../store/GlobalStore';
 import { YouTubeThumbnail } from '../components/frontend_util/YoutubeThumbnail';
+import { NewsletterRegistrationForm } from '../components/frontend_util/NewsletterRegistrationForm';
 
 const Home = () => {
   const { t } = useTranslation();
@@ -126,7 +127,7 @@ const Home = () => {
     </Helmet>
     <BrowserView>
       <div className="home">
-        <div className="home-sidebar">
+        <div className="home-sidebar-container home-sidebar">
           <h3 style={{ margin: "0.5em 0", padding: "0.5em 0.5em" }}>{t('home.sortBy')}</h3>
           {filterOptions.map((item, key) => (
             <div className="filter-option" key={key} onClick={() => applyFilter(item)}
@@ -192,18 +193,27 @@ const Home = () => {
           })}
           <Loading />
         </div>
-
-        <div className="home-sidebar">
-          {content.filter(val => val.type === "article").sort((a, b) => (b as Article).total_likes - (a as Article).total_likes).slice(0, 5).map((item, index) => {
-            const article = item as Article;
-            return (
-              <Link key={index} to={`/article/${article.id}`} className="home-sidebar-article-title">
-                <span title={article.title} className="truncated-title">{article.title}</span>
-                <span>{t('likes', { count: article.total_likes })}</span>
-              </Link>
-            );
-          })}
+        
+        <div className="home-sidebar-container">
+          <div className="home-sidebar" style={{ marginTop: 0 }}>
+            {content.filter(val => val.type === "article").sort((a, b) => (b as Article).total_likes - (a as Article).total_likes).slice(0, 5).map((item, index) => {
+              const article = item as Article;
+              return (
+                <Link key={index} to={`/article/${article.id}`} className="home-sidebar-article-title">
+                  <span title={article.title} className="truncated-title">{article.title}</span>
+                  <span>{t('likes', { count: article.total_likes })}</span>
+                </Link>
+              );
+            })}
+          </div>
+          <div className="home-sidebar">
+            <h2>{t('homepage.newsletter.title')}</h2>
+            <p>{t('homepage.newsletter.description')}</p>
+            <br />
+            <NewsletterRegistrationForm />
+          </div>
         </div>
+        
         {adsPresent && <div className="ad-slot"></div>}
       </div>
     </BrowserView>
