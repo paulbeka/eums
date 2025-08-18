@@ -154,6 +154,15 @@ const Home = () => {
 
         <div className="post-content">
           {visibleContent.map((item, index) => {
+            if ((index+1) % 6 === 0 && index < 9) {
+              return (
+                <div key="newsletter-slot"  className="home-post">
+                  <h2>{t('homepage.newsletter.title')}</h2>
+                  <p>{t('homepage.newsletter.description')}</p>
+                  <br />
+                  <NewsletterRegistrationForm />
+                </div>);
+            }
             if (item.type === "article") {
               const article = item as Article;
               return (
@@ -223,6 +232,17 @@ const Home = () => {
         <center><h1 style={{ paddingBlock: "0.5em" }}>{t('mobile.feed')}</h1></center>
         <div className="mobile-feed-content">
           {visibleContent.map((item, index) => {
+            if ((index+1) % 6 === 0 && index < 9) {
+              return (
+                <div key="newsletter-slot"  className="home-mobile-post">
+                  <hr /><br />
+                  <h2>{t('homepage.newsletter.title')}</h2>
+                  <p>{t('homepage.newsletter.description')}</p>
+                  <br />
+                  <NewsletterRegistrationForm />
+                  <br /><hr />
+                </div>);
+            }
             if (item.type === "article") {
               const article = item as Article;
               return (

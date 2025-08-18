@@ -102,7 +102,10 @@ const About = () => {
               return (
                 <Link key={subchannel.key} target="_blank" to={subchannel.link} className="subchannel-item">
                   <img
+                    width={64}
+                    height={64}
                     loading="lazy"
+                    decoding="async"
                     src={subchannel.logo}
                     alt={label}
                     className="subchannel-logo"
