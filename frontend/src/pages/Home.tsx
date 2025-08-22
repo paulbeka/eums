@@ -4,7 +4,7 @@ import { Video, Article } from '../components/types/Content.type';
 import { Link, useNavigate } from 'react-router-dom';
 import { getFrontpageContent } from '../components/api/Api';
 import { BASE_URL } from "../Config";
-import { BrowserView, MobileView } from "react-device-detect";
+import { BrowserView, isMobile, MobileView } from "react-device-detect";
 import Loading from '../components/frontend_util/Loading';
 import ErrorLoading from '../components/frontend_util/ErrorLoading';
 import { Helmet } from 'react-helmet-async';
@@ -98,6 +98,7 @@ const Home = () => {
 
   useEffect(() => {
     const handleScroll = () => {
+      if (!isMobile) return;
       const scrollHeight = document.documentElement.scrollHeight;
       const currentScroll = window.innerHeight + window.scrollY;
       if (currentScroll + 100 >= scrollHeight && !loading && hasMore) {
@@ -173,12 +174,12 @@ const Home = () => {
                   <div className="home-article-title">
                     <Link to={`/article/${article.id}`}><h3>{article.title}</h3></Link>
                     <div style={{ display: "flex", alignItems: "center", zIndex: 5 }}>
-                      {article.user_has_liked ? (
+                      {/* {article.user_has_liked ? (
                         <AiFillLike size={35} style={{ marginRight: "0.5em", cursor: "pointer" }} onClick={() => clickLike(article.id)} />
                       ) : (
                         <AiOutlineLike size={35} style={{ marginRight: "0.5em", cursor: "pointer" }} onClick={() => clickLike(article.id)} />
-                      )}
-                      <span style={{ marginTop: "5px" }}>{article.total_likes}</span>
+                      )} */}
+                      {/* <span style={{ marginTop: "5px" }}>{article.total_likes}</span> */}
                     </div>
                   </div>
                 </div>
@@ -205,12 +206,13 @@ const Home = () => {
         
         <div className="home-sidebar-container">
           <div className="home-sidebar" style={{ marginTop: 0 }}>
+            <h2>{t('homepage.popularArticles')}</h2>
             {content.filter(val => val.type === "article").sort((a, b) => (b as Article).total_likes - (a as Article).total_likes).slice(0, 5).map((item, index) => {
               const article = item as Article;
               return (
                 <Link key={index} to={`/article/${article.id}`} className="home-sidebar-article-title">
                   <span title={article.title} className="truncated-title">{article.title}</span>
-                  <span>{t('likes', { count: article.total_likes })}</span>
+                  {/* <span>{t('likes', { count: article.total_likes })}</span> */}
                 </Link>
               );
             })}
@@ -253,12 +255,12 @@ const Home = () => {
                   <div className="home-mobile-article-title">
                     <Link to={`/article/${article.id}`}><h3>{article.title}</h3></Link>
                     <div style={{ display: "flex", alignItems: "center", zIndex: 5 }}>
-                      {article.user_has_liked ? (
+                      {/* {article.user_has_liked ? (
                         <AiFillLike size={35} style={{ marginRight: "0.5em", cursor: "pointer" }} onClick={() => clickLike(article.id)} />
                       ) : (
                         <AiOutlineLike size={35} style={{ marginRight: "0.5em", cursor: "pointer" }} onClick={() => clickLike(article.id)} />
-                      )}
-                      <span style={{ marginTop: "5px" }}>{article.total_likes}</span>
+                      )} */}
+                      {/* <span style={{ marginTop: "5px" }}>{article.total_likes}</span> */}
                     </div>
                   </div>
                 </div>

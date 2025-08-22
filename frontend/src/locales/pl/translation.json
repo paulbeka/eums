@@ -11,7 +11,8 @@
   "likes": "{{count}} polubień",
   "homepage.newsletter.title": "Newsletter",
   "homepage.newsletter.description": "Szeroka, dogłębna, ogólnoeuropejska polityka. A przede wszystkim – prosto. Zapisz się już dziś!",
-
+  "homepage.popularArticles": "Popularne artykuły",
+  
   "navbar.aboutus": "O nas",
   "navbar.newsletter": "Nasz newsletter",
   "navbar.contact": "Kontakt",
