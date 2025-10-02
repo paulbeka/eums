@@ -201,7 +201,15 @@ const Home = () => {
               );
             }
           })}
-          <Loading />
+          
+          <br />
+          {loading ? <Loading /> :
+            hasMore? <div className="load-more-container">
+              <button className="load-more-button" onClick={loadMoreContent} disabled={!hasMore}>
+                {hasMore ? t('homepage.loadMore') : t('homepage.noMoreContent')}
+              </button>
+            </div>:<></>
+          }
         </div>
         
         <div className="home-sidebar-container">

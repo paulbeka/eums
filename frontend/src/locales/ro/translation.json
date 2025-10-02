@@ -12,6 +12,8 @@
   "homepage.newsletter.title": "Newsletter",
   "homepage.newsletter.description": "Politică europeană amplă, aprofundată, la nivel continental. Și mai ales, simplă. Înscrie-te astăzi!",
   "homepage.popularArticles": "Articole populare",
+  "homepage.loadMore": "Încarcă mai mult",
+  "homepage.noMoreContent": "Nu mai există conținut",
 
   "navbar.aboutus": "Despre noi",
   "navbar.newsletter": "Newsletter-ul nostru",
