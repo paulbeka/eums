@@ -14,7 +14,7 @@ const Footer = () => {
   const mediaIcons = [
     { icon: "/images/social_media_icons/youtube", link: "https://www.youtube.com/@EUMadeSimple/videos" },
     { icon: "/images/social_media_icons/instagram", link: "https://www.instagram.com/eu_made_simple/" },
-    { icon: "/images/social_media_icons/discord", link: "https://discord.gg/jrzyVUjW" },
+    { icon: "/images/social_media_icons/discord", link: "https://discord.gg/eumadesimple" },
     { icon: "/images/social_media_icons/patreon", link: "https://www.patreon.com/eumadesimple" },
     { icon: "/images/social_media_icons/x", link: "https://x.com/EU_Made_Simple/" },
     { icon: "/images/social_media_icons/tiktok", link: "https://www.tiktok.com/@eumadesimple" },
